@@ -31,7 +31,7 @@ def main():
         for item in channel.findall('item'):
             listItems.append(ET.tostring(item).decode())
 
-    p = Pool(4)
+    p = Pool(3)
     p.map(urlparser, listItems)
     p.terminate()
     p.join()
