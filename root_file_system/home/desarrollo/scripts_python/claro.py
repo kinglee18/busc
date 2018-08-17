@@ -31,7 +31,7 @@ def main():
         for item in channel.findall('item'):
             listItems.append(ET.tostring(item).decode())
 
-    p = Pool(3)
+    p = Pool(4)
     p.map(urlparser, listItems)
     p.terminate()
     p.join()
@@ -65,13 +65,17 @@ def urlparser(item):
         if statusCode == 200:
             soup = BeautifulSoup(page.content, 'lxml')
             description = soup.find_all('ul', {'class': 'viewDescrip'})
-            li = description[0].find_all('li', {'class': 'laDescrip'})
-            try:
-                li[0].text
-            except Exception as e:
-                return
+            if len(description) != 0:
+                li = description[0].find_all('li', {'class': 'laDescrip'})
+                try:
+                    li[0].text
+                except Exception as e:
+                    return
+                else:
+                    #print(li[0].text)
+                    pass
             else:
-                pass
+                return
         else:
 
               # print(li[0].text)
