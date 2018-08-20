@@ -146,9 +146,6 @@ async function insertTags(arreglo) {
 }
 
 
-exports.runAllBlog = async(page) => {
-    await runBlog(page);
-    return;
-}
+runBlog(0);
 
 //clear('cuidad-de-mexico')

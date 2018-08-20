@@ -332,10 +332,7 @@ function findAbrev(abrev) {
 }
 
 
-exports.runAllNeg = async(page) => {
-    await runNeg(page);
-    return;
-}
+runNeg(0);
 
 
 

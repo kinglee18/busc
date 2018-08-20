@@ -114,12 +114,10 @@ async function insertData(datos) {
                 }
             });
        }
+       return;
      
 }
 
-exports.runAllProd = async(page) => {
-    await runProd(page);
-    return;
-}
+runProd(0);
 
 //clear('cuidad-de-mexico')
