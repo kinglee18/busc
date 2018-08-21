@@ -1,0 +1,17 @@
+{
+  "name": "chatv1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "eduardo.hernandez@seccionamarilla.com",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.4",
+    "elasticsearch": "^15.1.1",
+    "express": "^4.16.3",
+    "socket.io": "^2.1.1"
+  }
+}

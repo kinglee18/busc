@@ -58,8 +58,16 @@ exports.probWords = function(tx1,tx2){
 }
 
 exports.calcPrio = function(json) {
+    let valorWhere = 0;
+
+    if(json.where.lat || Object.keys(json.where.maps).length > 0) {
+        valorWhere = 1;
+    }
 
     let neg = expResult(json.neg.ctg,json.neg.pys,json.neg.bn);
+    if(valorWhere != 0) {
+        neg = neg + parseFloat(Math.exp(valorWhere).toFixed(4));
+    }
     let claro = expResult(json.claro.marcas,json.claro.ctg,json.claro.bn)
     let blog = expResult(json.blog.ctg,json.blog.tags,[]);
 

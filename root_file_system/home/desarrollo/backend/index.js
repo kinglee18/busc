@@ -9,7 +9,11 @@ const home = require('./elastic/home');
 const auto = require('./http/autocomplete');
 const clear = require('clear');
 const clima = require('./http/clima');
+const bodyParser = require('body-parser')
 let connectCounter = 0;
+
+// parse application/json
+app.use(bodyParser.json())
 
 
 app.get('/node',(req,res) => {
@@ -17,6 +21,19 @@ app.get('/node',(req,res) => {
         msj: 'Restringido, la plocia llegara en 10 minutos'
     });
 })
+
+app.post('/alexa',(req,res) => {
+    let data = req.body;
+    proceso.search(data.tx,data.lat,data.lng).then((json) => {
+        elastic.negocios(0,json.neg.ctg,json.neg.pys,json.neg.bn,json.neg.hrs,json.neg.pay,json.where).then((resp) => {                
+            res.send({
+                info: json,
+                data: resp
+            });
+        });
+    });
+})
+
 
 io.on('connection', function(socket) {
 
