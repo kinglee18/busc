@@ -12,9 +12,9 @@ const clima = require('./http/clima');
 let connectCounter = 0;
 
 
-app.get('/',(req,res) => {
+app.get('/node',(req,res) => {
     res.status(200).send({
-        msj: 'Hola Mundo'
+        msj: 'Restringido, la plocia llegara en 10 minutos'
     });
 })
 
@@ -106,6 +106,17 @@ io.on('connection', function(socket) {
             
             
         })
+    })
+
+    socket.on('app-alexa',(data) => {
+        proceso.search(data.tx,data.lat,data.lng).then((json) => {
+            elastic.negocios(0,json.neg.ctg,json.neg.pys,json.neg.bn,json.neg.hrs,json.neg.pay,json.where).then((resp) => {                
+                socket.emit('app-alexa-resp',{
+                    info: json,
+                    data: resp
+                });
+            });
+        });
     })
 
     socket.on('disconnect', function() { 
