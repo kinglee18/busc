@@ -12,6 +12,14 @@ const clima = require('./http/clima');
 const bodyParser = require('body-parser')
 let connectCounter = 0;
 
+/* Chat */
+const {Persona} = require('./models/personas');
+const {Empresa} = require('./models/empresas');
+const datos = require('./elastic/datos');
+const persona = new Persona();
+const empresa = new Empresa();
+
+
 // parse application/json
 app.use(bodyParser.json())
 
@@ -136,7 +144,94 @@ io.on('connection', function(socket) {
         });
     })
 
+    /*############################## Chat #####################################################*/
+
+    /*******************************Chatv1********************************* */
+    socket.on('new-user',(data,callback) => {
+        if(!persona.getPersona(socket.id)) {
+            persona.addPersona(socket.id,data.clave);
+        }
+        
+        let fecha = getFecha()
+        let resp = {
+            name: data.name,
+            fecha,
+            msg: 'Hola Buenas Tardes. ¿En que te podemos ayudar?'
+        }
+        callback(resp);
+    })
+
+    socket.on('msg-user',(data) => {
+        console.log('**************************************');
+        console.log(JSON.stringify(empresa.getAll()))
+        console.log('**************************************');
+        let emp = empresa.getEmpresa(data.clave)
+        let usu = persona.getPersona(socket.id);
+        let fecha = getFecha()
+        console.log(emp);
+        if(emp) {
+            let env = {
+                status: true,
+                data: {
+                    id: usu.id,
+                    msg: data.msg,
+                    fecha
+                }
+            }
+            socket.broadcast.to(emp.id).emit('all-users',env);
+        }
+    })
+
+    socket.on('msg-emp',(data) => {
+        console.log('####################################');
+        console.log(JSON.stringify(persona.getAll()))
+        console.log('####################################');
+        
+        let fecha = getFecha()
+        let resp = {
+            name: data.name,
+            fecha,
+            msg: data.msg
+        }
+        
+        socket.broadcast.to(data.clave).emit('resp-emp',resp);
+    })
+
+
+
+
+    /*******************************Empresa********************************* */
+
+    socket.on('login-app',(data,callback) => {
+        datos.validar(data.clave).then((resp) => {
+            if(resp.hits.hits.length > 0) {
+                empresa.addEmpresa(socket.id,data.clave);
+                socket.emit('login-resp',{
+                    status: true,
+                    data: resp.hits.hits[0]._source
+                })
+            }
+            else {
+                socket.emit('login-resp',{
+                    status: false,
+                    data: null
+                })
+            }
+            
+        })
+    })
+
+    
+
+   
+
+
+    /*############################## Chat #####################################################*/
+
     socket.on('disconnect', function() { 
+        empresa.deleteEmpresa(socket.id);
+        persona.deletePersona(socket.id);
+        /*##########################################*/
         let count = io.sockets.connected;
         console.log('Inicio Size: '+Object.keys(count).length);
         connectCounter--;
