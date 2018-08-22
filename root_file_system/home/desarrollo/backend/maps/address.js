@@ -66,6 +66,7 @@ function getDir2(arreglo) {
         if(op.types.includes('administrative_area_level_1')) {
             let valor = cls.clearTexto(op.long_name);
             if(valor == 'ciudad mexico' || valor == 'ciudad de mexico' || valor == 'mexico city') valor = 'distrito federal';
+            else if(valor == 'state of mexico') valor = 'mexico';
             json.estado = valor;
         }
     }
