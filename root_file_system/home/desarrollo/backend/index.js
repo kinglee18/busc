@@ -12,12 +12,13 @@ const clima = require('./http/clima');
 const bodyParser = require('body-parser')
 let connectCounter = 0;
 
-/* Chat */
+/* Chat 
 const {Persona} = require('./models/personas');
 const {Empresa} = require('./models/empresas');
 const datos = require('./elastic/datos');
 const persona = new Persona();
 const empresa = new Empresa();
+*/
 
 
 // parse application/json
@@ -147,6 +148,7 @@ io.on('connection', function(socket) {
     /*############################## Chat #####################################################*/
 
     /*******************************Chatv1********************************* */
+    /*
     socket.on('new-user',(data,callback) => {
         if(!persona.getPersona(socket.id)) {
             persona.addPersona(socket.id,data.clave);
@@ -200,7 +202,7 @@ io.on('connection', function(socket) {
 
 
 
-    /*******************************Empresa********************************* */
+    
 
     socket.on('login-app',(data,callback) => {
         datos.validar(data.clave).then((resp) => {
@@ -221,7 +223,7 @@ io.on('connection', function(socket) {
         })
     })
 
-    
+    */
 
    
 
@@ -229,8 +231,8 @@ io.on('connection', function(socket) {
     /*############################## Chat #####################################################*/
 
     socket.on('disconnect', function() { 
-        empresa.deleteEmpresa(socket.id);
-        persona.deletePersona(socket.id);
+        //empresa.deleteEmpresa(socket.id);
+        //persona.deletePersona(socket.id);
         /*##########################################*/
         let count = io.sockets.connected;
         console.log('Inicio Size: '+Object.keys(count).length);

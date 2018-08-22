@@ -8,7 +8,9 @@ const empresa = new Empresa();
 
 io.on('connection', function(socket) {
 
-    /*******************************Persona********************************* */
+    /*############################## Chat #####################################################*/
+
+    /*******************************Chatv1********************************* */
     socket.on('new-user',(data,callback) => {
         if(!persona.getPersona(socket.id)) {
             persona.addPersona(socket.id,data.clave);
@@ -91,6 +93,8 @@ io.on('connection', function(socket) {
         console.log('Desconectado ...');
     })
 })
+
+/*############################## Chat #####################################################*/
 
 
 function getFecha() {
