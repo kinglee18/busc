@@ -29,7 +29,7 @@ app.use(bodyParser.json())
 
 app.get('/node',(req,res) => {
     res.status(200).send({
-        msj: 'Restringido, la plocia llegara en 10 minutos'
+        msj: 'Restringido API BK'
     });
 })
 

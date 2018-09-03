@@ -7,7 +7,7 @@ exports.valid = function(req,res,next) {
     try {
         let decoded = jwt.decode(token, secret);
         //console.log(JSON.stringify(decoded,undefined,2));
-        if(decode.agent == 'eha') {
+        if(decoded.agent == 'eha') {
             req.status = 'OK';
         }
         else {
