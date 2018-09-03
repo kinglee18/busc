@@ -13,6 +13,7 @@ const bodyParser = require('body-parser')
 let connectCounter = 0;
 const check = require('./config/check');
 
+
 /* Chat 
 const {Persona} = require('./models/personas');
 const {Empresa} = require('./models/empresas');
