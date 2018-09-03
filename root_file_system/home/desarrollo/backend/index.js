@@ -11,6 +11,7 @@ const clear = require('clear');
 const clima = require('./http/clima');
 const bodyParser = require('body-parser')
 let connectCounter = 0;
+const check = require('./config/check');
 
 /* Chat 
 const {Persona} = require('./models/personas');
@@ -31,16 +32,26 @@ app.get('/node',(req,res) => {
     });
 })
 
-app.post('/alexa',(req,res) => {
+app.post('/alexa',check.valid,(req,res) => {
     let data = req.body;
-    proceso.search(data.tx,data.lat,data.lng).then((json) => {
-        elastic.negocios(0,json.neg.ctg,json.neg.pys,json.neg.bn,json.neg.hrs,json.neg.pay,json.where).then((resp) => {                
-            res.send({
-                info: json,
-                data: resp
+    if(req.status == 'OK') {
+        proceso.search(data.tx,data.lat,data.lng).then((json) => {
+            elastic.negocios(0,json.neg.ctg,json.neg.pys,json.neg.bn,json.neg.hrs,json.neg.pay,json.where).then((resp) => {                
+                res.send({
+                    status: true,
+                    info: json,
+                    data: resp
+                });
             });
         });
-    });
+    }
+    else {
+        res.status(404).send({
+            status: false,
+            message: 'Error en la autentificacion'
+        })
+    }
+    
 })
 
 
