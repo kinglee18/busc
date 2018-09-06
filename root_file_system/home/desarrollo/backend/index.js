@@ -90,9 +90,9 @@ io.on('connection', function(socket) {
                 
                 for(let op of resp.info) lista.push(op.listadoid);
                 socket.emit('search-negocios',resp);
-                return cmt.allComments(lista);
-            }).then((resp) => {
-                socket.emit('search-comments',{info:resp});
+                //return cmt.allComments(lista);
+            //}).then((resp) => {
+                //socket.emit('search-comments',{info:resp});
             })
         }
         else if(data.tipo == 'claro') {
@@ -129,9 +129,9 @@ io.on('connection', function(socket) {
                 
                 for(let op of resp.info) lista.push(op.listadoid);
                 socket.emit('search-negocios',resp);
-                return cmt.allComments(lista);
-            }).then((resp) => {
-                socket.emit('search-comments',{info:resp});
+                //return cmt.allComments(lista);
+            //}).then((resp) => {
+                //socket.emit('search-comments',{info:resp});
             })
 
             clima.getClima(json.where).then((resp) => {
