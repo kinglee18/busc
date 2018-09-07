@@ -71,7 +71,7 @@ def urlparser(url):
 	cmd = "scrapy crawl ImageSpider -a url="+url
 	print(cmd)
 	p = subprocess.Popen(cmd, shell=True, stderr=subprocess.PIPE)
-	time.sleep(1.5)
+	time.sleep(1.0)
 
 if __name__ == '__main__':  
 	main()
