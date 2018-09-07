@@ -43,7 +43,7 @@ def main():
 		else:
 			print('No Rows Found')
 		inicio = inicio + 10000
-	p = Pool(3)
+	p = Pool(2)
 	#with Pool(10) as p:
 	p.map(urlparser,listaurls)
 	p.terminate()
@@ -71,6 +71,7 @@ def urlparser(url):
 	cmd = "scrapy crawl ImageSpider -a url="+url
 	print(cmd)
 	p = subprocess.Popen(cmd, shell=True, stderr=subprocess.PIPE)
+	time.sleep(0.5)
 
 if __name__ == '__main__':  
 	main()
