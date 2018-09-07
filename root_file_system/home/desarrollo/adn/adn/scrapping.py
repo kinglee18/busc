@@ -43,7 +43,7 @@ def main():
 		else:
 			print('No Rows Found')
 		inicio = inicio + 10000
-	p = Pool(2)
+	p = Pool(3)
 	#with Pool(10) as p:
 	p.map(urlparser,listaurls)
 	p.terminate()
