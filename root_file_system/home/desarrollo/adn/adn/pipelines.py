@@ -23,7 +23,7 @@ class AdnPipeline(object):
             'dataLayerString': item["dataLayerString"],
             'url': item["url"],
             'logo': item["logo"],
-            'date': "2018-07-20T10:37:12.409088",
+            'date': datetime.now(),
             'where': item["contacto"]
         }
         self.es_client.index(index='scrapping',doc_type='default',id=item['url'],body=doc)
