@@ -179,7 +179,7 @@ def urlparser(item):
 
     #print(json.dumps(doc))
 
-    res = es_client.index(index='cs', doc_type='default',
+    res = es_client.index(index='claro_shop', doc_type='default',
                           id=int(id.text), body=doc)
     cmd = "scrapy crawl ImageSpider -a producto="+ruta[1]+" -a id="+id.text
     print(cmd)

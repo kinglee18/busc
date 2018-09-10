@@ -7,6 +7,6 @@ class JsonWriterPipeline(object):
         self.es_client = Elasticsearch(['172.18.1.96:9200'])
 
     def process_item(self, item, spider):
-    	self.es_client.update(index='cs',doc_type='default',id=int(item['name']),
+    	self.es_client.update(index='claro_shop',doc_type='default',id=int(item['name']),
                 body={"doc": {"description": item['article'] }})
     	return item
