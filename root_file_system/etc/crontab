@@ -15,4 +15,4 @@ HOME=/
 # *  *  *  *  * user-name command to be executed
 
   0  0  *  *  * root	python /home/desarrollo/claro/claro/cs_scrapy.py 
-  0  22 *  *  0 roo	python /home/desarrollo/adn/adn/scrapping.py
+  0  22 *  *  0 root	python /home/desarrollo/adn/adn/scrapping.py
