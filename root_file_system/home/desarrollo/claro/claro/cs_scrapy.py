@@ -34,6 +34,9 @@ def main():
     p.map(urlparser, listItems)
     p.terminate()
     p.join()
+    cmd = "curl -X POST \"172.18.1.96:9200/claro_shop/_delete_by_query\" -H 'Content-Type: application/json' -d'{\"query\": {   \"range\": {\"date\": {\"lte\": \"now-1d/d\"}}}}'"
+	print(cmd)
+	p = subprocess.Popen(cmd, shell=True, stderr=subprocess.PIPE)
 
 
 def urlparser(item):
