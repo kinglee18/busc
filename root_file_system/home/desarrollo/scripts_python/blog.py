@@ -34,7 +34,7 @@ for num_pagina in range(1,paginas):
 		}
 
 		es_client.index(index='blog_secam',doc_type='default',id=post['id'],body=doc)
-		print("Estoy en el id: "+post["id"])
+		print("Estoy en el id: "+str(post["id"]))
 
 #cmd = "curl -X POST \"172.18.1.96:9200/blog_secam/_delete_by_query\" -H 'Content-Type: application/json' -d'{\"query\": {   \"range\": {\"datetime\": {\"lte\": \"now-1d/d\"}}}}'"
 #print(cmd)
