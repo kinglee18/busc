@@ -15,6 +15,13 @@ for num_pagina in range(1,paginas):
 	pagina = json.loads(response)
 	#cantidad = len(pagina["posts"])
 	for post in pagina["posts"]:
+		try:
+			post["thumbnail_images"]["wt370_370"]["url"]
+		except Exception as e:
+			url_image = ""
+		else:
+			url_image = post["thumbnail_images"]["wt370_370"]["url"]
+
 		doc = {
 			'author': post["author"],
 			'categories': post["categories"],
@@ -29,13 +36,13 @@ for num_pagina in range(1,paginas):
 			'title': post["title"],
 			'title_plain': post["title_plain"],
 			'url': post["url"],
-			'url_image': post["thumbnail_images"]["wt370_370"]["url"],
+			'url_image': url_image,
 			'datetime': datetime.now()
 		}
 
 		es_client.index(index='blog_secam',doc_type='default',id=post['id'],body=doc)
 		print("Estoy en el id: "+str(post["id"]))
 
-#cmd = "curl -X POST \"172.18.1.96:9200/blog_secam/_delete_by_query\" -H 'Content-Type: application/json' -d'{\"query\": {   \"range\": {\"datetime\": {\"lte\": \"now-1d/d\"}}}}'"
-#print(cmd)
-#p = subprocess.Popen(cmd, shell=True, stderr=subprocess.PIPE)
+cmd = "curl -X POST \"172.18.1.96:9200/blog_secam/_delete_by_query\" -H 'Content-Type: application/json' -d'{\"query\": {   \"range\": {\"datetime\": {\"lte\": \"now-1d/d\"}}}}'"
+print(cmd)
+p = subprocess.Popen(cmd, shell=True, stderr=subprocess.PIPE)
