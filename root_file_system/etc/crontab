@@ -14,5 +14,5 @@ HOME=/
 # |  |  |  |  |
 # *  *  *  *  * user-name command to be executed
 
-  30  12  *  *  * root	cd /home/desarrollo/claro/claro/ && /root/anaconda3/bin/python cs_scrapy.py
+  0  16  *  *  * root	cd /home/desarrollo/claro/claro/ && /root/anaconda3/bin/python cs_scrapy.py
   0  22 *  *  0 root	python /home/desarrollo/adn/adn/scrapping.py
