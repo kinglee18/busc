@@ -181,7 +181,7 @@ def urlparser(item):
 
     res = es_client.index(index='claro_shop', doc_type='default',
                           id=int(id.text), body=doc)
-    cmd = "scrapy crawl ImageSpider -a producto="+ruta[1]+" -a id="+id.text
+    cmd = "cd /home/desarrollo/claro/claro/ && /root/anaconda3/bin/scrapy crawl ImageSpider -a producto="+ruta[1]+" -a id="+id.text
     print(cmd)
     time.sleep(1.5)
     p = subprocess.Popen(cmd, shell=True, stderr=subprocess.PIPE)
