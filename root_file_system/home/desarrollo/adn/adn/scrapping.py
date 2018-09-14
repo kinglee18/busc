@@ -68,7 +68,7 @@ def get_api_traffic_query(service,inicio):
 		max_results='10000')
 
 def urlparser(url):
-	cmd = "scrapy crawl ImageSpider -a url="+url
+	cmd = "cd /home/desarrollo/adn/adn/ && /root/anaconda3/bin/scrapy crawl ImageSpider -a url="+url
 	print(cmd)
 	p = subprocess.Popen(cmd, shell=True, stderr=subprocess.PIPE)
 	time.sleep(1.0)
