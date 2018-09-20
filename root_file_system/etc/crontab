@@ -16,4 +16,4 @@ HOME=/
 
   0  0  *  *  * root	cd /home/desarrollo/claro/claro/ && /root/anaconda3/bin/python cs_scrapy.py
   0  19 *  *  * root	cd /home/desarrollo/scripts_python/ && /root/anaconda3/bin/python blog.py
-  0  16 *  *  fri root	cd /home/desarrollo/adn/adn/ && /root/anaconda3/bin/python scrapping.py
+  0  16 *  *  thu root	cd /home/desarrollo/adn/adn/ && /root/anaconda3/bin/python scrapping.py
