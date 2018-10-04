@@ -34,6 +34,9 @@ def main():
     p.map(urlparser, listItems)
     p.terminate()
     p.join()
+    cmd = "curl -X POST \"172.18.1.96:9200/claro_shop/_delete_by_query\" -H 'Content-Type: application/json' -d'{\"query\": {   \"range\": {\"date\": {\"lte\": \"now-1d/d\"}}}}'"
+    print(cmd)
+    p = subprocess.Popen(cmd, shell=True, stderr=subprocess.PIPE)
 
 
 def urlparser(item):
@@ -176,9 +179,9 @@ def urlparser(item):
 
     #print(json.dumps(doc))
 
-    res = es_client.index(index='cs', doc_type='default',
+    res = es_client.index(index='claro_shop', doc_type='default',
                           id=int(id.text), body=doc)
-    cmd = "scrapy crawl ImageSpider -a producto="+ruta[1]+" -a id="+id.text
+    cmd = "cd /home/desarrollo/claro/claro/ && /root/anaconda3/bin/scrapy crawl ImageSpider -a producto="+ruta[1]+" -a id="+id.text
     print(cmd)
     time.sleep(1.5)
     p = subprocess.Popen(cmd, shell=True, stderr=subprocess.PIPE)
