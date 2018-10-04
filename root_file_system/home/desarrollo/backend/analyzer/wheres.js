@@ -38,6 +38,7 @@ exports.where = function(texto) {
             })
         }
         else {
+            let oldTexto = texto;
             elastic.query_wheres_state(texto).then((resp) => {
                 //console.log(JSON.stringify(resp.hits.hits));
                
@@ -61,7 +62,8 @@ exports.where = function(texto) {
                             ub.exist_prep = exist_prep;
                             resolve({
                                 ub:ub,
-                                texto: nv.lug ? nv.texto:texto
+                                //texto: nv.lug ? nv.texto:texto
+                                texto: oldTexto
                             });
                         }
                         else {
@@ -76,7 +78,8 @@ exports.where = function(texto) {
                                 ub.exist_prep = exist_prep;
                                 resolve({
                                     ub:ub,
-                                    texto: nv.lug ? nv.texto:texto
+                                    //texto: nv.lug ? nv.texto:texto
+                                    texto: oldTexto
                                 });
                             })
                         }
@@ -100,7 +103,8 @@ exports.where = function(texto) {
                             ub.exist_prep = exist_prep;
                             resolve({
                                 ub:ub,
-                                texto: nv.lug ? nv.texto:texto
+                                //texto: nv.lug ? nv.texto:texto
+                                texto: oldTexto
                             });
                         }
                         else {
@@ -114,7 +118,8 @@ exports.where = function(texto) {
                                 ub.exist_prep = exist_prep;
                                 resolve({
                                     ub:ub,
-                                    texto: nv.lug ? nv.texto:texto
+                                    //texto: nv.lug ? nv.texto:texto,
+                                    texto: oldTexto
                                 });
                             })
                         }

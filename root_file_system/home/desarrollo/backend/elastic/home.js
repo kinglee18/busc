@@ -1,6 +1,7 @@
+const config = require('../config');
 const elasticsearch = require('elasticsearch');
 const client = new elasticsearch.Client({
-    host: '172.18.1.96:9200'
+    host: config.ip
 });
 
 /*function adn() {
@@ -23,7 +24,7 @@ const client = new elasticsearch.Client({
 
 function blog() {
 	return {
-            "index": "blog_secam",
+            "index": config.blog,
             "type": "default",
             "body": {
                 "size":1,
@@ -41,7 +42,7 @@ function blog() {
 
 function blogCtg(nombre) {
 	let query = {
-    "index": "blog_secam",
+    "index": config.blog,
     "type": "default",
     "body": {
         "size": 1,
@@ -72,7 +73,7 @@ function blogCtg(nombre) {
 
 function claro() {
 	return {
-            "index": "claro_shop",
+            "index": config.claro_shop,
             "type": "default",
             "body": {
                 "size":3,
@@ -90,7 +91,7 @@ function claro() {
 
 function neg() {
 	return {
-            "index": "negocios_secam",
+            "index": config.negocios,
             "type": "default",
             "body": {
                 "size":1,

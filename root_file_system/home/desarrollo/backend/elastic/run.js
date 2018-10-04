@@ -1,11 +1,11 @@
 'use strict'
 const syn = require('../info/syn_where');
 const com = require('../http/comments');
-
+const config = require('../config');
 
 const elasticsearch = require('elasticsearch');
 const client = new elasticsearch.Client({
-    host: '172.18.1.96:9200'
+    host: config.ip
 });
 
 
@@ -159,14 +159,35 @@ exports.negocios = function(page,ctg,pys,bn,hrs,pay,where)  {
                 console.log('Estado Asignado: '+where.estado);
                 ub = setWhere(where)
             //}
-
+            if(where.maps && where.maps.dir.estado) {
+                filtro.push({
+                    bool: {
+                        should: [
+                            {
+                                match: {
+                                    statename: where.maps.dir.estado
+                                }
+                            },
+                            {
+                                "geo_distance" : {
+                                    "distance" : "10km",
+                                    "pin" : [where.lng, where.lat]
+                                }
+                            }
+                        ]
+                    }
+                })
+            }
+            else {
+                filtro.push({
+                    "geo_distance" : {
+                        "distance" : "10km",
+                        "pin" : [where.maps.lng, where.maps.lat]
+                    }
+                })
+            }
             
-            filtro.push({
-                "geo_distance" : {
-                    "distance" : "300km",
-                    "pin" : [where.maps.lng, where.maps.lat]
-                }
-            })
+            
         }
         else if(validWhere(where) && validPys(pys,where) && validCtg(ctg,where)) {
             ub = setWhere(where)
@@ -174,7 +195,7 @@ exports.negocios = function(page,ctg,pys,bn,hrs,pay,where)  {
         else if(where.lat && where.lng){
             filtro.push({
                 "geo_distance" : {
-                    "distance" : "300km",
+                    "distance" : "100km",
                     "pin" : [where.lng, where.lat]
                 }
             })
@@ -282,12 +303,12 @@ exports.negocios = function(page,ctg,pys,bn,hrs,pay,where)  {
 
             if(lat && lng) {
                 td = {
-                    "index": "negocios_secam",
+                    "index": config.negocios,
                     "body": {
                         "from": page * 10,
                         "size": 10,
                         "query": content,
-                        "sort" : [
+                        /*"sort" : [
                             {
                                 "_geo_distance" : {
                                     "pin" : [lng, lat],
@@ -295,14 +316,14 @@ exports.negocios = function(page,ctg,pys,bn,hrs,pay,where)  {
                                     "unit" : "km"
                                 }
                             }
-                        ]
+                        ]*/
                     
                     } 
                 }
             }
             else {
                 td = {
-                    "index": "negocios_secam",
+                    "index": config.negocios,
                     "body": {
                         "from": page * 10,
                         "size": 6,
@@ -481,7 +502,7 @@ exports.claro_shop = function(page,marcas,ctg,bn,price,tx) {
             console.log(JSON.stringify(content));
 
             client.search({
-                "index": "claro_shop",
+                "index": config.claro_shop,
                 "body": {
                     "from": 9*page,
                     "size": 9,
@@ -590,7 +611,7 @@ exports.blog = function(page,tx,tags,ctg,where) {
     
         if(tags.length > 0 || ctg.length > 0) {
             client.search({
-                "index": "blog_secam",
+                "index": config.blog,
                 "body": {
                     "from":10*page,
                     "size":10,

@@ -1,8 +1,8 @@
 'use strict'
-
+const config = require('../config');
 const elasticsearch = require('elasticsearch');
 const client = new elasticsearch.Client({
-    host: '172.18.1.96:9200'
+    host: config.ip
 });
 
 
@@ -30,7 +30,7 @@ exports.query_neg_ctg = function(tx) {
     //console.log(JSON.stringify(query));
 
     return client.search({
-        "index": "taxonomias_globales",
+        "index": config.taxonomias,
         "type": "default",
         "body": {
             "size":5,
@@ -61,7 +61,7 @@ exports.query_neg_pys = function(tx) {
     }
 
     return client.search({
-        "index": "taxonomias_globales",
+        "index": config.taxonomias,
         "type": "default",
         "body": {
             "size":3,
@@ -74,7 +74,7 @@ exports.query_neg_bn = function(tx) {
     
 
     return client.search({
-        "index": "negocios_secam",
+        "index": config.negocios,
 		"body": {
 			"size":3,
 		    "query" : {

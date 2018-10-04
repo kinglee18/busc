@@ -1,8 +1,8 @@
 'use strict'
-
+const config = require('../config');
 const elasticsearch = require('elasticsearch');
 const client = new elasticsearch.Client({
-    host: '172.18.1.96:9200'
+    host: config.ip
 });
 
 
@@ -51,7 +51,7 @@ exports.query_claro_shop_prod = function(tx,marcas) {
     //console.log(JSON.stringify(query));
 
     return client.search({
-        "index": "taxonomias_globales",
+        "index": config.taxonomias,
         "type": "default",
         "body": {
             "size":30,
@@ -84,7 +84,7 @@ exports.query_claro_shop_marca = function(tx) {
     //console.log(JSON.stringify(query));
 
     return client.search({
-        "index": "taxonomias_globales",
+        "index": config.taxonomias,
         "type": "default",
         "body": {
             "size":5,
@@ -98,7 +98,7 @@ exports.query_claro_shop_esp = function(tx,marcas) {
     //console.log(JSON.stringify(query));
 
     return client.search({
-        "index": "claro_shop",
+        "index": config.claro_shop,
 		"body": {
 			"size":5,
 		    "query" : {

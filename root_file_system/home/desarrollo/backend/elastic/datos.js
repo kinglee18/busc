@@ -1,13 +1,13 @@
 'use strict'
-
+const config = require('../config');
 const elasticsearch = require('elasticsearch');
 const client = new elasticsearch.Client({
-    host: '172.18.1.96:9200'
+    host: config.ip
 });
 
 exports.validar = function(id) {
     return client.search({
-        "index": "negocios_secam",
+        "index": config.negocios,
 		"body": {
 		    "query": {
                 "match_phrase": {
