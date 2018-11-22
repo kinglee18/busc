@@ -8,7 +8,7 @@ const elastic = require('./elastic/run');
 app.use(bodyParser.json())
 
 
-app.get('/',check.valid,(req,res) => {
+app.get('/amazon',check.valid,(req,res) => {
     res.status(200).send({
         msj: 'Servicio de Alexa Amazon'
     });
