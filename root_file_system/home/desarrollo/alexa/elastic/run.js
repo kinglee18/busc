@@ -110,7 +110,7 @@ exports.negocios = function(page,ctg,pys,bn,hrs,pay,where)  {
                             },*/
                             {
                                 "geo_distance" : {
-                                    "distance" : "5km",
+                                    "distance" : "15km",
                                     "pin" : [where.maps.lng, where.maps.lat]
                                 }
                             }
@@ -121,7 +121,7 @@ exports.negocios = function(page,ctg,pys,bn,hrs,pay,where)  {
             else {
                 filtro.push({
                     "geo_distance" : {
-                        "distance" : "5km",
+                        "distance" : "15km",
                         "pin" : [where.maps.lng, where.maps.lat]
                     }
                 })
@@ -135,7 +135,7 @@ exports.negocios = function(page,ctg,pys,bn,hrs,pay,where)  {
         else if(where.lat && where.lng){
             filtro.push({
                 "geo_distance" : {
-                    "distance" : "10km",
+                    "distance" : "15km",
                     "pin" : [where.lng, where.lat]
                 }
             })
