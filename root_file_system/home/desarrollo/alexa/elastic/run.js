@@ -267,6 +267,34 @@ exports.negocios = function(page,ctg,pys,bn,hrs,pay,where)  {
 
 }
 
+exports.limt_neg = function() {
+ 
+    return new Promise((resolve,reject) => {
+        client.search({
+            "index": config.negocios,
+            "body": {
+                "size": 100,
+                "query": {
+                    "match_all": {}
+                }
+            
+            } 
+        }).then((resp) => {
+
+            let arr = [];
+            for(let op of resp.hits.hits) {
+                arr.push(op._source);
+            }
+
+            resolve(arr);
+
+        }).catch((e) => {
+            console.log(e);
+            resolve(null)
+        })
+    })
+}
+
 
 function validPys(pys,where) {
     let ind = true;

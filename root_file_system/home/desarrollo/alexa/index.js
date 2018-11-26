@@ -9,9 +9,21 @@ app.use(bodyParser.json())
 
 
 app.get('/amazon',check.valid,(req,res) => {
-    res.status(200).send({
-        msj: 'Servicio de Alexa Amazon'
-    });
+    elastic.limt_neg().then((resp) => {
+        if(resp) {
+            console.log('Tamaño de Arreglo: '+resp.length)
+            res.status(200).send({
+                msg: 'Servicio de Alexa Amazon',
+                data: resp
+            });
+        }
+        else {
+            res.status(404).send({
+                msg: 'Error 404',
+                data: []
+            });
+        }
+    })
 })
 
 app.post('/alexa-dev',check.valid,(req,res) => {
