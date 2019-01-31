@@ -7,7 +7,6 @@ const elastic = require('./elastic/run');
 
 app.use(bodyParser.json())
 
-
 app.get('/amazon',check.valid,(req,res) => {
     elastic.limt_neg().then((resp) => {
         if(resp) {
@@ -24,6 +23,39 @@ app.get('/amazon',check.valid,(req,res) => {
             });
         }
     })
+})
+
+app.post('/all-amazon',check.valid,(req,res) => {
+
+    let listados = 1592;
+    let body = req.body;
+    let page = parseInt(body.id);
+    if(Number.isInteger(page) && page <= listados && req.status == 'OK') {
+        elastic.limt_neg_2(page).then((resp) => {
+            if(resp) {
+                console.log('Tamaño de Arreglo: '+resp.length)
+                res.status(200).send({
+                    msg: 'Servicio de Alexa Amazon',
+                    data: resp
+                });
+            }
+            else {
+                res.status(404).send({
+                    msg: 'Error 404',
+                    data: []
+                });
+            }
+        })
+    }
+    else {
+        res.status(401).send({
+            msg: 'El valor de pagina o el token no es valido',
+            data: []
+        });
+    }
+
+    
+
 })
 
 app.post('/alexa-dev',check.valid,(req,res) => {

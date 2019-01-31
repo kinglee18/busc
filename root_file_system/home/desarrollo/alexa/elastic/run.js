@@ -295,6 +295,38 @@ exports.limt_neg = function() {
     })
 }
 
+exports.limt_neg_2 = function(page) {
+ 
+    let pagina = page - 1;
+    return new Promise((resolve,reject) => {
+        client.search({
+            "index": config.negocios,
+            "body": {
+                "size": 1000,
+                "from": pagina*1000,
+                "query": {
+                    "match_all": {}
+                }
+            
+            } 
+        }).then((resp) => {
+
+            let arr = [];
+            let total = resp.hits.total;
+            for(let op of resp.hits.hits) {
+                arr.push(op._source);
+            }
+
+            resolve(arr);
+
+        }).catch((e) => {
+            console.log(e);
+            resolve(null)
+        })
+    })
+}
+
+
 
 function validPys(pys,where) {
     let ind = true;
