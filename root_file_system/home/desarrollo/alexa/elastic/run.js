@@ -457,3 +457,16 @@ function getAbrevWhere(estado) {
 
     return abrev;
 }
+
+exports.businessDetail = function(id) {
+  return client.search({
+    index: config.negocios,
+    body: {
+      query: {
+        match_phrase: {
+          listadoid: id
+        }
+      }
+    }
+  });
+};

@@ -89,6 +89,40 @@ app.post('/alexa-dev',check.valid,(req,res) => {
     }
 })
 
+app.post("/search_business", check.valid, (req, res) => {
+  if (req.status == "OK") {
+    elastic
+      .businessDetail(req.body.id)
+      .then(data => {
+        const business = data.hits.hits[0]._source;
+        const statename = business.statename || business.state;
+        let obj = {
+          name: business.bn,
+          address: `${business.fullstreet}, ${business.colony}, ${statename}, ${business.zip}`,
+          city: business.city,
+          category: business.Appearances.Appearance.categoryname
+        };
+        if (business.items.llg) {
+          obj.logo_url = `https://graficos.seccionamarilla.com.mx${
+            business.items.llg
+          }`;
+        }
+        if(business.phones.phone.length){
+            obj.phone_number = business.phones.phone[0].number
+        }
+
+        res.status(200).send(obj);
+      })
+      .catch(error => {
+        res.status(500).send();
+      });
+  } else {
+    res.status(403).send({
+      msg: "El token no es valido"
+    });
+  }
+});
+
 app.listen(3002,() => {
     console.log('Servidor Corriendo');
 })
