@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const check = require('./check');
 const proceso = require('./app');
 const elastic = require('./elastic/run');
+const home = require('./elastic/analyzer_where');
 
 app.use(bodyParser.json())
 
@@ -123,6 +124,41 @@ app.post("/search_business", check.valid, (req, res) => {
   }
 });
 
+
+app.post('/sucursalPakmail',(req,res) => {
+    home.getPakmailByText(req.body.busqueda).then(data => {
+        data.hits.hits = data.hits.hits.map(item => {
+            return item._source;
+        });
+        res.send(data.hits.hits)
+    }).catch(error => {
+        console.error(error);
+    });
+  });
+  
+  app.post('/sucursalesPakmailCoordinates',(req,res) => {
+    home.getPakmailCoordinates(req.body.lon, req.body.lat).then(data => {
+        data.hits.hits = data.hits.hits.map(item => {
+            return item._source;
+        });
+        res.send(data.hits.hits)
+    }).catch(error => {
+        console.error(error);
+    });
+  });
+  
+  app.get('/sucursalesPakmail',(req,res) => {
+    home.getPakmail().then(data => {
+        data.hits.hits = data.hits.hits.map(item => {
+            return item._source;
+        });
+        res.send(data.hits.hits)
+    }).catch(error => {
+        console.error(error);
+    });
+  })
+
+  
 app.listen(3002,() => {
     console.log('Servidor Corriendo');
 })

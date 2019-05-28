@@ -132,3 +132,79 @@ exports.query_wheres_colony = function(tx,estado) {
 
 
 
+
+
+function pakmail() {
+    return {
+        "index": "sucursales_pakmail",
+        "type": "default",
+        "body": {
+            "size": 150,
+            "from": 0,
+            "query": {
+                "match_all": {}
+            }
+        }
+    };
+}
+
+
+function pakmailByText(search) {
+    return {
+        "index": "sucursales_pakmail",
+        "type": "default",
+        "body": {
+            "size": 150,
+            "from": 0,
+            "query": {
+                "bool": {
+                    "should": [
+                        { "match": { "name": search } },
+
+                        { "match": { "address": search } }
+                    ]
+                }
+            }
+
+        }
+    };
+}
+
+function pakmailCoords(lon, lat) {
+    return {
+        "index": "sucursales_pakmail",
+        "type": "default",
+        "body": {
+            "size": 150,
+            "from": 0,
+            "query": {
+                "bool": {
+                    "should": [
+                        {
+                            "match_all": {}
+                        }
+                    ],
+                    "filter": {
+                        "geo_distance": {
+                            "distance": "5km",
+                            "coordinates": [lon, lat]
+                        }
+                    }
+                },
+
+            }
+        }
+    }
+}
+exports.getPakmail = function () {
+    return client.search(pakmail());
+}
+
+exports.getPakmailCoordinates = function (lon, lat) {
+    return client.search(pakmailCoords(lon, lat));
+}
+
+exports.getPakmailByText = function (text) {
+    return client.search(pakmailByText(text));
+}
+
