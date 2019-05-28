@@ -5,7 +5,9 @@ const check = require('./check');
 const proceso = require('./app');
 const elastic = require('./elastic/run');
 const home = require('./elastic/analyzer_where');
+const cors = require("cors");
 
+app.use(cors());
 app.use(bodyParser.json())
 
 app.get('/amazon',check.valid,(req,res) => {

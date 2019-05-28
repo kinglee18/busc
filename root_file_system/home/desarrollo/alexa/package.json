@@ -16,6 +16,7 @@
     "jwt-simple": "^0.5.5",
     "remove-accents": "^0.4.2",
     "socket.io": "^2.1.1",
-    "stopword": "^0.1.13"
+    "stopword": "^0.1.13",
+    "cors": "^2.8.5"
   }
 }
