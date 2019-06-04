@@ -470,3 +470,7 @@ exports.businessDetail = function(id) {
     }
   });
 };
+
+exports.blogApp = (query) => {
+    return client.search(query);
+}

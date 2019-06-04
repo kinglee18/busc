@@ -162,6 +162,15 @@ app.get('/sucursalesPakmail', (req, res) => {
 })
 
 
+app.post('/blog', (req, res) => {
+    elastic.blogApp(req.body).then(data => {
+        res.status(200).send(data);
+    }).catch(error => {
+        res.status(500);
+        console.error(error);
+    })
+});
+
 app.listen(3002, () => {
     console.log('Servidor Corriendo');
 })
