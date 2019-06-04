@@ -13,17 +13,18 @@
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
     "clear": "^0.1.0",
+    "cors": "^2.8.5",
     "elasticsearch": "^15.1.1",
     "express": "^4.16.3",
     "html-entities": "^1.2.1",
     "iconv-lite": "^0.4.23",
+    "jwt-simple": "^0.5.1",
     "remove-accents": "^0.4.2",
     "request": "^2.88.0",
     "socket.io": "^2.1.1",
     "stopword": "^0.1.10",
     "utf8": "^3.0.0",
     "xml-js": "^1.6.7",
-    "xml2js": "^0.4.19",
-    "jwt-simple": "^0.5.1"
+    "xml2js": "^0.4.19"
   }
 }
