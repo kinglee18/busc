@@ -6,7 +6,7 @@ const client = new elasticsearch.Client({
 });
 
 
-exports.query_wheres_state = function(tx) {
+exports.query_wheres_state = function (tx) {
     let query = {
         "bool": {
             "should": [
@@ -16,7 +16,7 @@ exports.query_wheres_state = function(tx) {
                     }
                 }
             ],
-            "filter": [ 
+            "filter": [
                 {
                     "term": {
                         "fuente": "lugares_city"
@@ -24,24 +24,24 @@ exports.query_wheres_state = function(tx) {
                 }
             ]
         }
-        
+
     }
 
-    
+
 
     return client.search({
         "index": config.taxonomias,
         "type": "default",
         "body": {
-            "size":3,
+            "size": 3,
             "query": query
         }
     });
 }
 
-exports.query_wheres_city = function(tx,estado) {
-    
-    
+exports.query_wheres_city = function (tx, estado) {
+
+
     let busq = [];
     busq.push({
         "match": {
@@ -49,15 +49,15 @@ exports.query_wheres_city = function(tx,estado) {
         }
     })
 
-    if(estado && estado.length > 0) {
+    if (estado && estado.length > 0) {
         busq.push({
             "match_phrase": {
                 "tipo": estado
             }
         });
     }
-    
-    
+
+
     let query = {
         "bool": {
             "should": busq,
@@ -69,7 +69,7 @@ exports.query_wheres_city = function(tx,estado) {
                 }
             ]
         }
-        
+
     }
 
     //console.log(JSON.stringify(query));
@@ -78,13 +78,13 @@ exports.query_wheres_city = function(tx,estado) {
         "index": config.taxonomias,
         "type": "default",
         "body": {
-            "size":3,
+            "size": 3,
             "query": query
         }
     });
 }
 
-exports.query_wheres_colony = function(tx,estado) {
+exports.query_wheres_colony = function (tx, estado) {
 
     let busq = [];
     let max = 10;
@@ -94,8 +94,8 @@ exports.query_wheres_colony = function(tx,estado) {
         }
     })
 
-    if(estado && estado.length > 0) {
-        
+    if (estado && estado.length > 0) {
+
         busq.push({
             "match_phrase": {
                 "tipo": estado
@@ -103,7 +103,7 @@ exports.query_wheres_colony = function(tx,estado) {
         });
         max = 20;
     }
-    
+
     let query = {
         "bool": {
             "should": busq,
@@ -115,16 +115,16 @@ exports.query_wheres_colony = function(tx,estado) {
                 }
             ]
         }
-        
+
     }
-    
+
     //console.log(JSON.stringify(query));
 
     return client.search({
         "index": config.taxonomias,
         "type": "default",
         "body": {
-            "size":max,
+            "size": max,
             "query": query
         }
     });
@@ -192,7 +192,17 @@ function pakmailCoords(lon, lat) {
                     }
                 },
 
-            }
+            },
+            "sort": [
+                {
+                    "_geo_distance": {
+                        "coordinates": [lon, lat],
+                        "order": "asc",
+                        "unit": "km",
+                        "distance_type": "plane"
+                    }
+                }
+            ]
         }
     }
 }

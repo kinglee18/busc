@@ -141,6 +141,7 @@ app.post('/sucursalPakmail', (req, res) => {
 app.post('/sucursalesPakmailCoordinates', (req, res) => {
     home.getPakmailCoordinates(req.body.lon, req.body.lat).then(data => {
         data.hits.hits = data.hits.hits.map(item => {
+            item._source.distance = item.sort[0];
             return item._source;
         });
         res.send(data.hits.hits)
