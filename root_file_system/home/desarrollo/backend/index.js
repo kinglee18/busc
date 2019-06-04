@@ -28,15 +28,6 @@ const cors = require("cors");
 app.use(cors());
 app.use(bodyParser.json())
 
-app.post('/blog', (req, res) => {
-    elastic.blogApp(req.body).then(data => {
-        res.status(200).send(data);
-    }).catch(error => {
-        res.status(500);
-        console.error(error);
-    })
-});
-
 app.get('/node', (req, res) => {
     res.status(200).send({
         msj: 'Restringido API BK'

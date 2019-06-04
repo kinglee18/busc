@@ -643,10 +643,6 @@ exports.blog = function (page, tx, tags, ctg, where) {
     return promesa;
 }
 
-exports.blogApp = (query) => {
-    return client.search(query);
-}
-
 function asigDay(days, hora) {
     let arr = [];
     for (let op of days) {
