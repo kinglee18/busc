@@ -23,21 +23,31 @@ const empresa = new Empresa();
 */
 
 
-// parse application/json
+const cors = require("cors");
+
+app.use(cors());
 app.use(bodyParser.json())
 
+app.post('/blog', (req, res) => {
+    elastic.blogApp(req.body).then(data => {
+        res.status(200).send(data);
+    }).catch(error => {
+        res.status(500);
+        console.error(error);
+    })
+});
 
-app.get('/node',(req,res) => {
+app.get('/node', (req, res) => {
     res.status(200).send({
         msj: 'Restringido API BK'
     });
 })
 
-app.post('/alexa',check.valid,(req,res) => {
+app.post('/alexa', check.valid, (req, res) => {
     let data = req.body;
-    if(req.status == 'OK') {
-        proceso.search(data.tx,data.lat,data.lng).then((json) => {
-            elastic.negocios(0,json.neg.ctg,json.neg.pys,json.neg.bn,json.neg.hrs,json.neg.pay,json.where).then((resp) => {                
+    if (req.status == 'OK') {
+        proceso.search(data.tx, data.lat, data.lng).then((json) => {
+            elastic.negocios(0, json.neg.ctg, json.neg.pys, json.neg.bn, json.neg.hrs, json.neg.pay, json.where).then((resp) => {
                 res.send({
                     status: true,
                     info: json,
@@ -52,104 +62,104 @@ app.post('/alexa',check.valid,(req,res) => {
             message: 'Error en la autentificacion'
         })
     }
-    
+
 })
 
 
-io.on('connection', function(socket) {
+io.on('connection', function (socket) {
 
-    
 
-    socket.on('home',(data) => {
+
+    socket.on('home', (data) => {
         home.inicio().then((resp) => {
             //console.log(resp);
-            socket.emit('home-resp',resp);
+            socket.emit('home-resp', resp);
         })
     })
 
-    socket.on('new-home',(data) => {
+    socket.on('new-home', (data) => {
         home.inicio2().then((resp) => {
-            socket.emit('home-resp',resp);
+            socket.emit('home-resp', resp);
         })
     })
 
-    socket.on('autocomplete',(data) => {
+    socket.on('autocomplete', (data) => {
         auto.autocomplete(data.texto).then((resp) => {
-            socket.emit('autocomplete-resp',{
-                info:resp
+            socket.emit('autocomplete-resp', {
+                info: resp
             })
         })
     })
 
-    socket.on('other-page',(data) => {
+    socket.on('other-page', (data) => {
         let json = data.json;
         let lista = [];
         console.log(JSON.stringify(data));
-        if(data.tipo == 'neg') {
-            elastic.negocios(data.page,json.neg.ctg,json.neg.pys,json.neg.bn,json.neg.hrs,json.neg.pay,json.where).then((resp) => {
-                
-                for(let op of resp.info) lista.push(op.listadoid);
-                socket.emit('search-negocios',resp);
+        if (data.tipo == 'neg') {
+            elastic.negocios(data.page, json.neg.ctg, json.neg.pys, json.neg.bn, json.neg.hrs, json.neg.pay, json.where).then((resp) => {
+
+                for (let op of resp.info) lista.push(op.listadoid);
+                socket.emit('search-negocios', resp);
                 //return cmt.allComments(lista);
-            //}).then((resp) => {
+                //}).then((resp) => {
                 //socket.emit('search-comments',{info:resp});
             })
         }
-        else if(data.tipo == 'claro') {
-            elastic.claro_shop(data.page,json.claro.marcas,json.claro.ctg,json.claro.bn,json.claro.price,json.claro.tx).then((resp) => {
-                socket.emit('search-claro_shop',resp);
+        else if (data.tipo == 'claro') {
+            elastic.claro_shop(data.page, json.claro.marcas, json.claro.ctg, json.claro.bn, json.claro.price, json.claro.tx).then((resp) => {
+                socket.emit('search-claro_shop', resp);
             });
         }
-        else if(data.tipo == 'blog') {
-            elastic.blog(data.page,json.texto,json.blog.tags,json.blog.ctg,json.where).then((resp) => {
-                socket.emit('search-blog',resp);
+        else if (data.tipo == 'blog') {
+            elastic.blog(data.page, json.texto, json.blog.tags, json.blog.ctg, json.where).then((resp) => {
+                socket.emit('search-blog', resp);
             })
         }
     })
 
-    socket.on('search',(data) => {
+    socket.on('search', (data) => {
         clear();
         connectCounter++;
-        
-        proceso.search(data.tx,data.lat,data.lng).then((json) => {
+
+        proceso.search(data.tx, data.lat, data.lng).then((json) => {
             let lista = [];
-            socket.emit('search-json',{info:json});
-            
-            elastic.claro_shop(0,json.claro.marcas,json.claro.ctg,json.claro.bn,json.claro.price,json.claro.tx).then((resp) => {
-                socket.emit('search-claro_shop',resp);
+            socket.emit('search-json', { info: json });
+
+            elastic.claro_shop(0, json.claro.marcas, json.claro.ctg, json.claro.bn, json.claro.price, json.claro.tx).then((resp) => {
+                socket.emit('search-claro_shop', resp);
             });
             pl.getPlaces(json).then((resp) => {
                 //console.log(resp);
-                socket.emit('search-places',{info:resp});
+                socket.emit('search-places', { info: resp });
             })
-            elastic.blog(0,json.texto,json.blog.tags,json.blog.ctg,json.where).then((resp) => {
-                socket.emit('search-blog',resp);
+            elastic.blog(0, json.texto, json.blog.tags, json.blog.ctg, json.where).then((resp) => {
+                socket.emit('search-blog', resp);
             })
-            elastic.negocios(0,json.neg.ctg,json.neg.pys,json.neg.bn,json.neg.hrs,json.neg.pay,json.where).then((resp) => {
-                
-                for(let op of resp.info) lista.push(op.listadoid);
-                socket.emit('search-negocios',resp);
+            elastic.negocios(0, json.neg.ctg, json.neg.pys, json.neg.bn, json.neg.hrs, json.neg.pay, json.where).then((resp) => {
+
+                for (let op of resp.info) lista.push(op.listadoid);
+                socket.emit('search-negocios', resp);
                 //return cmt.allComments(lista);
-            //}).then((resp) => {
+                //}).then((resp) => {
                 //socket.emit('search-comments',{info:resp});
             })
 
             clima.getClima(json.where).then((resp) => {
-                socket.emit('search-clima',{info:resp});
+                socket.emit('search-clima', { info: resp });
             })
-            
 
-            
-            
-            
-            
+
+
+
+
+
         })
     })
 
-    socket.on('app-alexa',(data) => {
-        proceso.search(data.tx,data.lat,data.lng).then((json) => {
-            elastic.negocios(0,json.neg.ctg,json.neg.pys,json.neg.bn,json.neg.hrs,json.neg.pay,json.where).then((resp) => {                
-                socket.emit('app-alexa-resp',{
+    socket.on('app-alexa', (data) => {
+        proceso.search(data.tx, data.lat, data.lng).then((json) => {
+            elastic.negocios(0, json.neg.ctg, json.neg.pys, json.neg.bn, json.neg.hrs, json.neg.pay, json.where).then((resp) => {
+                socket.emit('app-alexa-resp', {
                     info: json,
                     data: resp
                 });
@@ -237,25 +247,25 @@ io.on('connection', function(socket) {
 
     */
 
-   
+
 
 
     /*############################## Chat #####################################################*/
 
-    socket.on('disconnect', function() { 
+    socket.on('disconnect', function () {
         //empresa.deleteEmpresa(socket.id);
         //persona.deletePersona(socket.id);
         /*##########################################*/
         let count = io.sockets.connected;
-        console.log('Inicio Size: '+Object.keys(count).length);
+        console.log('Inicio Size: ' + Object.keys(count).length);
         connectCounter--;
-        console.log('Conectados: '+connectCounter+'---'+Object.keys(count).length);
-     });
-    
+        console.log('Conectados: ' + connectCounter + '---' + Object.keys(count).length);
+    });
+
 
 })
 
 
-http.listen(3008, function(){
-    console.log('listening on *:3000');
+http.listen(port = 3008, function () {
+    console.log('listening on *:' + port);
 });
