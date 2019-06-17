@@ -12,7 +12,7 @@ if __name__ == '__main__':
 			#"id": 2,
 		    "mx": sucursal["MX"],
 		    "name": sucursal["Nombre Franquicia"],
-		    "state": sucursal["Estado"],
+		    "state": sucursal["Nombre estado"],
 		    "phone": str(sucursal["Teléfono 1"]),
 		    "phone2": str(sucursal["Teléfono 2"]),
 		    "address": sucursal["Dirección completa"],
