@@ -134,6 +134,20 @@ app.post('/sucursalPakmail', (req, res) => {
         });
         res.send(data.hits.hits)
     }).catch(error => {
+        res.status(500);
+        console.error(error);
+    });
+});
+
+
+app.post('/statePakmail', (req, res) => {
+    home.getPakmailByState(req.body.state).then(data => {
+        data.hits.hits = data.hits.hits.map(item => {
+            return item._source;
+        });
+        res.send(data.hits.hits)
+    }).catch(error => {
+        res.status(500);
         console.error(error);
     });
 });
@@ -146,6 +160,7 @@ app.post('/sucursalesPakmailCoordinates', (req, res) => {
         });
         res.send(data.hits.hits)
     }).catch(error => {
+        res.status(500);
         console.error(error);
     });
 });
@@ -157,6 +172,7 @@ app.get('/sucursalesPakmail', (req, res) => {
         });
         res.send(data.hits.hits)
     }).catch(error => {
+        res.status(500);
         console.error(error);
     });
 })
