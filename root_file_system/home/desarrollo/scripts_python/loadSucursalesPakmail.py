@@ -16,6 +16,7 @@ if __name__ == '__main__':
 		    "phone": str(sucursal["Teléfono 1"]),
 		    "phone2": str(sucursal["Teléfono 2"]),
 		    "address": sucursal["Dirección completa"],
+			"email": sucursal["Correo de Franquicia"],
 		    "lat": sucursal["Latitud"],
 		    "lng": sucursal["Longitud"],
 		    #"channel": "pak-mail-16-de-septiembre",
