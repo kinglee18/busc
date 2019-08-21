@@ -1,9 +1,5 @@
 'use strict'
-const config = require('../config');
-const elasticsearch = require('elasticsearch');
-const client = new elasticsearch.Client({
-    host: config.ip
-});
+const client = require('./client');
 
 
 exports.query_blog_all = function(tx) {
@@ -29,8 +25,8 @@ exports.query_blog_all = function(tx) {
 
     //console.log(JSON.stringify(query));
 
-    return client.search({
-        "index": config.taxonomias,
+    return client.getClient().search({
+        "index": process.env.taxonomias,
         "type": "default",
         "body": {
             "size":3,
@@ -82,7 +78,7 @@ exports.query_blog_all = function(tx) {
 
     console.log(JSON.stringify(query));
 
-    return client.search({
+    return client.getClient().search({
         "index": "blog_rep",
 		"body": {
 			"size":10,

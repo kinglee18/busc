@@ -1,10 +1,5 @@
 'use strict'
-const config = require('../config');
-const elasticsearch = require('elasticsearch');
-const client = new elasticsearch.Client({
-    host: config.ip
-});
-
+const client = require('./client');
 
 exports.query_neg_ctg = function(tx) {
     let query = {
@@ -29,8 +24,8 @@ exports.query_neg_ctg = function(tx) {
 
     //console.log(JSON.stringify(query));
 
-    return client.search({
-        "index": config.taxonomias,
+    return client.getClient().search({
+        "index": process.env.taxonomias,
         "type": "default",
         "body": {
             "size":5,
@@ -60,8 +55,8 @@ exports.query_neg_pys = function(tx) {
         
     }
 
-    return client.search({
-        "index": config.taxonomias,
+    return client.getClient().search({
+        "index": process.env.taxonomias,
         "type": "default",
         "body": {
             "size":3,
@@ -73,8 +68,8 @@ exports.query_neg_pys = function(tx) {
 exports.query_neg_bn = function(tx) {
     
 
-    return client.search({
-        "index": config.negocios,
+    return client.getClient().search({
+        "index": process.env.negocios,
 		"body": {
 			"size":3,
 		    "query" : {

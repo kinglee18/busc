@@ -1,12 +1,9 @@
 'use strict'
 const syn = require('../info/syn_where');
 const com = require('../http/comments');
-const config = require('../config');
 
-const elasticsearch = require('elasticsearch');
-const client = new elasticsearch.Client({
-    host: config.ip
-});
+const client = require('./client');
+
 
 
 exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
@@ -303,7 +300,7 @@ exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
 
             if (lat && lng) {
                 td = {
-                    "index": config.negocios,
+                    "index": process.env.negocios,
                     "body": {
                         "from": page * 10,
                         "size": 10,
@@ -323,7 +320,7 @@ exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
             }
             else {
                 td = {
-                    "index": config.negocios,
+                    "index": process.env.negocios,
                     "body": {
                         "from": page * 10,
                         "size": 6,
@@ -335,7 +332,7 @@ exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
 
             //console.log(JSON.stringify(td));
 
-            client.search(td).then((resp) => {
+            client.getClient().search(td).then((resp) => {
 
                 let arr = [];
                 let lista = [];
@@ -501,8 +498,8 @@ exports.claro_shop = function (page, marcas, ctg, bn, price, tx) {
 
             console.log(JSON.stringify(content));
 
-            client.search({
-                "index": config.claro_shop,
+            client.getClient().search({
+                "index": process.env.claro_shop,
                 "body": {
                     "from": 9 * page,
                     "size": 9,
@@ -610,8 +607,8 @@ exports.blog = function (page, tx, tags, ctg, where) {
         //console.log(JSON.stringify(query));
 
         if (tags.length > 0 || ctg.length > 0) {
-            client.search({
-                "index": config.blog,
+            client.getClient().search({
+                "index": process.env.blog,
                 "body": {
                     "from": 10 * page,
                     "size": 10,

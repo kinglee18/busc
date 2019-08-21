@@ -12,7 +12,7 @@ const clima = require('./http/clima');
 const bodyParser = require('body-parser')
 let connectCounter = 0;
 const check = require('./config/check');
-
+const config = require('./config');
 
 /* Chat 
 const {Persona} = require('./models/personas');
@@ -256,7 +256,11 @@ io.on('connection', function (socket) {
 
 })
 
-
+/**
+ * @param {port} 
+ */
 http.listen(port = 3008, function () {
-    console.log('listening on *:' + port);
+    const envName = process.argv.slice(2)[0] || 'prod';
+    process.env = Object.assign(process.env, config[envName])
+    console.log("servidor corriendo en ambiente ", envName);
 });
