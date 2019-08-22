@@ -5,7 +5,14 @@ const com = require('../http/comments');
 const client = require('./client');
 
 
-
+/**
+ * @param {page} - Page number to search in elastic db 
+ * @param {ctg} - Category name
+ * @param {bn} - Busines name
+ * @param {hrs} - business schedule 
+ * @param {pay} -  payment types of business
+ * @param {where} - business state location
+ */
 exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
 
     let promesa = new Promise((resolve, reject) => {
@@ -151,11 +158,9 @@ exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
         }
 
         if (where.maps.lat && where.maps.lng) {
-            //if(!where.estado) {
             where.estado = where.maps.dir.estado;
             console.log('Estado Asignado: ' + where.estado);
             ub = setWhere(where)
-            //}
             if (where.maps && where.maps.dir.estado) {
                 filtro.push({
                     bool: {
