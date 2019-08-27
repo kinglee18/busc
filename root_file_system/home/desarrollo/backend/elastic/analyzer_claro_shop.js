@@ -1,9 +1,5 @@
 'use strict'
-const config = require('../config');
-const elasticsearch = require('elasticsearch');
-const client = new elasticsearch.Client({
-    host: config.ip
-});
+const client = require('./client');
 
 
 exports.query_claro_shop_prod = function(tx,marcas) {
@@ -50,8 +46,8 @@ exports.query_claro_shop_prod = function(tx,marcas) {
     //console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
     //console.log(JSON.stringify(query));
 
-    return client.search({
-        "index": config.taxonomias,
+    return client.getClient().search({
+        "index": process.env.taxonomias,
         "type": "default",
         "body": {
             "size":30,
@@ -83,8 +79,8 @@ exports.query_claro_shop_marca = function(tx) {
 
     //console.log(JSON.stringify(query));
 
-    return client.search({
-        "index": config.taxonomias,
+    return client.getClient().search({
+        "index": process.env.taxonomias,
         "type": "default",
         "body": {
             "size":5,
@@ -97,8 +93,8 @@ exports.query_claro_shop_esp = function(tx,marcas) {
 
     //console.log(JSON.stringify(query));
 
-    return client.search({
-        "index": config.claro_shop,
+    return client.getClient().search({
+        "index": process.env.claro_shop,
 		"body": {
 			"size":5,
 		    "query" : {

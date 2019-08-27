@@ -1,8 +1,4 @@
-const config = require('../config');
-const elasticsearch = require('elasticsearch');
-const client = new elasticsearch.Client({
-    host: config.ip
-});
+const client = require('./client');
 
 /*function adn() {
 	return {
@@ -24,7 +20,7 @@ const client = new elasticsearch.Client({
 
 function blog() {
 	return {
-            "index": config.blog,
+            "index": process.env.blog,
             "type": "default",
             "body": {
                 "size":1,
@@ -42,7 +38,7 @@ function blog() {
 
 function blogCtg(nombre) {
 	let query = {
-    "index": config.blog,
+    "index": process.env.blog,
     "type": "default",
     "body": {
         "size": 1,
@@ -73,7 +69,7 @@ function blogCtg(nombre) {
 
 function claro() {
 	return {
-            "index": config.claro_shop,
+            "index": process.env.claro_shop,
             "type": "default",
             "body": {
                 "size":3,
@@ -91,7 +87,7 @@ function claro() {
 
 function neg() {
 	return {
-            "index": config.negocios,
+            "index": process.env.negocios,
             "type": "default",
             "body": {
                 "size":1,
@@ -110,8 +106,8 @@ exports.inicio = function() {
     let promesa = new Promise((resolve,reject) => {
 
         Promise.all([
-            client.search(neg()),
-            client.search(blog())
+            client.getClient().search(neg()),
+            client.getClient().search(blog())
         ]).then((resp) => {
             let blog = resp[1].hits.hits;
             let neg = resp[0].hits.hits;
@@ -134,10 +130,10 @@ exports.inicio = function() {
 exports.inicio2 = async function() {
 
     let resp = await Promise.all([
-        client.search(blogCtg('¿Qué hacer?')),
-        client.search(blogCtg('¿Qué comer?')),
-        client.search(blogCtg('¿Cómo cuidarse?')),
-        client.search(blogCtg('Tu negocio'))
+        client.getClient().search(blogCtg('¿Qué hacer?')),
+        client.getClient().search(blogCtg('¿Qué comer?')),
+        client.getClient().search(blogCtg('¿Cómo cuidarse?')),
+        client.getClient().search(blogCtg('Tu negocio'))
     ]);
 
     let arr = [];

@@ -1,15 +1,15 @@
 const stg_clear = require('./analyzer/clear');
-const ub =  require('./analyzer/wheres');
+const ub = require('./analyzer/wheres');
 const negocios = require('./analyzer/negocios');
-const clr1 =  require('./analyzer/claro_shop');
-const bg =  require('./analyzer/blog');
+const clr1 = require('./analyzer/claro_shop');
+const bg = require('./analyzer/blog');
 const pln = require('./analyzer/pln');
 
-const prob =  require('./analyzer/prob');
+const prob = require('./analyzer/prob');
 
 
 let json = {
-    texto:null,
+    texto: null,
     where: {},
     neg: {},
     claro: {},
@@ -18,10 +18,9 @@ let json = {
     ruta: null
 }
 
-exports.search = function(texto,lat,lng) {
-//function search(texto) {
+exports.search = function (texto, lat = null, lng = null) {
 
-    let promesa = new Promise((resolve,reject) => {
+    let promesa = new Promise((resolve, reject) => {
         let old = null;
 
         stg_clear.cls(texto).then((resp) => {
@@ -40,7 +39,7 @@ exports.search = function(texto,lat,lng) {
             console.log('##########################=>>Despues de Bsucar Wheres');
             resp.ub.lat = lat;
             resp.ub.lng = lng;
-            console.log(JSON.stringify(resp,undefined,2));
+            console.log(JSON.stringify(resp, undefined, 2));
             json.texto = resp.texto;
             json.where = resp.ub;
             return negocios.neg(json.texto);
@@ -64,21 +63,9 @@ exports.search = function(texto,lat,lng) {
             console.log(JSON.stringify(resp));
             json.ruta = prob.calcPrio(json);
             resolve(json);
-            //console.log('***********************************************************');
-            //console.log(JSON.stringify(json));
-            /*return Promise.all([
-                elastic.claro_shop(json.claro.marcas,json.claro.ctg,json.claro.bn,json.claro.tx),
-                elastic.blog(json.texto,json.blog.tags,json.blog.ctg,json.where),
-                elastic.negocios(json.neg.ctg,json.neg.pys,json.neg.bn,json.where),
-                prob.priori(json),
-                pl.getPlaces(old)
-            ]);*/
         });
 
     });
-
     return promesa;
 }
-
-//search('hoteles en tlalpan');
 

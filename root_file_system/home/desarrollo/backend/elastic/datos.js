@@ -1,13 +1,9 @@
 'use strict'
-const config = require('../config');
-const elasticsearch = require('elasticsearch');
-const client = new elasticsearch.Client({
-    host: config.ip
-});
+const client = require('./client');
 
 exports.validar = function(id) {
-    return client.search({
-        "index": config.negocios,
+    return client.getClient().search({
+        "index": process.env.negocios,
 		"body": {
 		    "query": {
                 "match_phrase": {

@@ -1,10 +1,5 @@
 'use strict'
-const config = require('../config');
-const elasticsearch = require('elasticsearch');
-const client = new elasticsearch.Client({
-    host: config.ip
-});
-
+const client = require('./client');
 
 exports.query_wheres_state = function(tx) {
     let query = {
@@ -29,8 +24,8 @@ exports.query_wheres_state = function(tx) {
 
     
 
-    return client.search({
-        "index": config.taxonomias,
+    return client.getClient().search({
+        "index": process.env.taxonomias,
         "type": "default",
         "body": {
             "size":3,
@@ -74,8 +69,8 @@ exports.query_wheres_city = function(tx,estado) {
 
     //console.log(JSON.stringify(query));
 
-    return client.search({
-        "index": config.taxonomias,
+    return client.getClient().search({
+        "index": process.env.taxonomias,
         "type": "default",
         "body": {
             "size":3,
@@ -120,8 +115,8 @@ exports.query_wheres_colony = function(tx,estado) {
     
     //console.log(JSON.stringify(query));
 
-    return client.search({
-        "index": config.taxonomias,
+    return client.getClient().search({
+        "index": process.env.taxonomias,
         "type": "default",
         "body": {
             "size":max,
