@@ -17,12 +17,6 @@ const cors = require("cors");
 app.use(cors());
 app.use(bodyParser.json())
 
-app.get('/node', (req, res) => {
-    res.status(200).send({
-        msj: 'Restringido API BK'
-    });
-})
-
 app.post('/alexa', check.valid, (req, res) => {
     let data = req.body;
     if (req.status == 'OK') {
@@ -44,6 +38,15 @@ app.post('/alexa', check.valid, (req, res) => {
     }
 })
 
+app.get('/node', (req, res) => {
+    let lista = [];
+    proceso.search(req.query.searchTerm, parseFloat(req.query.lat), parseFloat(req.query.lng)).then((json) => {
+        elastic.negocios(0, json.neg.ctg, json.neg.pys, json.neg.bn, json.neg.hrs, json.neg.pay, json.where).then((resp) => {
+            for (let op of resp.info) lista.push(op.listadoid);
+            res.status(200).send( resp)
+        });
+    })
+})
 
 app.get('/business', (req, res) => {
     let lista = [];
