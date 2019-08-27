@@ -1,13 +1,13 @@
 'use strict'
 const syn = require('../info/syn_where');
 const com = require('../http/comments');
-
 const client = require('./client');
 
 
 /**
  * @param {page} - Page number to search in elastic db 
  * @param {ctg} - Category name
+ * @param {pys} - Products and services
  * @param {bn} - Busines name
  * @param {hrs} - business schedule 
  * @param {pay} -  payment types of business
@@ -19,11 +19,8 @@ exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
         let busq = [];
         let filtro = [];
         let ub = [];
-        let busqCtg = []
-        //console.log(where);
         if (ctg.length > 0) {
             let arr = [];
-            let arr2 = [];
             for (let op of ctg) {
                 arr.push({
                     "match_phrase": {
@@ -31,9 +28,7 @@ exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
                     }
                 });
             }
-            //busqCtg = arr;
             busq = busq.concat(arr);
-            //filtro = filtro.concat(arr2);
         }
         if (pys.length > 0) {
             let arr1 = [];
@@ -52,22 +47,12 @@ exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
                 })
             }
 
-            //arr1 = arr1.concat(busqCtg);
-
-            /*let pos =  {
-                "bool": {
-                  "should": arr1
-                }
-            }*/
             if (ctg.length == 0 && bn.length == 0) {
                 busq = busq.concat(arr1);
             }
             else {
                 busq = busq.concat(arr1);
-                //filtro = filtro.concat(arr1);
             }
-            //
-
         }
         if (bn.length > 0) {
             let arr = [];
@@ -85,19 +70,11 @@ exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
                     }
                 })
             }
-
-
             busq = busq.concat(arr);
-            //filtro = filtro.concat(arr2);
         }
-
-
 
         if (hrs) {
             let ops = [];
-
-
-
             if (hrs.hrs) {
                 if (hrs.day[0] == 'monday' || hrs.day[0] == 'tuesday' || hrs.day[0] == 'wednesday' || hrs.day[0] == 'thursday' || hrs.day[0] == 'friday') {
                     ops.push({
@@ -114,9 +91,7 @@ exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
                             }
                         }
                     })
-
                 }
-
                 ops = ops.concat(asigDay(hrs.day, hrs.hrs, hrs))
             }
             else {
@@ -127,10 +102,8 @@ exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
                         }
                     })
                 }
-
                 ops = ops.concat(asigDaySn(hrs.day))
             }
-
 
             let nv = {
                 "bool": {
@@ -154,12 +127,11 @@ exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
                     }
                 }
 
-            })
+            });
         }
 
         if (where.maps.lat && where.maps.lng) {
             where.estado = where.maps.dir.estado;
-            console.log('Estado Asignado: ' + where.estado);
             ub = setWhere(where)
             if (where.maps && where.maps.dir.estado) {
                 filtro.push({
@@ -203,10 +175,7 @@ exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
             })
         }
 
-        let content = {};
-
-        //console.log('Validacion Where: '+validWhere(where));
-        content = {
+        let content = {
             bool: {
                 must: [
                     {
@@ -225,69 +194,6 @@ exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
                 filter: filtro
             }
         };
-        /*
-    
-        if( ((ctg.length > 0 || pys.length > 0) || bn.length > 0) &&  validWhere(where)) {
-            //console.log('Entro CTG BN y Where')
-            content = {
-                bool: {
-                    must: [
-                        {
-                            bool: {
-                                must: [
-                                    {
-                                        bool: {
-                                            should: busq
-                                        }
-                                    }
-                                ],
-                                should: ub
-                            }
-                        }
-                    ],
-                    filter: filtro
-                }
-            };
-        }
-        else if( (ctg.length == 0 && bn.length == 0) &&  validWhere(where)) {
-            content = {
-                bool: {
-                    must: [
-                        {
-                            bool: {
-                                should: ub
-                            }
-                        }
-                    ],
-                    filter: filtro
-                }
-            };
-        }
-        else if( (ctg.length > 0 || bn.length > 0) &&  !validWhere(where)) {
-            content = {
-                bool: {
-                    must: [
-                        {
-                            bool: {
-                                must: [
-                                    {
-                                        bool: {
-                                            should: busq
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    ],
-                    filter: filtro
-                }
-            };
-        }
-        */
-
-        console.log(JSON.stringify(content));
-
-
 
         if (ctg.length > 0 || bn.length > 0 || pys.length > 0 || validWhere(where)) {
             let lat = null;
@@ -309,17 +215,7 @@ exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
                     "body": {
                         "from": page * 10,
                         "size": 10,
-                        "query": content,
-                        /*"sort" : [
-                            {
-                                "_geo_distance" : {
-                                    "pin" : [lng, lat],
-                                    "order" : "asc",
-                                    "unit" : "km"
-                                }
-                            }
-                        ]*/
-
+                        "query": content
                     }
                 }
             }
@@ -335,8 +231,6 @@ exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
                 }
             }
 
-            //console.log(JSON.stringify(td));
-
             client.getClient().search(td).then((resp) => {
 
                 let arr = [];
@@ -349,21 +243,11 @@ exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
                         nv.sort = resp.hits.hits[i].hasOwnProperty('sort') ? resp.hits.hits[i].sort : null;
                         arr.push(nv);
                     }
-                    /*findComments(lista).then((comments) => {
-                        for(let i in resp.hits.hits) {
-                            resp.hits.hits[i]._source.comments = comments[i];
-                            //console.log(resp.hits.hits[i]._source.comments);
-                            arr.push(resp.hits.hits[i]._source);
-                            
-                        }
-                        resolve(arr);
-                    });*/
+
                     resolve({
                         info: arr,
                         total: resp.hits.total
                     });
-
-
                 }
                 else {
                     resolve({
@@ -371,8 +255,6 @@ exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
                         total: 0
                     });
                 }
-
-
             })
         }
         else resolve({
@@ -380,20 +262,14 @@ exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
             total: 0
         });
     })
-
     return promesa;
-
-
 }
 
 exports.claro_shop = function (page, marcas, ctg, bn, price, tx) {
-    //console.log('Entro al ClaroShop')
     let promesa = new Promise((resolve, reject) => {
 
         let busq = [];
         let filtro = [];
-
-
 
         if (marcas.length > 0) {
             let arr1 = [];
@@ -454,11 +330,6 @@ exports.claro_shop = function (page, marcas, ctg, bn, price, tx) {
                         "description": tx
                     }
                 })
-                /*arr.push({
-                    "match": {
-                        "product_type": op
-                    }
-                })*/
             }
             busq = busq.concat(arr)
         }
@@ -501,36 +372,19 @@ exports.claro_shop = function (page, marcas, ctg, bn, price, tx) {
 
             }
 
-            console.log(JSON.stringify(content));
-
             client.getClient().search({
                 "index": process.env.claro_shop,
                 "body": {
                     "from": 9 * page,
                     "size": 9,
-                    "query": content,
-                    /*"aggs": {
-                        "min_price": {
-                          "min": {
-                            "field": "price"
-                          }
-                        },
-                        "max_price": {
-                          "max": {
-                            "field": "price"
-                          }
-                        }
-                    }*/
+                    "query": content
                 }
             }).then((resp) => {
                 let arr = [];
                 //console.log(JSON.stringify(resp));
                 if (resp.hits.total > 0) {
                     for (let op of resp.hits.hits) {
-                        let nv = op._source;
-                        //nv.min_price = resp.aggregations.min_price.value;
-                        //nv.max_price = resp.aggregations.max_price.value;
-                        arr.push(nv);
+                        arr.push(op._source);
                     }
                 }
 
@@ -544,16 +398,12 @@ exports.claro_shop = function (page, marcas, ctg, bn, price, tx) {
             info: [],
             total: 0
         });
-
-
-
     });
 
     return promesa;
 }
 
 exports.blog = function (page, tx, tags, ctg, where) {
-    //console.log('Entro al Blog')
     let promesa = new Promise((resolve, reject) => {
 
         let busq = [];
@@ -590,7 +440,6 @@ exports.blog = function (page, tx, tags, ctg, where) {
                     }
                 })
             }
-
         }
 
         for (let i in ctg) {
@@ -601,15 +450,12 @@ exports.blog = function (page, tx, tags, ctg, where) {
             })
         }
 
-
         let query = {
             "bool": {
                 "should": busq,
                 "filter": filtro
             }
         }
-
-        //console.log(JSON.stringify(query));
 
         if (tags.length > 0 || ctg.length > 0) {
             client.getClient().search({
@@ -637,11 +483,7 @@ exports.blog = function (page, tx, tags, ctg, where) {
             info: [],
             total: 0
         });
-
-
-
     });
-
     return promesa;
 }
 
@@ -837,13 +679,11 @@ async function findComments(arreglo) {
 function validPys(pys, where) {
     let ind = true;
     for (let op of pys) {
-        //console.log('('+op+')==>'+where.city);
         if (where.estado == op || where.city == op || where.colony == op) {
             ind = false;
             break;
         }
     }
-    console.log('Regresa: ' + ind);
     return ind;
 }
 
@@ -857,7 +697,6 @@ function validCtg(ctg, where) {
             break;
         }
     }
-
     return ind;
 }
 
