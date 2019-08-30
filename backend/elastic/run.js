@@ -5,72 +5,62 @@ const client = require('./client');
 
 
 /**
- * @param {page} - Page number to search in elastic db 
- * @param {ctg} - Category name
- * @param {pys} - Products and services
- * @param {bn} - Busines name
- * @param {hrs} - business schedule 
- * @param {pay} -  payment types of business
- * @param {where} - business state location
+ * @param {number} page - Page number to search in elastic db 
+ * @param {string[]} category - Category name
+ * @param {string[]} pys - Products and services
+ * @param {string[]} business - Busines name
+ * @param {object} hrs - business schedule 
+ * @param {string} hrs.hrs - business schedule 
+ * @param {string} hrs.valor - business schedule 
+ * @param {string[]} hrs.day - business schedule 
+ * 
+ * @param {string} pay -  payment types of business
+ * @param {object} location - business state location
+ * @param {string} location.city - 
+ * @param {string} location.colony - 
+ * @param {string} location.estado - 
+ * @param {string} location.street - 
+ * @param {number} location.lat - 
+ * @param {number} location.lng - 
+ * @param {object} location.maps -
+ * @param {number} location.maps.lng - 
+ * @param {number} location.maps.lat - 
+ * @param {object} location.maps.dir -
+ * @param {string} location.maps.dir.city -
+ * @param {string} location.maps.dir.colony -
+ * @param {string} location.maps.dir.estado -
+ * 
+ * 
+ * @return {Promise<>}.
  */
-exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
+exports.negocios = function (page = 0, category, pys, business, hrs, pay, location) {
 
-    let promesa = new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
         let busq = [];
         let filtro = [];
         let ub = [];
-        if (ctg.length > 0) {
-            let arr = [];
-            for (let op of ctg) {
-                arr.push({
-                    "match_phrase": {
-                        'Appearances.Appearance.categoryname': op
-                    }
-                });
-            }
-            busq = busq.concat(arr);
+        for (let op of category) {
+            busq.push({
+                "match_phrase": {
+                    'Appearances.Appearance.categoryname': op
+                }
+            });
         }
-        if (pys.length > 0) {
-            let arr1 = [];
-            let arr2 = [];
 
-            for (let op of pys) {
-                arr1.push({
-                    "match_phrase": {
-                        'productservices.prdserv': op
-                    }
-                })
-                arr2.push({
-                    "match": {
-                        "productservices.prdserv": op
-                    }
-                })
-            }
-
-            if (ctg.length == 0 && bn.length == 0) {
-                busq = busq.concat(arr1);
-            }
-            else {
-                busq = busq.concat(arr1);
-            }
+        for (let op of pys) {
+            busq.push({
+                "match_phrase": {
+                    'productservices.prdserv': op
+                }
+            });
         }
-        if (bn.length > 0) {
-            let arr = [];
-            let arr2 = [];
-            for (let op of bn) {
-                arr.push({
-                    "match_phrase": {
-                        "bn": op
-                    }
-                })
 
-                arr2.push({
-                    "match_phrase": {
-                        "bn": op
-                    }
-                })
-            }
-            busq = busq.concat(arr);
+        for (let op of business) {
+            busq.push({
+                "match_phrase": {
+                    "bn": op
+                }
+            });
         }
 
         if (hrs) {
@@ -109,7 +99,7 @@ exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
                 "bool": {
                     "should": ops
                 }
-            }
+            };
             filtro = filtro.concat(nv);
         }
 
@@ -130,47 +120,45 @@ exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
             });
         }
 
-        if (where.maps.lat && where.maps.lng) {
-            where.estado = where.maps.dir.estado;
-            ub = setWhere(where)
-            if (where.maps && where.maps.dir.estado) {
+        if (location.maps.lat && location.maps.lng) {
+            location.estado = location.maps.dir.estado;
+            ub = setWhere(location);
+            if (location.maps && location.maps.dir.estado) {
                 filtro.push({
                     bool: {
                         should: [
                             {
                                 match: {
-                                    statename: where.maps.dir.estado
+                                    statename: location.maps.dir.estado
                                 }
                             },
                             {
                                 "geo_distance": {
                                     "distance": "5km",
-                                    "pin": [where.maps.lng, where.maps.lat]
+                                    "pin": [location.maps.lng, location.maps.lat]
                                 }
                             }
                         ]
                     }
-                })
+                });
             }
             else {
                 filtro.push({
                     "geo_distance": {
                         "distance": "5km",
-                        "pin": [where.maps.lng, where.maps.lat]
+                        "pin": [location.maps.lng, location.maps.lat]
                     }
-                })
+                });
             }
-
-
         }
-        else if (validWhere(where) && validPys(pys, where) && validCtg(ctg, where)) {
-            ub = setWhere(where)
+        else if (validWhere(location) && validPys(pys, location) && validCategory(category, location)) {
+            ub = setWhere(location)
         }
-        else if (where.lat && where.lng) {
+        else if (location.lat && location.lng) {
             filtro.push({
                 "geo_distance": {
                     "distance": "10km",
-                    "pin": [where.lng, where.lat]
+                    "pin": [location.lng, location.lat]
                 }
             })
         }
@@ -195,52 +183,35 @@ exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
             }
         };
 
-        if (ctg.length > 0 || bn.length > 0 || pys.length > 0 || validWhere(where)) {
+        if (category.length > 0 || business.length > 0 || pys.length > 0 || validWhere(location)) {
             let lat = null;
             let lng = null;
-            if (Object.keys(where.maps).length > 0 && where.maps.lat && where.maps.lng) {
-                lat = where.maps.lat;
-                lng = where.maps.lng
+            if (Object.keys(location.maps).length > 0 && location.maps.lat && location.maps.lng) {
+                lat = location.maps.lat;
+                lng = location.maps.lng
             }
-            else if (where.lat && where.lng) {
-                lat = where.lat;
-                lng = where.lng;
-            }
-
-            let td = {}
-
-            if (lat && lng) {
-                td = {
-                    "index": process.env.negocios,
-                    "body": {
-                        "from": page * 10,
-                        "size": 10,
-                        "query": content
-                    }
-                }
-            }
-            else {
-                td = {
-                    "index": process.env.negocios,
-                    "body": {
-                        "from": page * 10,
-                        "size": 6,
-                        "query": content
-
-                    }
-                }
+            else if (location.lat && location.lng) {
+                lat = location.lat;
+                lng = location.lng;
             }
 
-            client.getClient().search(td).then((resp) => {
+            const requestBody = {
+                "index": process.env.negocios,
+                "body": {
+                    "from": page * 10,
+                    "size": (lat && lng) ? 10 : 6,
+                    "query": content
+                },
+
+            }
+
+            client.getClient().search(requestBody).then((resp) => {
 
                 let arr = [];
-                let lista = [];
-                let sort = [];
                 if (resp.hits.total > 0) {
-                    for (let op of resp.hits.hits) lista.push(op._source.listadoid);
-                    for (let i in resp.hits.hits) {
-                        let nv = resp.hits.hits[i]._source;
-                        nv.sort = resp.hits.hits[i].hasOwnProperty('sort') ? resp.hits.hits[i].sort : null;
+                    for (let business of resp.hits.hits) {
+                        let nv = business._source;
+                        nv.sort = business.hasOwnProperty('sort') ? business.sort : null;
                         arr.push(nv);
                     }
 
@@ -249,20 +220,36 @@ exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
                         total: resp.hits.total
                     });
                 }
-                else {
-                    resolve({
-                        info: [],
-                        total: 0
-                    });
-                }
+                resolve({
+                    info: [],
+                    total: 0
+                });
             })
         }
         else resolve({
             info: [],
             total: 0
         });
-    })
-    return promesa;
+    });
+}
+
+/**
+ * @param {string} brandname - name of the business
+ * @description Returns all business related by brandname in elastic
+ */
+exports.businessByBrand = function (brandname) {
+    const body = {
+        "index": process.env.negocios,
+        "body": {
+            "query": {
+                "term": {
+                    "brands.brandname.keyword": brandname
+                }
+            }
+        }
+    }
+    return client.getClient().search(body);
+
 }
 
 exports.claro_shop = function (page, marcas, ctg, bn, price, tx) {
@@ -675,32 +662,24 @@ async function findComments(arreglo) {
     return arr;
 }
 
-
 function validPys(pys, where) {
-    let ind = true;
     for (let op of pys) {
         if (where.estado == op || where.city == op || where.colony == op) {
-            ind = false;
-            break;
+            return false;
         }
     }
-    return ind;
+    return true;
 }
 
-function validCtg(ctg, where) {
-    let ind = true;
-
+function validCategory(ctg, where) {
     for (let op of ctg) {
         let palabras = op.split(' ');
         if (palabras.includes(where.estado) || palabras.includes(where.colony) || palabras.includes(where.city)) {
-            ind = false;
-            break;
+            return false;;
         }
     }
-    return ind;
+    return true;
 }
-
-
 
 function setWhere(where) {
     let arr = [];
@@ -786,19 +765,14 @@ function setWhere(where) {
 }
 
 function validWhere(where) {
-    let ind = false;
-    if (where.estado || where.city || where.colony) ind = true;
-    return ind;
+    return (where.estado || where.city || where.colony)
 }
 
 function getAbrevWhere(estado) {
-    let abrev = null;
     for (let op of syn.data) {
         if (op.valor == estado) {
-            abrev = op.simb;
-            break;
+            return op.simb;
         }
     }
-
-    return abrev;
+    return null;
 }

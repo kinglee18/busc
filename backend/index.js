@@ -4,54 +4,47 @@ const io = require('socket.io')(http);
 const proceso = require('./app');
 const pl = require('./http/places');
 const elastic = require('./elastic/run');
-const cmt = require('./http/comments');
 const home = require('./elastic/home');
 const auto = require('./http/autocomplete');
 const clear = require('clear');
 const clima = require('./http/clima');
-const bodyParser = require('body-parser')
-const check = require('./config/check');
+const bodyParser = require('body-parser');
 const config = require('./config');
 const cors = require("cors");
 
 app.use(cors());
 app.use(bodyParser.json())
 
+
+/**
+ * @desc Retrieves all business related by name, category, products and services
+ * @param {string} req.query.brandName - brandname to search in db
+ */
 app.get('/node', (req, res) => {
-    res.status(200).send({
-        msj: 'Restringido API BK'
-    });
-})
-
-app.post('/alexa', check.valid, (req, res) => {
-    let data = req.body;
-    if (req.status == 'OK') {
-        proceso.search(data.tx, data.lat, data.lng).then((json) => {
-            elastic.negocios(0, json.neg.ctg, json.neg.pys, json.neg.bn, json.neg.hrs, json.neg.pay, json.where).then((resp) => {
-                res.send({
-                    status: true,
-                    info: json,
-                    data: resp
-                });
-            });
-        });
-    }
-    else {
-        res.status(404).send({
-            status: false,
-            message: 'Error en la autentificacion'
-        })
-    }
-})
-
-
-app.get('/business', (req, res) => {
-    let lista = [];
     proceso.search(req.query.searchTerm, parseFloat(req.query.lat), parseFloat(req.query.lng)).then((json) => {
-        elastic.negocios(0, json.neg.ctg, json.neg.pys, json.neg.bn, json.neg.hrs, json.neg.pay, json.where).then((resp) => {
-            for (let op of resp.info) lista.push(op.listadoid);
-            res.status(200).send( resp)
+        elastic.negocios(req.query.page, json.neg.ctg, json.neg.pys, json.neg.bn, json.neg.hrs, json.neg.pay, json.where).then((resp) => {
+            res.status(200).send(resp)
         });
+    })
+});
+
+/**
+ * @desc Retrieves all business related by brandname
+ * @param {string} req.query.brandName - brandname to search in db
+ */
+app.get('/node/business_by_brand', (req, res) => {
+    elastic.businessByBrand(req.query.brandName).then((resp) => {
+        const businesses = resp.hits.hits.map(business => {
+            return business._source;
+        })
+
+        res.status(200).send({
+            total: resp.hits.total,
+            businesses
+        })
+    }).catch(error => {
+        console.error(error);
+        res.status(500).send(error);
     })
 });
 
@@ -80,15 +73,10 @@ io.on('connection', function (socket) {
     socket.on('other-page', (data) => {
         let json = data.json;
         let lista = [];
-        console.log(JSON.stringify(data));
         if (data.tipo == 'neg') {
             elastic.negocios(data.page, json.neg.ctg, json.neg.pys, json.neg.bn, json.neg.hrs, json.neg.pay, json.where).then((resp) => {
-
                 for (let op of resp.info) lista.push(op.listadoid);
                 socket.emit('search-negocios', resp);
-                //return cmt.allComments(lista);
-                //}).then((resp) => {
-                //socket.emit('search-comments',{info:resp});
             })
         }
         else if (data.tipo == 'claro') {
@@ -105,7 +93,6 @@ io.on('connection', function (socket) {
 
     socket.on('search', (data) => {
         clear();
-
         proceso.search(data.tx, data.lat, data.lng).then((json) => {
             let lista = [];
             socket.emit('search-json', { info: json });
@@ -114,15 +101,12 @@ io.on('connection', function (socket) {
                 socket.emit('search-claro_shop', resp);
             });
             pl.getPlaces(json).then((resp) => {
-                //console.log(resp);
                 socket.emit('search-places', { info: resp });
             })
             elastic.blog(0, json.texto, json.blog.tags, json.blog.ctg, json.where).then((resp) => {
                 socket.emit('search-blog', resp);
             })
             elastic.negocios(0, json.neg.ctg, json.neg.pys, json.neg.bn, json.neg.hrs, json.neg.pay, json.where).then((resp) => {
-
-                for (let op of resp.info) lista.push(op.listadoid);
                 socket.emit('search-negocios', resp);
             })
 
@@ -130,19 +114,7 @@ io.on('connection', function (socket) {
                 socket.emit('search-clima', { info: resp });
             });
         })
-    })
-
-    socket.on('app-alexa', (data) => {
-        proceso.search(data.tx, data.lat, data.lng).then((json) => {
-            elastic.negocios(0, json.neg.ctg, json.neg.pys, json.neg.bn, json.neg.hrs, json.neg.pay, json.where).then((resp) => {
-                socket.emit('app-alexa-resp', {
-                    info: json,
-                    data: resp
-                });
-            });
-        });
-    })
-
+    });
 })
 
 /**
