@@ -200,11 +200,13 @@ exports.negocios = function (page = 0, category, pys, business, hrs, pay, locati
                 "body": {
                     "from": page * 10,
                     "size": (lat && lng) ? 10 : 6,
-                    "query": content
-                },
-
+                    "query": content,
+                    sort: [
+                        { points: "desc"}
+                    ]
+                }
             }
-
+            console.log(JSON.stringify(requestBody));
             client.getClient().search(requestBody).then((resp) => {
 
                 let arr = [];
