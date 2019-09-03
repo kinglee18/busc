@@ -18,7 +18,7 @@ app.use(bodyParser.json())
 
 /**
  * @desc Retrieves all business related by name, category, products and services
- * @param {string} req.query.brandName - brandname to search in db
+ * @param {string} req.query.searchTerm -business, category or location or  product
  */
 app.get('/node', (req, res) => {
     proceso.search(req.query.searchTerm, parseFloat(req.query.lat), parseFloat(req.query.lng)).then((json) => {
@@ -48,10 +48,34 @@ app.get('/node/business_by_brand', (req, res) => {
     })
 });
 
+
+/**
+ * @desc Retrieves all blog articles from database
+ * @param {string} req.query.searchTerm - business, category or location or  product
+ */
+app.get('/node/blog', (req, res) => {
+    proceso.search(req.query.searchTerm, parseFloat(req.query.lat), parseFloat(req.query.lng)).then((json) => {
+        elastic.blog(req.query.page, json.texto, json.blog.tags, json.blog.ctg, json.where).then((resp) => {
+            res.status(200).send(resp);
+        });
+    });
+});
+
+/**
+ * @desc Retrieves all claro shop products
+ * @param {string} req.query.searchTerm - business, category or location or  product
+ */
+app.get('/node/claroshop', (req, res) => {
+    proceso.search(req.query.searchTerm, parseFloat(req.query.lat), parseFloat(req.query.lng)).then((json) => {
+        elastic.claro_shop(req.query.page, json.claro.marcas, json.claro.ctg, json.claro.bn, json.claro.price, json.claro.tx).then((resp) => {
+            res.status(200).send(resp);
+        });
+    });
+});
+
 io.on('connection', function (socket) {
     socket.on('home', (data) => {
         home.inicio().then((resp) => {
-            //console.log(resp);
             socket.emit('home-resp', resp);
         })
     })

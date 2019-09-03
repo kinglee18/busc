@@ -202,7 +202,7 @@ exports.negocios = function (page = 0, category, pys, business, hrs, pay, locati
                     "size": (lat && lng) ? 10 : 6,
                     "query": content,
                     sort: [
-                        { points: "desc"}
+                        { points: "desc" }
                     ]
                 }
             }
@@ -254,7 +254,7 @@ exports.businessByBrand = function (brandname) {
 
 }
 
-exports.claro_shop = function (page, marcas, ctg, bn, price, tx) {
+exports.claro_shop = function (page = 0, marcas, ctg, bn, price, tx) {
     let promesa = new Promise((resolve, reject) => {
 
         let busq = [];
@@ -364,8 +364,8 @@ exports.claro_shop = function (page, marcas, ctg, bn, price, tx) {
             client.getClient().search({
                 "index": process.env.claro_shop,
                 "body": {
-                    "from": 9 * page,
-                    "size": 9,
+                    "from": 10 * page,
+                    "size": 10,
                     "query": content
                 }
             }).then((resp) => {
@@ -392,7 +392,7 @@ exports.claro_shop = function (page, marcas, ctg, bn, price, tx) {
     return promesa;
 }
 
-exports.blog = function (page, tx, tags, ctg, where) {
+exports.blog = function (page = 0, tx, tags, ctg, where) {
     let promesa = new Promise((resolve, reject) => {
 
         let busq = [];
