@@ -1,103 +1,70 @@
 'use strict'
 const syn = require('../info/syn_where');
 const com = require('../http/comments');
-
 const client = require('./client');
 
 
 /**
- * @param {page} - Page number to search in elastic db 
- * @param {ctg} - Category name
- * @param {bn} - Busines name
- * @param {hrs} - business schedule 
- * @param {pay} -  payment types of business
- * @param {where} - business state location
+ * @param {number} page - Page number to search in elastic db 
+ * @param {string[]} category - Category name
+ * @param {string[]} pys - Products and services
+ * @param {string[]} business - Busines name
+ * @param {object} hrs - business schedule 
+ * @param {string} hrs.hrs - business schedule 
+ * @param {string} hrs.valor - business schedule 
+ * @param {string[]} hrs.day - business schedule 
+ * 
+ * @param {string} pay -  payment types of business
+ * @param {object} location - business state location
+ * @param {string} location.city - 
+ * @param {string} location.colony - 
+ * @param {string} location.estado - 
+ * @param {string} location.street - 
+ * @param {number} location.lat - 
+ * @param {number} location.lng - 
+ * @param {object} location.maps -
+ * @param {number} location.maps.lng - 
+ * @param {number} location.maps.lat - 
+ * @param {object} location.maps.dir -
+ * @param {string} location.maps.dir.city -
+ * @param {string} location.maps.dir.colony -
+ * @param {string} location.maps.dir.estado -
+ * 
+ * 
+ * @return {Promise<>}.
  */
-exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
+exports.negocios = function (page = 0, category, pys, business, hrs, pay, location) {
 
-    let promesa = new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
         let busq = [];
         let filtro = [];
         let ub = [];
-        let busqCtg = []
-        //console.log(where);
-        if (ctg.length > 0) {
-            let arr = [];
-            let arr2 = [];
-            for (let op of ctg) {
-                arr.push({
-                    "match_phrase": {
-                        'Appearances.Appearance.categoryname': op
-                    }
-                });
-            }
-            //busqCtg = arr;
-            busq = busq.concat(arr);
-            //filtro = filtro.concat(arr2);
-        }
-        if (pys.length > 0) {
-            let arr1 = [];
-            let arr2 = [];
-
-            for (let op of pys) {
-                arr1.push({
-                    "match_phrase": {
-                        'productservices.prdserv': op
-                    }
-                })
-                arr2.push({
-                    "match": {
-                        "productservices.prdserv": op
-                    }
-                })
-            }
-
-            //arr1 = arr1.concat(busqCtg);
-
-            /*let pos =  {
-                "bool": {
-                  "should": arr1
+        for (let op of category) {
+            busq.push({
+                "match_phrase": {
+                    'Appearances.Appearance.categoryname': op
                 }
-            }*/
-            if (ctg.length == 0 && bn.length == 0) {
-                busq = busq.concat(arr1);
-            }
-            else {
-                busq = busq.concat(arr1);
-                //filtro = filtro.concat(arr1);
-            }
-            //
-
-        }
-        if (bn.length > 0) {
-            let arr = [];
-            let arr2 = [];
-            for (let op of bn) {
-                arr.push({
-                    "match_phrase": {
-                        "bn": op
-                    }
-                })
-
-                arr2.push({
-                    "match_phrase": {
-                        "bn": op
-                    }
-                })
-            }
-
-
-            busq = busq.concat(arr);
-            //filtro = filtro.concat(arr2);
+            });
         }
 
+        for (let op of pys) {
+            busq.push({
+                "match_phrase": {
+                    'productservices.prdserv': op
+                }
+            });
+        }
 
+        for (let op of business) {
+            busq.push({
+                "match_phrase": {
+                    "bn": op
+                }
+            });
+        }
 
         if (hrs) {
             let ops = [];
-
-
-
             if (hrs.hrs) {
                 if (hrs.day[0] == 'monday' || hrs.day[0] == 'tuesday' || hrs.day[0] == 'wednesday' || hrs.day[0] == 'thursday' || hrs.day[0] == 'friday') {
                     ops.push({
@@ -114,9 +81,7 @@ exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
                             }
                         }
                     })
-
                 }
-
                 ops = ops.concat(asigDay(hrs.day, hrs.hrs, hrs))
             }
             else {
@@ -127,16 +92,14 @@ exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
                         }
                     })
                 }
-
                 ops = ops.concat(asigDaySn(hrs.day))
             }
-
 
             let nv = {
                 "bool": {
                     "should": ops
                 }
-            }
+            };
             filtro = filtro.concat(nv);
         }
 
@@ -154,59 +117,53 @@ exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
                     }
                 }
 
-            })
+            });
         }
 
-        if (where.maps.lat && where.maps.lng) {
-            where.estado = where.maps.dir.estado;
-            console.log('Estado Asignado: ' + where.estado);
-            ub = setWhere(where)
-            if (where.maps && where.maps.dir.estado) {
+        if (location.maps.lat && location.maps.lng) {
+            location.estado = location.maps.dir.estado;
+            ub = setWhere(location);
+            if (location.maps && location.maps.dir.estado) {
                 filtro.push({
                     bool: {
                         should: [
                             {
                                 match: {
-                                    statename: where.maps.dir.estado
+                                    statename: location.maps.dir.estado
                                 }
                             },
                             {
                                 "geo_distance": {
                                     "distance": "5km",
-                                    "pin": [where.maps.lng, where.maps.lat]
+                                    "pin": [location.maps.lng, location.maps.lat]
                                 }
                             }
                         ]
                     }
-                })
+                });
             }
             else {
                 filtro.push({
                     "geo_distance": {
                         "distance": "5km",
-                        "pin": [where.maps.lng, where.maps.lat]
+                        "pin": [location.maps.lng, location.maps.lat]
                     }
-                })
+                });
             }
-
-
         }
-        else if (validWhere(where) && validPys(pys, where) && validCtg(ctg, where)) {
-            ub = setWhere(where)
+        else if (validWhere(location) && validPys(pys, location) && validCategory(category, location)) {
+            ub = setWhere(location)
         }
-        else if (where.lat && where.lng) {
+        else if (location.lat && location.lng) {
             filtro.push({
                 "geo_distance": {
                     "distance": "10km",
-                    "pin": [where.lng, where.lat]
+                    "pin": [location.lng, location.lat]
                 }
             })
         }
 
-        let content = {};
-
-        //console.log('Validacion Where: '+validWhere(where));
-        content = {
+        let content = {
             bool: {
                 must: [
                     {
@@ -225,175 +182,83 @@ exports.negocios = function (page, ctg, pys, bn, hrs, pay, where) {
                 filter: filtro
             }
         };
-        /*
-    
-        if( ((ctg.length > 0 || pys.length > 0) || bn.length > 0) &&  validWhere(where)) {
-            //console.log('Entro CTG BN y Where')
-            content = {
-                bool: {
-                    must: [
-                        {
-                            bool: {
-                                must: [
-                                    {
-                                        bool: {
-                                            should: busq
-                                        }
-                                    }
-                                ],
-                                should: ub
-                            }
-                        }
-                    ],
-                    filter: filtro
-                }
-            };
-        }
-        else if( (ctg.length == 0 && bn.length == 0) &&  validWhere(where)) {
-            content = {
-                bool: {
-                    must: [
-                        {
-                            bool: {
-                                should: ub
-                            }
-                        }
-                    ],
-                    filter: filtro
-                }
-            };
-        }
-        else if( (ctg.length > 0 || bn.length > 0) &&  !validWhere(where)) {
-            content = {
-                bool: {
-                    must: [
-                        {
-                            bool: {
-                                must: [
-                                    {
-                                        bool: {
-                                            should: busq
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    ],
-                    filter: filtro
-                }
-            };
-        }
-        */
 
-        console.log(JSON.stringify(content));
-
-
-
-        if (ctg.length > 0 || bn.length > 0 || pys.length > 0 || validWhere(where)) {
+        if (category.length > 0 || business.length > 0 || pys.length > 0 || validWhere(location)) {
             let lat = null;
             let lng = null;
-            if (Object.keys(where.maps).length > 0 && where.maps.lat && where.maps.lng) {
-                lat = where.maps.lat;
-                lng = where.maps.lng
+            if (Object.keys(location.maps).length > 0 && location.maps.lat && location.maps.lng) {
+                lat = location.maps.lat;
+                lng = location.maps.lng
             }
-            else if (where.lat && where.lng) {
-                lat = where.lat;
-                lng = where.lng;
+            else if (location.lat && location.lng) {
+                lat = location.lat;
+                lng = location.lng;
             }
 
-            let td = {}
-
-            if (lat && lng) {
-                td = {
-                    "index": process.env.negocios,
-                    "body": {
-                        "from": page * 10,
-                        "size": 10,
-                        "query": content,
-                        /*"sort" : [
-                            {
-                                "_geo_distance" : {
-                                    "pin" : [lng, lat],
-                                    "order" : "asc",
-                                    "unit" : "km"
-                                }
-                            }
-                        ]*/
-
-                    }
+            const requestBody = {
+                "index": process.env.negocios,
+                "body": {
+                    "from": page * 10,
+                    "size": (lat && lng) ? 10 : 6,
+                    "query": content,
+                    sort: [
+                        { points: "desc" }
+                    ]
                 }
             }
-            else {
-                td = {
-                    "index": process.env.negocios,
-                    "body": {
-                        "from": page * 10,
-                        "size": 6,
-                        "query": content
-
-                    }
-                }
-            }
-
-            //console.log(JSON.stringify(td));
-
-            client.getClient().search(td).then((resp) => {
+            console.log(JSON.stringify(requestBody));
+            client.getClient().search(requestBody).then((resp) => {
 
                 let arr = [];
-                let lista = [];
-                let sort = [];
                 if (resp.hits.total > 0) {
-                    for (let op of resp.hits.hits) lista.push(op._source.listadoid);
-                    for (let i in resp.hits.hits) {
-                        let nv = resp.hits.hits[i]._source;
-                        nv.sort = resp.hits.hits[i].hasOwnProperty('sort') ? resp.hits.hits[i].sort : null;
+                    for (let business of resp.hits.hits) {
+                        let nv = business._source;
+                        nv.sort = business.hasOwnProperty('sort') ? business.sort : null;
                         arr.push(nv);
                     }
-                    /*findComments(lista).then((comments) => {
-                        for(let i in resp.hits.hits) {
-                            resp.hits.hits[i]._source.comments = comments[i];
-                            //console.log(resp.hits.hits[i]._source.comments);
-                            arr.push(resp.hits.hits[i]._source);
-                            
-                        }
-                        resolve(arr);
-                    });*/
+
                     resolve({
                         info: arr,
                         total: resp.hits.total
                     });
-
-
                 }
-                else {
-                    resolve({
-                        info: [],
-                        total: 0
-                    });
-                }
-
-
+                resolve({
+                    info: [],
+                    total: 0
+                });
             })
         }
         else resolve({
             info: [],
             total: 0
         });
-    })
+    });
+}
 
-    return promesa;
-
+/**
+ * @param {string} brandname - name of the business
+ * @description Returns all business related by brandname in elastic
+ */
+exports.businessByBrand = function (brandname) {
+    const body = {
+        "index": process.env.negocios,
+        "body": {
+            "query": {
+                "term": {
+                    "brands.brandname.keyword": brandname
+                }
+            }
+        }
+    }
+    return client.getClient().search(body);
 
 }
 
-exports.claro_shop = function (page, marcas, ctg, bn, price, tx) {
-    //console.log('Entro al ClaroShop')
+exports.claro_shop = function (page = 0, marcas, ctg, bn, price, tx) {
     let promesa = new Promise((resolve, reject) => {
 
         let busq = [];
         let filtro = [];
-
-
 
         if (marcas.length > 0) {
             let arr1 = [];
@@ -454,11 +319,6 @@ exports.claro_shop = function (page, marcas, ctg, bn, price, tx) {
                         "description": tx
                     }
                 })
-                /*arr.push({
-                    "match": {
-                        "product_type": op
-                    }
-                })*/
             }
             busq = busq.concat(arr)
         }
@@ -501,36 +361,19 @@ exports.claro_shop = function (page, marcas, ctg, bn, price, tx) {
 
             }
 
-            console.log(JSON.stringify(content));
-
             client.getClient().search({
                 "index": process.env.claro_shop,
                 "body": {
-                    "from": 9 * page,
-                    "size": 9,
-                    "query": content,
-                    /*"aggs": {
-                        "min_price": {
-                          "min": {
-                            "field": "price"
-                          }
-                        },
-                        "max_price": {
-                          "max": {
-                            "field": "price"
-                          }
-                        }
-                    }*/
+                    "from": 10 * page,
+                    "size": 10,
+                    "query": content
                 }
             }).then((resp) => {
                 let arr = [];
                 //console.log(JSON.stringify(resp));
                 if (resp.hits.total > 0) {
                     for (let op of resp.hits.hits) {
-                        let nv = op._source;
-                        //nv.min_price = resp.aggregations.min_price.value;
-                        //nv.max_price = resp.aggregations.max_price.value;
-                        arr.push(nv);
+                        arr.push(op._source);
                     }
                 }
 
@@ -544,16 +387,12 @@ exports.claro_shop = function (page, marcas, ctg, bn, price, tx) {
             info: [],
             total: 0
         });
-
-
-
     });
 
     return promesa;
 }
 
-exports.blog = function (page, tx, tags, ctg, where) {
-    //console.log('Entro al Blog')
+exports.blog = function (page = 0, tx, tags, ctg, where) {
     let promesa = new Promise((resolve, reject) => {
 
         let busq = [];
@@ -590,7 +429,6 @@ exports.blog = function (page, tx, tags, ctg, where) {
                     }
                 })
             }
-
         }
 
         for (let i in ctg) {
@@ -601,15 +439,12 @@ exports.blog = function (page, tx, tags, ctg, where) {
             })
         }
 
-
         let query = {
             "bool": {
                 "should": busq,
                 "filter": filtro
             }
         }
-
-        //console.log(JSON.stringify(query));
 
         if (tags.length > 0 || ctg.length > 0) {
             client.getClient().search({
@@ -637,11 +472,7 @@ exports.blog = function (page, tx, tags, ctg, where) {
             info: [],
             total: 0
         });
-
-
-
     });
-
     return promesa;
 }
 
@@ -833,35 +664,24 @@ async function findComments(arreglo) {
     return arr;
 }
 
-
 function validPys(pys, where) {
-    let ind = true;
     for (let op of pys) {
-        //console.log('('+op+')==>'+where.city);
         if (where.estado == op || where.city == op || where.colony == op) {
-            ind = false;
-            break;
+            return false;
         }
     }
-    console.log('Regresa: ' + ind);
-    return ind;
+    return true;
 }
 
-function validCtg(ctg, where) {
-    let ind = true;
-
+function validCategory(ctg, where) {
     for (let op of ctg) {
         let palabras = op.split(' ');
         if (palabras.includes(where.estado) || palabras.includes(where.colony) || palabras.includes(where.city)) {
-            ind = false;
-            break;
+            return false;;
         }
     }
-
-    return ind;
+    return true;
 }
-
-
 
 function setWhere(where) {
     let arr = [];
@@ -947,19 +767,14 @@ function setWhere(where) {
 }
 
 function validWhere(where) {
-    let ind = false;
-    if (where.estado || where.city || where.colony) ind = true;
-    return ind;
+    return (where.estado || where.city || where.colony)
 }
 
 function getAbrevWhere(estado) {
-    let abrev = null;
     for (let op of syn.data) {
         if (op.valor == estado) {
-            abrev = op.simb;
-            break;
+            return op.simb;
         }
     }
-
-    return abrev;
+    return null;
 }
