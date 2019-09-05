@@ -40,6 +40,7 @@ exports.search = function (texto, lat = null, lng = null) {
             resp.hrs = json.pln.hrs;
             resp.pay = json.pln.pay;
             json.neg = resp;
+            json.neg.bn = json.texto;
             return clr1.claro_shop(json.texto);
         }).then((resp) => {
             resp.price = json.pln.price;
