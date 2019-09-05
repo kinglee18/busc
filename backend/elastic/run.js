@@ -199,10 +199,11 @@ exports.negocios = function (page = 0, category, pys, business, hrs, pay, locati
                 "index": process.env.negocios,
                 "body": {
                     "from": page * 10,
-                    "size": (lat && lng) ? 10 : 6,
+                    "size": 20,
                     "query": content,
                     sort: [
-                        { points: "desc" }
+                        { points: "desc" },
+                        { "bn.order": "asc"}
                     ]
                 }
             }
