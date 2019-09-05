@@ -22,7 +22,7 @@ app.use(bodyParser.json())
  */
 app.get('/node', (req, res) => {
     proceso.search(req.query.searchTerm, parseFloat(req.query.lat), parseFloat(req.query.lng)).then((json) => {
-        elastic.negocios(req.query.page, json.neg.ctg, json.neg.pys, json.neg.bn, json.neg.hrs, json.neg.pay, json.where).then((resp) => {
+        elastic.negocios(req.query.page, json.neg.bn,  json.neg.ctg, json.neg.pys, json.neg.hrs, json.neg.pay, json.where).then((resp) => {
             res.status(200).send(resp)
         });
     })

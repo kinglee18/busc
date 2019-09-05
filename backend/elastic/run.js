@@ -8,7 +8,7 @@ const client = require('./client');
  * @param {number} page - Page number to search in elastic db 
  * @param {string[]} category - Category name
  * @param {string[]} pys - Products and services
- * @param {string[]} business - Busines name
+ * @param {string} searchTerm - searchTerm
  * @param {object} hrs - business schedule 
  * @param {string} hrs.hrs - business schedule 
  * @param {string} hrs.valor - business schedule 
@@ -33,7 +33,7 @@ const client = require('./client');
  * 
  * @return {Promise<>}.
  */
-exports.negocios = function (page = 0, category, pys, business, hrs, pay, location) {
+exports.negocios = function (page = 0, searchTerm, category, pys, hrs, pay, location) {
 
     return new Promise((resolve, reject) => {
         let busq = [];
@@ -42,7 +42,7 @@ exports.negocios = function (page = 0, category, pys, business, hrs, pay, locati
         for (let op of category) {
             busq.push({
                 "match_phrase": {
-                    'Appearances.Appearance.categoryname': op
+                    'Appearances.Appearance.categoryname': op._source.valor
                 }
             });
         }
@@ -50,18 +50,18 @@ exports.negocios = function (page = 0, category, pys, business, hrs, pay, locati
         for (let op of pys) {
             busq.push({
                 "match_phrase": {
-                    'productservices.prdserv': op
+                    'productservices.prdserv': op._source.valor
                 }
             });
         }
 
-        for (let op of business) {
-            busq.push({
-                "match_phrase": {
-                    "bn": op
-                }
-            });
-        }
+
+        busq.push({
+            "match": {
+                "bn": searchTerm
+            }
+        });
+
 
         if (hrs) {
             let ops = [];
@@ -183,9 +183,7 @@ exports.negocios = function (page = 0, category, pys, business, hrs, pay, locati
             }
         };
 
-        if (category.length > 0 || business.length > 0 || pys.length > 0 || validWhere(location)) {
-            let lat = null;
-            let lng = null;
+        if (category.length > 0 || pys.length > 0 || validWhere(location)) {
             if (Object.keys(location.maps).length > 0 && location.maps.lat && location.maps.lng) {
                 lat = location.maps.lat;
                 lng = location.maps.lng
@@ -198,12 +196,12 @@ exports.negocios = function (page = 0, category, pys, business, hrs, pay, locati
             const requestBody = {
                 "index": process.env.negocios,
                 "body": {
-                    "from": page * 10,
+                    "from": page * 20,
                     "size": 20,
                     "query": content,
                     sort: [
                         { points: "desc" },
-                        { "bn.order": "asc"}
+                        { "bn.order": "asc" }
                     ]
                 }
             }
@@ -371,7 +369,6 @@ exports.claro_shop = function (page = 0, marcas, ctg, bn, price, tx) {
                 }
             }).then((resp) => {
                 let arr = [];
-                //console.log(JSON.stringify(resp));
                 if (resp.hits.total > 0) {
                     for (let op of resp.hits.hits) {
                         arr.push(op._source);

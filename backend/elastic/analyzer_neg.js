@@ -65,22 +65,6 @@ exports.query_neg_pys = function(tx) {
     });
 }
 
-exports.query_neg_bn = function(tx) {
-    
-
-    return client.getClient().search({
-        "index": process.env.negocios,
-		"body": {
-			"size":3,
-		    "query" : {
-				"match": {
-					"bn": tx
-				}
-			}
-		}
-    });
-}
-
 
 
 
