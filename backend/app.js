@@ -11,16 +11,14 @@ const prob = require('./analyzer/prob');
 let json = {
     texto: null,
     where: {},
-    neg: {},
     claro: {},
     blog: {},
-    pln: {},
-    ruta: null
+    pln: {}
 }
 
-exports.search = function (texto, lat = null, lng = null) {
+exports.analisys = function (texto, lat = null, lng = null) {
 
-    let promesa = new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
 
         stg_clear.cls(texto).then((resp) => {
             json.texto = resp;
@@ -33,27 +31,21 @@ exports.search = function (texto, lat = null, lng = null) {
         }).then((resp) => {
             resp.ub.lat = lat;
             resp.ub.lng = lng;
-            json.texto = resp.texto;
-            json.where = resp.ub;
-            return negocios.neg(json.texto);
-        }).then((resp) => {
-            resp.hrs = json.pln.hrs;
-            resp.pay = json.pln.pay;
-            json.neg = resp;
-            json.neg.bn = json.texto;
-            return clr1.claro_shop(json.texto);
+            json.newSearchTerm = resp.texto;
+            json.location = resp.ub;
+            json.schedule = json.pln.hrs;
+            json.payments = json.pln.pay;
+            return clr1.claro_shop(json.newSearchTerm);
         }).then((resp) => {
             resp.price = json.pln.price;
             resp.desc = json.pln.desc;
             json.claro = resp
-            return bg.blog(json.texto);
+            return bg.blog(json.newSearchTerm);
         }).then((resp) => {
             json.blog = resp
-            json.ruta = prob.calcPrio(json);
             resolve(json);
         });
 
     });
-    return promesa;
 }
 

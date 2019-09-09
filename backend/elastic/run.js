@@ -33,205 +33,152 @@ const client = require('./client');
  * 
  * @return {Promise<>}.
  */
-exports.negocios = function (page = 0, searchTerm, category, pys, hrs, pay, location) {
+exports.searchBusiness = function (page = 0, searchTerm, hrs, pay, location) {
 
-    return new Promise((resolve, reject) => {
-        let busq = [];
-        let filtro = [];
-        let ub = [];
-        for (let op of category) {
-            busq.push({
-                "match_phrase": {
-                    'Appearances.Appearance.categoryname': op._source.valor
-                }
-            });
+    let busq = [];
+    let filtro = [];
+    let ub = [];
+
+
+
+    busq.push({
+        "match": {
+            "bn": searchTerm
         }
-
-        for (let op of pys) {
-            busq.push({
-                "match_phrase": {
-                    'productservices.prdserv': op._source.valor
-                }
-            });
-        }
+    });
 
 
-        busq.push({
-            "match": {
-                "bn": searchTerm
-            }
-        });
-
-
-        if (hrs) {
-            let ops = [];
-            if (hrs.hrs) {
-                if (hrs.day[0] == 'monday' || hrs.day[0] == 'tuesday' || hrs.day[0] == 'wednesday' || hrs.day[0] == 'thursday' || hrs.day[0] == 'friday') {
-                    ops.push({
-                        "range": {
-                            "weekDayOpen": {
-                                "lte": "16:46:00"
-                            }
-                        }
-                    })
-                    ops.push({
-                        "range": {
-                            "weekDayClose": {
-                                "gte": "16:46:00"
-                            }
-                        }
-                    })
-                }
-                ops = ops.concat(asigDay(hrs.day, hrs.hrs, hrs))
-            }
-            else {
-                if (hrs.day[0] == 'monday' || hrs.day[0] == 'tuesday' || hrs.day[0] == 'wednesday' || hrs.day[0] == 'thursday' || hrs.day[0] == 'friday') {
-                    ops.push({
-                        "exists": {
-                            "field": "weekDayOpen"
-                        }
-                    })
-                }
-                ops = ops.concat(asigDaySn(hrs.day))
-            }
-
-            let nv = {
-                "bool": {
-                    "should": ops
-                }
-            };
-            filtro = filtro.concat(nv);
-        }
-
-        if (pay) {
-            let nv = pay.toUpperCase();
-            filtro.push({
-                "nested": {
-                    "path": "features",
-                    "query": {
-                        "bool": {
-                            "must": [
-                                { "match": { "features.type.feature.content": nv } }
-                            ]
+    if (hrs) {
+        let ops = [];
+        if (hrs.hrs) {
+            if (hrs.day[0] == 'monday' || hrs.day[0] == 'tuesday' || hrs.day[0] == 'wednesday' || hrs.day[0] == 'thursday' || hrs.day[0] == 'friday') {
+                ops.push({
+                    "range": {
+                        "weekDayOpen": {
+                            "lte": "16:46:00"
                         }
                     }
-                }
-
-            });
-        }
-
-        if (location.maps.lat && location.maps.lng) {
-            location.estado = location.maps.dir.estado;
-            ub = setWhere(location);
-            if (location.maps && location.maps.dir.estado) {
-                filtro.push({
-                    bool: {
-                        should: [
-                            {
-                                match: {
-                                    statename: location.maps.dir.estado
-                                }
-                            },
-                            {
-                                "geo_distance": {
-                                    "distance": "5km",
-                                    "pin": [location.maps.lng, location.maps.lat]
-                                }
-                            }
-                        ]
-                    }
-                });
-            }
-            else {
-                filtro.push({
-                    "geo_distance": {
-                        "distance": "5km",
-                        "pin": [location.maps.lng, location.maps.lat]
-                    }
-                });
-            }
-        }
-        else if (validWhere(location) && validPys(pys, location) && validCategory(category, location)) {
-            ub = setWhere(location)
-        }
-        else if (location.lat && location.lng) {
-            filtro.push({
-                "geo_distance": {
-                    "distance": "10km",
-                    "pin": [location.lng, location.lat]
-                }
-            })
-        }
-
-        let content = {
-            bool: {
-                must: [
-                    {
-                        bool: {
-                            must: [
-                                {
-                                    bool: {
-                                        should: busq
-                                    }
-                                }
-                            ],
-                            should: ub
+                })
+                ops.push({
+                    "range": {
+                        "weekDayClose": {
+                            "gte": "16:46:00"
                         }
                     }
-                ],
-                filter: filtro
+                })
+            }
+            ops = ops.concat(asigDay(hrs.day, hrs.hrs, hrs))
+        }
+        else {
+            if (hrs.day[0] == 'monday' || hrs.day[0] == 'tuesday' || hrs.day[0] == 'wednesday' || hrs.day[0] == 'thursday' || hrs.day[0] == 'friday') {
+                ops.push({
+                    "exists": {
+                        "field": "weekDayOpen"
+                    }
+                })
+            }
+            ops = ops.concat(asigDaySn(hrs.day))
+        }
+
+        let nv = {
+            "bool": {
+                "should": ops
             }
         };
+        filtro = filtro.concat(nv);
+    }
 
-        if (category.length > 0 || pys.length > 0 || validWhere(location)) {
-            if (Object.keys(location.maps).length > 0 && location.maps.lat && location.maps.lng) {
-                lat = location.maps.lat;
-                lng = location.maps.lng
-            }
-            else if (location.lat && location.lng) {
-                lat = location.lat;
-                lng = location.lng;
+    if (pay) {
+        let nv = pay.toUpperCase();
+        filtro.push({
+            "nested": {
+                "path": "features",
+                "query": {
+                    "bool": {
+                        "must": [
+                            { "match": { "features.type.feature.content": nv } }
+                        ]
+                    }
+                }
             }
 
-            const requestBody = {
-                "index": process.env.negocios,
-                "body": {
-                    "from": page * 20,
-                    "size": 20,
-                    "query": content,
-                    sort: [
-                        { points: "desc" },
-                        { "bn.order": "asc" }
+        });
+    }
+
+    if (location.maps.lat && location.maps.lng) {
+        location.estado = location.maps.dir.estado;
+        ub = setWhere(location);
+        if (location.maps && location.maps.dir.estado) {
+            filtro.push({
+                bool: {
+                    should: [
+                        {
+                            match: {
+                                statename: location.maps.dir.estado
+                            }
+                        },
+                        {
+                            "geo_distance": {
+                                "distance": "5km",
+                                "pin": [location.maps.lng, location.maps.lat]
+                            }
+                        }
                     ]
                 }
-            }
-            console.log(JSON.stringify(requestBody));
-            client.getClient().search(requestBody).then((resp) => {
-
-                let arr = [];
-                if (resp.hits.total > 0) {
-                    for (let business of resp.hits.hits) {
-                        let nv = business._source;
-                        nv.sort = business.hasOwnProperty('sort') ? business.sort : null;
-                        arr.push(nv);
-                    }
-
-                    resolve({
-                        info: arr,
-                        total: resp.hits.total
-                    });
-                }
-                resolve({
-                    info: [],
-                    total: 0
-                });
-            })
+            });
         }
-        else resolve({
-            info: [],
-            total: 0
-        });
-    });
+        else {
+            filtro.push({
+                "geo_distance": {
+                    "distance": "5km",
+                    "pin": [location.maps.lng, location.maps.lat]
+                }
+            });
+        }
+    }
+    else if (validWhere(location) && validPys(pys, location) && validCategory(category, location)) {
+        ub = setWhere(location)
+    }
+    else if (location.lat && location.lng) {
+        filtro.push({
+            "geo_distance": {
+                "distance": "10km",
+                "pin": [location.lng, location.lat]
+            }
+        })
+    }
+
+    let content = {
+        bool: {
+            must: [
+                {
+                    bool: {
+                        should: busq
+                    }
+                }
+            ],
+            should: ub,
+            filter: filtro
+        }
+    };
+
+
+
+    const requestBody = {
+        "index": process.env.negocios,
+        "body": {
+            "from": page * 20,
+            "size": 20,
+            "query": content,
+            sort: [
+                { points: "desc" },
+                { "bn.order": "asc" }
+            ]
+        }
+    }
+    console.log(JSON.stringify(requestBody));
+    return client.getClient().search(requestBody);
+
 }
 
 /**
@@ -251,6 +198,44 @@ exports.businessByBrand = function (brandname) {
     }
     return client.getClient().search(body);
 
+}
+
+/**
+ * 
+ * @param {string} searchTerm - term searched in api
+ * @returns {Promise<>} - elasticsearch result 
+ */
+function searchCategoryAndServices(searchTerm) {
+    const request = {
+        "index": process.env.taxonomias,
+        "body": {
+            "query": {
+                "bool": {
+                    "must": [
+                        {
+                            "match_phrase": {
+                                "relacion": searchTerm
+                            }
+                        }
+                    ],
+                    "should": [
+                        {
+                            "match_phrase": {
+                                "valor": searchTerm
+                            }
+                        }
+                    ],
+                    "filter": {
+                        "term": {
+                            "fuente": "negocios"
+                        }
+                    }
+                }
+            },
+            "size": 20
+        }
+    }
+    return client.getClient.search(request);
 }
 
 exports.claro_shop = function (page = 0, marcas, ctg, bn, price, tx) {
@@ -651,35 +636,6 @@ function asigDaySn(days) {
     return arr;
 }
 
-async function findComments(arreglo) {
-    let arr = [];
-    for (let op of arreglo) {
-        await com.getComment(op).then((info) => {
-            arr.push(info);
-        })
-    }
-
-    return arr;
-}
-
-function validPys(pys, where) {
-    for (let op of pys) {
-        if (where.estado == op || where.city == op || where.colony == op) {
-            return false;
-        }
-    }
-    return true;
-}
-
-function validCategory(ctg, where) {
-    for (let op of ctg) {
-        let palabras = op.split(' ');
-        if (palabras.includes(where.estado) || palabras.includes(where.colony) || palabras.includes(where.city)) {
-            return false;;
-        }
-    }
-    return true;
-}
 
 function setWhere(where) {
     let arr = [];
@@ -759,13 +715,7 @@ function setWhere(where) {
             }
         })
     }
-
     return arr;
-
-}
-
-function validWhere(where) {
-    return (where.estado || where.city || where.colony)
 }
 
 function getAbrevWhere(estado) {

@@ -21,10 +21,19 @@ app.use(bodyParser.json())
  * @param {string} req.query.searchTerm -business, category or location or  product
  */
 app.get('/node', (req, res) => {
-    proceso.search(req.query.searchTerm, parseFloat(req.query.lat), parseFloat(req.query.lng)).then((json) => {
-        elastic.negocios(req.query.page, json.neg.bn,  json.neg.ctg, json.neg.pys, json.neg.hrs, json.neg.pay, json.where).then((resp) => {
-            res.status(200).send(resp)
-        });
+    proceso.analisys(req.query.searchTerm, parseFloat(req.query.lat), parseFloat(req.query.lng)).then((json) => {
+        elastic.searchBusiness(req.query.page, json.newSearchTerm, json.neg.schedule, json.neg.payments, json.location).then((response) => {
+            const businesses = response.hits.hits.map(business => {
+                return business._source;
+            });
+            res.status(200).send({
+                total: response.hits.total,
+                info: businesses
+            })
+        }).catch(error => {
+            console.error(error);
+            res.status(500).send(error);
+        })
     })
 });
 
@@ -45,7 +54,7 @@ app.get('/node/business_by_brand', (req, res) => {
     }).catch(error => {
         console.error(error);
         res.status(500).send(error);
-    })
+    });
 });
 
 
