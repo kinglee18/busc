@@ -21,8 +21,15 @@ app.use(bodyParser.json())
  * @param {string} req.query.searchTerm -business, category or location or  product
  */
 app.get('/node', (req, res) => {
-    proceso.analisys(req.query.searchTerm, parseFloat(req.query.lat), parseFloat(req.query.lng)).then((json) => {
-        elastic.searchBusiness(req.query.page, json.newSearchTerm, json.neg.schedule, json.neg.payments, json.location).then((response) => {
+    proceso.analisys(req.query.searchTerm).then((json) => {
+        elastic.searchBusiness(
+            req.query.page,
+            json.newSearchTerm,
+            json.schedule,
+            json.payments,
+            json.location,
+            { lat: parseFloat(req.query.lat), lng: parseFloat(req.query.lng) }
+        ).then((response) => {
             const businesses = response.hits.hits.map(business => {
                 return business._source;
             });

@@ -16,7 +16,7 @@ let json = {
     pln: {}
 }
 
-exports.analisys = function (texto, lat = null, lng = null) {
+exports.analisys = function (texto) {
 
     return new Promise((resolve, reject) => {
 
@@ -29,8 +29,7 @@ exports.analisys = function (texto, lat = null, lng = null) {
             json.texto = resp.texto;
             return ub.where(json.texto);
         }).then((resp) => {
-            resp.ub.lat = lat;
-            resp.ub.lng = lng;
+            
             json.newSearchTerm = resp.texto;
             json.location = resp.ub;
             json.schedule = json.pln.hrs;

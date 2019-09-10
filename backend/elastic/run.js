@@ -1,53 +1,69 @@
 'use strict'
 const syn = require('../info/syn_where');
-const com = require('../http/comments');
 const client = require('./client');
-
 
 /**
  * @param {number} page - Page number to search in elastic db 
- * @param {string[]} category - Category name
- * @param {string[]} pys - Products and services
  * @param {string} searchTerm - searchTerm
  * @param {object} hrs - business schedule 
  * @param {string} hrs.hrs - business schedule 
  * @param {string} hrs.valor - business schedule 
  * @param {string[]} hrs.day - business schedule 
  * 
- * @param {string} pay -  payment types of business
- * @param {object} location - business state location
- * @param {string} location.city - 
- * @param {string} location.colony - 
- * @param {string} location.estado - 
- * @param {string} location.street - 
- * @param {number} location.lat - 
- * @param {number} location.lng - 
- * @param {object} location.maps -
- * @param {number} location.maps.lng - 
- * @param {number} location.maps.lat - 
- * @param {object} location.maps.dir -
- * @param {string} location.maps.dir.city -
- * @param {string} location.maps.dir.colony -
- * @param {string} location.maps.dir.estado -
+ * @param {string} paymentTypes -  payment types of business
+ * @param {object} calculatedAddress - business calculatedAddress
+ * @param {string} calculatedAddress.city - 
+ * @param {string} calculatedAddress.colony - 
+ * @param {string} calculatedAddress.estado - 
+ * @param {string} calculatedAddress.street - 
+ * @param {object} calculatedAddress.maps -
+ * @param {number} calculatedAddress.maps.lng - 
+ * @param {number} calculatedAddress.maps.lat - 
+ * @param {object} calculatedAddress.maps.dir -
+ * @param {string} calculatedAddress.maps.dir.city -
+ * @param {string} calculatedAddress.maps.dir.colony -
+ * @param {string} calculatedAddress.maps.dir.estado -
+ * @param {string} coordinates -
+ * 
  * 
  * 
  * @return {Promise<>}.
  */
-exports.searchBusiness = function (page = 0, searchTerm, hrs, pay, location) {
+exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calculatedAddress, coordinates ) {
 
-    let busq = [];
-    let filtro = [];
-    let ub = [];
+    this.searchCategoryAndServices(searchTerm).then(categoriesAndService => {
 
-
-
-    busq.push({
-        "match": {
-            "bn": searchTerm
-        }
+/*         const paymentQuery = getPaymentQuery(paymentTypes);
+        const scheduleQuery = getScheduleQuery(hrs); */
+        const addressQuery = getAddressQuery(calculatedAddress);
+        
     });
 
 
+    const query = {
+        bool: {
+            must,
+            should,
+            filter
+        }
+    };
+    const requestBody = {
+        "index": process.env.negocios,
+        "body": {
+            "from": page * 20,
+            "size": 20,
+            "query": query,
+            sort: [
+                { points: "desc" },
+                { "bn.order": "asc" }
+            ]
+        }
+    }
+    console.log(JSON.stringify(requestBody));
+    return client.getClient().search(requestBody);
+}
+
+function getScheduleQuery(hrs) {
     if (hrs) {
         let ops = [];
         if (hrs.hrs) {
@@ -87,8 +103,10 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, pay, location) {
         };
         filtro = filtro.concat(nv);
     }
+}
 
-    if (pay) {
+function getPaymentQuery(payments) {
+    if (payments) {
         let nv = pay.toUpperCase();
         filtro.push({
             "nested": {
@@ -104,7 +122,9 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, pay, location) {
 
         });
     }
+}
 
+function getAddressQuery(location) {
     if (location.maps.lat && location.maps.lng) {
         location.estado = location.maps.dir.estado;
         ub = setWhere(location);
@@ -147,38 +167,6 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, pay, location) {
             }
         })
     }
-
-    let content = {
-        bool: {
-            must: [
-                {
-                    bool: {
-                        should: busq
-                    }
-                }
-            ],
-            should: ub,
-            filter: filtro
-        }
-    };
-
-
-
-    const requestBody = {
-        "index": process.env.negocios,
-        "body": {
-            "from": page * 20,
-            "size": 20,
-            "query": content,
-            sort: [
-                { points: "desc" },
-                { "bn.order": "asc" }
-            ]
-        }
-    }
-    console.log(JSON.stringify(requestBody));
-    return client.getClient().search(requestBody);
-
 }
 
 /**
@@ -232,7 +220,7 @@ function searchCategoryAndServices(searchTerm) {
                     }
                 }
             },
-            "size": 20
+            "size": 30
         }
     }
     return client.getClient.search(request);
