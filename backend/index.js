@@ -19,6 +19,7 @@ app.use(bodyParser.json())
  * @param {string} req.query.searchTerm -business, category or location or  product
  */
 app.get('/node', (req, res) => {
+    
     proceso.analisys(req.query.searchTerm).then((json) => {
         elastic.searchBusiness(
             req.query.page,
@@ -68,7 +69,7 @@ app.get('/node/business_by_brand', (req, res) => {
  * @param {string} req.query.searchTerm - business, category or location or  product
  */
 app.get('/node/blog', (req, res) => {
-    proceso.analisys(req.query.searchTerm, parseFloat(req.query.lat), parseFloat(req.query.lng)).then(analisys => {
+    proceso.analisys(req.query.searchTerm).then(analisys => {
         blog.blog(analisys.newSearchTerm).then(blog => {
             elastic.blog(req.query.page, analisys.newSearchTerm, blog.tags, blog.ctg, analisys.location).then((resp) => {
                 res.status(200).send(resp);
@@ -82,7 +83,7 @@ app.get('/node/blog', (req, res) => {
  * @param {string} req.query.searchTerm - business, category or location or  product
  */
 app.get('/node/claroshop', (req, res) => {
-    proceso.analisys(req.query.searchTerm, parseFloat(req.query.lat), parseFloat(req.query.lng)).then((analisys) => {
+    proceso.analisys(req.query.searchTerm).then((analisys) => {
         clr1.claro_shop(analisys.newSearchTerm).then(claro => {
             elastic.claro_shop(req.query.page, claro.marcas, claro.ctg, claro.bn, analisys.price, claro.tx).then((resp) => {
                 res.status(200).send(resp);

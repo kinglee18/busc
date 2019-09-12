@@ -10,19 +10,12 @@ const client = require('./client');
  * @param {string} hrs.valor - business schedule 
  * @param {string[]} hrs.day - business schedule 
  * 
- * @param {string} paymentTypes -  payment types of business
- * @param {object} calculatedAddress - business calculatedAddress
- * @param {string} calculatedAddress.city - 
- * @param {string} calculatedAddress.colony - 
- * @param {string} calculatedAddress.estado - 
- * @param {string} calculatedAddress.street - 
- * @param {object} calculatedAddress.maps -
- * @param {number} calculatedAddress.maps.lng - 
- * @param {number} calculatedAddress.maps.lat - 
- * @param {object} calculatedAddress.maps.dir -
- * @param {string} calculatedAddress.maps.dir.city -
- * @param {string} calculatedAddress.maps.dir.colony -
- * @param {string} calculatedAddress.maps.dir.estado -
+ * @param {string []} paymentTypes -  payment types of business
+ * @param {object} calculatedAddress - business calculatedAddress in previous analisys
+ * @param {string} calculatedAddress.dir.municipality - 
+ * @param {string} calculatedAddress.dir.colony - 
+ * @param {string} calculatedAddress.dir.state - 
+ * @param {string} calculatedAddress.dir.street - 
  * @param {object} coordinates - coordinates privided by the browser
  * @param {string} coordinates.lat - latitude
  * @param {string} coordinates.lng - longitude
@@ -30,13 +23,18 @@ const client = require('./client');
  * 
  * @return {Promise<>}.
  */
-exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calculatedAddress, coordinates ) {
+exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calculatedAddress, coordinates) {
     let must = [], should = [], filter = [];
+    let addressFilter;
 
     return searchCategoryAndServices(searchTerm).then(categoriesAndService => {
-/*         const paymentQuery = getPaymentQuery(paymentTypes);
-        const scheduleQuery = getScheduleQuery(hrs); */
-        /* const addressQuery = getAddressQuery(calculatedAddress); */
+        /*         const paymentQuery = getPaymentQuery(paymentTypes);
+                const scheduleQuery = getScheduleQuery(hrs); */
+        addressFilter = getAddressFilter(calculatedAddress.dir, coordinates);
+        if (addressFilter){
+            filter.push(addressFilter);
+        }
+
         const query = {
             bool: {
                 must,
@@ -122,49 +120,49 @@ function getPaymentQuery(payments) {
     }
 }
 
-function getAddressQuery(location) {
-    if (location.maps.lat && location.maps.lng) {
-        location.estado = location.maps.dir.estado;
-        ub = setWhere(location);
-        if (location.maps && location.maps.dir.estado) {
-            filtro.push({
-                bool: {
-                    should: [
-                        {
-                            match: {
-                                statename: location.maps.dir.estado
-                            }
-                        },
-                        {
-                            "geo_distance": {
-                                "distance": "5km",
-                                "pin": [location.maps.lng, location.maps.lat]
-                            }
-                        }
-                    ]
+/**
+ * @description - generates an object depending on the calculated address by 
+ * the analisys or provided coordinates
+ * @param {object} location - previously calculated address 
+ * @param {object} coordinates - browser coordinates
+ * @returns {object} - constains a fragment for query filter options 
+ */
+function getAddressFilter(location, coordinates) {
+    if (location) {
+        if (location.colony){
+            return {
+                "match_phrase": {
+                    "colony": {
+                        "query": location.colony
+                    }
                 }
-            });
+            };
         }
-        else {
-            filtro.push({
-                "geo_distance": {
-                    "distance": "5km",
-                    "pin": [location.maps.lng, location.maps.lat]
+        else if (location.municipality){
+            return {
+                "match_phrase": {
+                    "Appearances.Appearance.city": {
+                        "query": location.municipality
+                    }
                 }
-            });
+            };
         }
-    }
-    else if (validWhere(location) && validPys(pys, location) && validCategory(category, location)) {
-        ub = setWhere(location)
-    }
-    else if (location.lat && location.lng) {
-        filtro.push({
+        return {
+            "match_phrase": {
+                "Appearances.Appearance.state": {
+                    "query": getAbrevWhere(location.state)
+                }
+            }
+        };
+    } else if (coordinates.lat){
+        return {
             "geo_distance": {
                 "distance": "10km",
-                "pin": [location.lng, location.lat]
+                "pin": [coordinates.lng, coordinates.lat]
             }
-        })
+        };        
     }
+
 }
 
 /**
@@ -621,88 +619,6 @@ function asigDaySn(days) {
         }
     }
 
-    return arr;
-}
-
-
-function setWhere(where) {
-    let arr = [];
-
-    if (where.estado) {
-        let abrev = getAbrevWhere(where.estado);
-        arr.push({
-            "match": {
-                "statename": {
-                    "query": where.estado,
-                    "boost": 3
-                }
-            }
-        })
-        arr.push({
-            "match": {
-                "Appearances.Appearance.statename.synonyms": {
-                    "query": where.estado,
-                    "boost": 3
-                }
-            }
-        })
-
-        arr.push({
-            "match": {
-                "state.synonyms": {
-                    "query": abrev,
-                    "boost": 3
-                }
-            }
-        })
-
-        arr.push({
-            "match": {
-                "Appearances.Appearance.state.synonyms": {
-                    "query": abrev,
-                    "boost": 3
-                }
-            }
-        })
-    }
-
-    if (where.city) {
-        arr.push({
-            "match": {
-                "city": {
-                    "query": where.city,
-                    "boost": 3
-                }
-            }
-        });
-        arr.push({
-            "match": {
-                "Appearances.Appearance.city": {
-                    "query": where.city,
-                    "boost": 3
-                }
-            }
-        })
-    }
-
-    if (where.colony) {
-        arr.push({
-            "match": {
-                "Appearances.Appearance.colony": {
-                    "query": where.colony,
-                    "boost": 3
-                }
-            }
-        })
-        arr.push({
-            "match": {
-                "colony": {
-                    "query": where.colony,
-                    "boost": 3
-                }
-            }
-        })
-    }
     return arr;
 }
 

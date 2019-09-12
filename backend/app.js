@@ -17,6 +17,7 @@ exports.analisys = function (texto) {
             json.newSearchTerm = resp.newSearchTerm;
             json.location = resp.address;
             json.schedule = json.pln.hrs;
+            json.price = json.pln.price;
             resolve(json);
         });
     });
