@@ -6,30 +6,22 @@ const gram = require('../info/gramatica');
 
 exports.where = function (texto) {
 
-    let ub = {
-        estado: null,
+    let address = {
+        state: null,
         city: null,
         colony: null,
-        street: null,
-        maps: {}
-    }
+        street: null
+    };
     
-    let exist_prep = false;
-
-
     return new Promise((resolve, reject) => {
-
-
         let nv = findPrepLug(texto);
         if (nv.lug) {
-            exist_prep = true;
             texto = '';
             texto = nv.lug;
-            maps.search(texto).then((resp) => {
-                ub.maps = resp;
+            maps.search(texto).then((address) => {
                 resolve({
-                    ub: ub,
-                    texto: nv.texto
+                    address,
+                    newSearchTerm: nv.texto
                 })
             })
         }
@@ -37,38 +29,36 @@ exports.where = function (texto) {
             let oldTexto = texto;
             elastic.query_wheres_state(texto).then((resp) => {
                 let data;
-                data = findEstado(texto, resp.hits.hits)
+                data = findState(texto, resp.hits.hits)
                 if (data.status) {
                     texto = sust(texto, data.valor);
                     texto = cls.clearStopWord(texto);
-                    ub.estado = data.valor;
-                    elastic.query_wheres_city(texto, ub.estado).then((resp) => {
+                    address.state = data.valor;
+                    elastic.query_wheres_city(texto, address.state).then((resp) => {
                         data = findCity(texto, resp.hits.hits, data.info);
                         if (data.info.length > 0 && data.status) {
                             texto = sust(texto, data.valor);
                             texto = cls.clearStopWord(texto);
-                            ub.city = data.valor;
+                            address.city = data.valor;
                             data = findColony(texto, data.info);
                             if (data.status) {
-                                ub.colony = data.valor;
+                                address.colony = data.valor;
                             }
-                            ub.exist_prep = exist_prep;
                             resolve({
-                                ub: ub,
-                                texto: oldTexto
+                                address,
+                                newSearchTerm: oldTexto
                             });
                         }
                         else {
-                            elastic.query_wheres_colony(texto, ub.estado).then((resp) => {
+                            elastic.query_wheres_colony(texto, address.state).then((resp) => {
                                 data = findOnlyColony(texto, resp.hits.hits);
                                 if (data.status) {
-                                    ub.colony = data.valor;
-                                    ub.city = data.est
+                                    address.colony = data.valor;
+                                    address.city = data.est
                                 }
-                                ub.exist_prep = exist_prep;
                                 resolve({
-                                    ub: ub,
-                                    texto: oldTexto
+                                    address,
+                                    newSearchTerm: oldTexto
                                 });
                             })
                         }
@@ -80,31 +70,29 @@ exports.where = function (texto) {
 
                         data = findCity(texto, resp.hits.hits, null)
                         if (data.status) {
-                            ub.estado = data.tipo;
+                            address.state = data.tipo;
                             texto = sust(texto, data.valor);
                             texto = cls.clearStopWord(texto);
-                            ub.city = data.valor;
+                            address.city = data.valor;
                             data = findColony(texto, data.info);
                             if (data.status) {
-                                ub.colony = data.valor;
+                                address.colony = data.valor;
                             }
-                            ub.exist_prep = exist_prep;
                             resolve({
-                                ub: ub,
-                                texto: oldTexto
+                                address,
+                                newSearchTerm: oldTexto
                             });
                         }
                         else {
                             elastic.query_wheres_colony(texto, null).then((resp) => {
                                 data = findOnlyColony(texto, resp.hits.hits);
                                 if (data.status) {
-                                    ub.colony = data.valor;
-                                    ub.city = data.est
+                                    address.colony = data.valor;
+                                    address.city = data.est
                                 }
-                                ub.exist_prep = exist_prep;
                                 resolve({
-                                    ub: ub,
-                                    texto: oldTexto
+                                    address,
+                                    newSearchTerm: oldTexto
                                 });
                             })
                         }
@@ -117,7 +105,7 @@ exports.where = function (texto) {
     });
 }
 
-function findEstado(tx, arreglo) {
+function findState(tx, arreglo) {
     let ind = false;
     let info = [];
     let valor = null;
@@ -221,7 +209,7 @@ function findOnlyColony(tx, arreglo) {
                 let reg = new RegExp("\\b" + cls.onlyLetters(op2) + "\\b");
                 let matches = tx.match(reg);
                 if (matches) {
-                    //console.log('Estado: '+op._source.valor+'---'+op2);
+                    //console.log('State: '+op._source.valor+'---'+op2);
                     //console.log('Matches: '+matches);
                     ind = true;
                     valor = op2;

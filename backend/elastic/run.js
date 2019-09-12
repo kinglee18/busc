@@ -23,44 +23,42 @@ const client = require('./client');
  * @param {string} calculatedAddress.maps.dir.city -
  * @param {string} calculatedAddress.maps.dir.colony -
  * @param {string} calculatedAddress.maps.dir.estado -
- * @param {string} coordinates -
- * 
+ * @param {object} coordinates - coordinates privided by the browser
+ * @param {string} coordinates.lat - latitude
+ * @param {string} coordinates.lng - longitude
  * 
  * 
  * @return {Promise<>}.
  */
 exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calculatedAddress, coordinates ) {
+    let must = [], should = [], filter = [];
 
-    this.searchCategoryAndServices(searchTerm).then(categoriesAndService => {
-
+    return searchCategoryAndServices(searchTerm).then(categoriesAndService => {
 /*         const paymentQuery = getPaymentQuery(paymentTypes);
         const scheduleQuery = getScheduleQuery(hrs); */
-        const addressQuery = getAddressQuery(calculatedAddress);
-        
+        /* const addressQuery = getAddressQuery(calculatedAddress); */
+        const query = {
+            bool: {
+                must,
+                should,
+                filter
+            }
+        };
+        const requestBody = {
+            "index": process.env.negocios,
+            "body": {
+                "from": page * 20,
+                "size": 20,
+                "query": query,
+                sort: [
+                    { points: "desc" },
+                    { "bn.order": "asc" }
+                ]
+            }
+        }
+        console.log(JSON.stringify(requestBody));
+        return client.getClient().search(requestBody);
     });
-
-
-    const query = {
-        bool: {
-            must,
-            should,
-            filter
-        }
-    };
-    const requestBody = {
-        "index": process.env.negocios,
-        "body": {
-            "from": page * 20,
-            "size": 20,
-            "query": query,
-            sort: [
-                { points: "desc" },
-                { "bn.order": "asc" }
-            ]
-        }
-    }
-    console.log(JSON.stringify(requestBody));
-    return client.getClient().search(requestBody);
 }
 
 function getScheduleQuery(hrs) {
@@ -185,7 +183,6 @@ exports.businessByBrand = function (brandname) {
         }
     }
     return client.getClient().search(body);
-
 }
 
 /**
@@ -220,10 +217,13 @@ function searchCategoryAndServices(searchTerm) {
                     }
                 }
             },
-            "size": 30
+            "size": 30,
+            sort: [
+                { "_score": "asc" }
+            ]
         }
     }
-    return client.getClient.search(request);
+    return client.getClient().search(request);
 }
 
 exports.claro_shop = function (page = 0, marcas, ctg, bn, price, tx) {
@@ -369,12 +369,12 @@ exports.blog = function (page = 0, tx, tags, ctg, where) {
         let busq = [];
         let filtro = [];
 
-        if (where.estado) {
+        if (where.state) {
             filtro.push({
                 "nested": {
                     "path": "categories",
                     "query": {
-                        "match": { "categories.slug": where.estado }
+                        "match": { "categories.slug": where.state }
                     }
                 }
             });
