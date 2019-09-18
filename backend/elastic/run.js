@@ -54,7 +54,7 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                 "query": {
                     "bool": {
                         should: {
-                            "match_phrase": {
+                            "match": {
                                 "Appearances.Appearance.categoryname": { "query": searchTerm, "_name": "match_phrase_cat" }
                             }
                         },
