@@ -10,28 +10,28 @@ exports.search = async function (texto) {
         return {
             lat: resp.data.results[0].geometry.location.lat,
             lng: resp.data.results[0].geometry.location.lng,
-            dir: getDir2(resp.data.results[0].address_components)
+            dir: parseAddress(resp.data.results[0].address_components)
         }
     }
     console.error("Fallo al buscar ubicacion");
-
 }
 
-function getDir2(arreglo) {
-    let json = {
-        estado: null,
-        city: null,
-        colony: null
-    }
+function parseAddress(arreglo) {
+    let address = {}
     for (let op of arreglo) {
-        if (op.types.includes('administrative_area_level_1')) {
-            let valor = cls.clearTexto(op.long_name);
-            if (valor == 'ciudad mexico' || valor == 'ciudad de mexico' || valor == 'mexico city') valor = 'distrito federal';
-            else if (valor == 'state of mexico') valor = 'mexico';
-            json.estado = valor;
+        let name = cls.clearTexto(op.long_name);
+        if (op.types.includes("political") && op.types.includes("sublocality") && op.types.includes("sublocality_level_1")){
+            address.colony = name;
         }
+        else if (op.types.includes('administrative_area_level_3') || (op.types.includes('locality') && op.types.includes('political'))) {
+            address.municipality = name;
+        } 
+        else if (op.types.includes('administrative_area_level_1')) {
+            if (name == 'ciudad mexico' || name == 'ciudad de mexico' || name == 'mexico city') name = 'distrito federal';
+            else if (name == 'state of mexico') name = 'mexico';
+            address.state = name;
+        } 
     }
-
-    return json;
+    return address;
 }
 

@@ -18,13 +18,12 @@ function letters(texto) {
     texto = accents.remove(texto);
     let frag = texto.split('');
     frag.push(' ')
-    //console.log(frag);
     let bn = false;
     let tx = "";
     let palabras = [];
     for(let p in frag) {
         let num = frag[p].charCodeAt(0);
-        if(num == 32 || num == 37 || num == 36/*|| num == 45*/) {
+        if(num == 32 || num == 37 || num == 36) {
             if(tx.length > 0) {
                 palabras.push(tx.trim());
                 tx = "";
@@ -35,10 +34,6 @@ function letters(texto) {
         }
     }
     return palabras.join(' ');
-}
-
-function abrevWhere(texto) {
-    
 }
 
 function synonyms_where(tx) {
@@ -78,9 +73,7 @@ exports.clearAllStopWords = function(tx) {
 function removeStopLt(tx) {
     tx = tx.trim();
     let palabras = tx.split(' ');
-    //console.log('Antes de StopWords: '+tx)
     let valid = sw.removeStopwords(palabras, sw.es);
-    //console.log(valid);
     let final = palabras[palabras.length - 1];
     let inicio = palabras[0];
     if(!valid.includes(final) || !valid.includes(inicio)) {
