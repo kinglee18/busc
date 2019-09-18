@@ -29,13 +29,14 @@ app.get('/node', (req, res) => {
             json.location,
             { lat: parseFloat(req.query.lat), lng: parseFloat(req.query.lng) }
         ).then((response) => {
-            const businesses = response.hits.hits.map(business => {
+            const hits = response.responses[0].hits.hits.concat(response.responses[1].hits.hits);
+             const businesses = hits.map(business => {
                 return business._source;
             });
             res.status(200).send({
-                total: response.hits.total,
+                total: response.responses[0].hits.total + response.responses[1].hits.total,
                 info: businesses
-            })
+            }) 
         }).catch(error => {
             console.error(error);
             res.status(500).send(error);

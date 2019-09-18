@@ -16,7 +16,7 @@ module.exports = {
     },
 
     test: {
-        ip: '10.34.180.128:9200',
+        ip: '10.34.180.127:9200',
         taxonomias: 'taxonomias_globales',
         negocios: 'businesslistingsacom',
         claro_shop: 'claro_shop_rep',

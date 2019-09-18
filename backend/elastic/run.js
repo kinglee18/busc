@@ -27,35 +27,62 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
     let must = [], should = [], filter = [];
     let addressFilter;
 
-    return searchCategoryAndServices(searchTerm).then(categoriesAndService => {
+    return searchCategoryAndServices(searchTerm).then(relatedCategories => {
         /*         const paymentQuery = getPaymentQuery(paymentTypes);
                 const scheduleQuery = getScheduleQuery(hrs); */
         addressFilter = getAddressFilter(calculatedAddress.dir, coordinates);
-        if (addressFilter){
+        let categoriesCoincidenses = getCategories(relatedCategories.hits.hits);
+        if (addressFilter) {
             filter.push(addressFilter);
         }
 
-        const query = {
-            bool: {
-                must,
-                should,
-                filter
-            }
+        const pagination = {
+            "from": page * 20,
+            "size": 20,
         };
         const requestBody = {
-            "index": process.env.negocios,
-            "body": {
-                "from": page * 20,
-                "size": 20,
-                "query": query,
-                sort: [
-                    { points: "desc" },
-                    { "bn.order": "asc" }
-                ]
-            }
+            body: [
+                {},
+                Object.assign({
+                    "query": {
+                        "bool": {
+                            "must": [{ "match": { "bn_full_text": { "query": searchTerm, "_name": "match_exact_bn" } } }]
+                        }
+                    },
+                    "sort": [{ "points": { "order": "desc" } }, "_score"]
+                }, pagination),
+                {},
+                Object.assign({
+                    "query": {
+                        "bool": {
+                            should: categoriesCoincidenses,
+                            filter,
+                            "must_not": [{ "match": { "bn_full_text": { "query": searchTerm } } }]
+                        }
+                    },
+                    "sort": [{ "points": { "order": "desc" } }, { "_score": { "order": "desc" } }, { "bn.order": { "order": "asc" } }]
+                }, pagination)
+            ],
+            index: process.env.negocios
         }
         console.log(JSON.stringify(requestBody));
-        return client.getClient().search(requestBody);
+        return client.getClient().msearch(requestBody);
+    });
+}
+
+/**
+ * 
+ * @param {Array<object>} categories 
+ */
+function getCategories(categories) {
+    let boost = 0;
+    return categories.reverse().map(category => {
+
+        return {
+            "match_phrase": {
+                "Appearances.Appearance.categoryname": { "query": category._source.valor, "_name": "match_phrase_cat", "boost": boost += 5 }
+            }
+        }
     });
 }
 
@@ -129,7 +156,7 @@ function getPaymentQuery(payments) {
  */
 function getAddressFilter(location, coordinates) {
     if (location) {
-        if (location.colony){
+        if (location.colony) {
             return {
                 "match_phrase": {
                     "colony": {
@@ -138,7 +165,7 @@ function getAddressFilter(location, coordinates) {
                 }
             };
         }
-        else if (location.municipality){
+        else if (location.municipality) {
             return {
                 "match_phrase": {
                     "Appearances.Appearance.city": {
@@ -154,13 +181,13 @@ function getAddressFilter(location, coordinates) {
                 }
             }
         };
-    } else if (coordinates.lat){
+    } else if (coordinates.lat) {
         return {
             "geo_distance": {
                 "distance": "10km",
                 "pin": [coordinates.lng, coordinates.lat]
             }
-        };        
+        };
     }
 
 }
@@ -196,14 +223,14 @@ function searchCategoryAndServices(searchTerm) {
                 "bool": {
                     "must": [
                         {
-                            "match_phrase": {
+                            "match": {
                                 "relacion": searchTerm
                             }
                         }
                     ],
                     "should": [
                         {
-                            "match_phrase": {
+                            "match": {
                                 "valor": searchTerm
                             }
                         }
@@ -217,7 +244,7 @@ function searchCategoryAndServices(searchTerm) {
             },
             "size": 30,
             sort: [
-                { "_score": "asc" }
+                { "_score": "desc" }
             ]
         }
     }
