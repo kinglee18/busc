@@ -27,63 +27,49 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
     let must = [], should = [], filter = [];
     let addressFilter;
 
-    return searchCategoryAndServices(searchTerm).then(relatedCategories => {
-        /*         const paymentQuery = getPaymentQuery(paymentTypes);
-                const scheduleQuery = getScheduleQuery(hrs); */
-        addressFilter = getAddressFilter(calculatedAddress.dir, coordinates);
-        let categoriesCoincidenses = getCategories(relatedCategories.hits.hits);
-        if (addressFilter) {
-            filter.push(addressFilter);
-        }
+    /*         const paymentQuery = getPaymentQuery(paymentTypes);
+            const scheduleQuery = getScheduleQuery(hrs); */
+    addressFilter = getAddressFilter(calculatedAddress.dir, coordinates);
+    if (addressFilter) {
+        filter.push(addressFilter);
+    }
 
-        const pagination = {
-            "from": page * 20,
-            "size": 20,
-        };
-        const requestBody = {
-            body: [
-                {},
-                Object.assign({
-                    "query": {
-                        "bool": {
-                            "must": [{ "match": { "bn_full_text": { "query": searchTerm, "_name": "match_exact_bn" } } }]
-                        }
-                    },
-                    "sort": [{ "points": { "order": "desc" } }, "_score"]
-                }, pagination),
-                {},
-                Object.assign({
-                    "query": {
-                        "bool": {
-                            should: categoriesCoincidenses,
-                            filter,
-                            "must_not": [{ "match": { "bn_full_text": { "query": searchTerm } } }]
-                        }
-                    },
-                    "sort": [{ "points": { "order": "desc" } }, { "_score": { "order": "desc" } }, { "bn.order": { "order": "asc" } }]
-                }, pagination)
-            ],
-            index: process.env.negocios
-        }
-        console.log(JSON.stringify(requestBody));
-        return client.getClient().msearch(requestBody);
-    });
-}
+    const pagination = {
+        "from": page * 20,
+        "size": 20,
+    };
+    const requestBody = {
+        body: [
+            {},
+            Object.assign({
+                "query": {
+                    "bool": {
+                        "must": [{ "match": { "bn_full_text": { "query": searchTerm, "_name": "match_exact_bn" } } }]
+                    }
+                },
+                "sort": [{ "points": { "order": "desc" } }, "_score"]
+            }, pagination),
+            {},
+            Object.assign({
+                "query": {
+                    "bool": {
+                        should: {
+                            "match_phrase": {
+                                "Appearances.Appearance.categoryname": { "query": searchTerm, "_name": "match_phrase_cat" }
+                            }
+                        },
+                        filter,
+                        "must_not": [{ "match": { "bn_full_text": { "query": searchTerm } } }]
+                    }
+                },
+                "sort": [{ "points": { "order": "desc" } }, { "bn.order": { "order": "asc" } }]
+            }, pagination)
+        ],
+        index: process.env.negocios
+    }
+    console.log(JSON.stringify(requestBody));
+    return client.getClient().msearch(requestBody);
 
-/**
- * 
- * @param {Array<object>} categories 
- */
-function getCategories(categories) {
-    let boost = 0;
-    return categories.reverse().map(category => {
-
-        return {
-            "match_phrase": {
-                "Appearances.Appearance.categoryname": { "query": category._source.valor, "_name": "match_phrase_cat", "boost": boost += 5 }
-            }
-        }
-    });
 }
 
 function getScheduleQuery(hrs) {
@@ -208,47 +194,6 @@ exports.businessByBrand = function (brandname) {
         }
     }
     return client.getClient().search(body);
-}
-
-/**
- * 
- * @param {string} searchTerm - term searched in api
- * @returns {Promise<>} - elasticsearch result 
- */
-function searchCategoryAndServices(searchTerm) {
-    const request = {
-        "index": process.env.taxonomias,
-        "body": {
-            "query": {
-                "bool": {
-                    "must": [
-                        {
-                            "match": {
-                                "relacion": searchTerm
-                            }
-                        }
-                    ],
-                    "should": [
-                        {
-                            "match": {
-                                "valor": searchTerm
-                            }
-                        }
-                    ],
-                    "filter": {
-                        "term": {
-                            "fuente": "negocios"
-                        }
-                    }
-                }
-            },
-            "size": 30,
-            sort: [
-                { "_score": "desc" }
-            ]
-        }
-    }
-    return client.getClient().search(request);
 }
 
 exports.claro_shop = function (page = 0, marcas, ctg, bn, price, tx) {
