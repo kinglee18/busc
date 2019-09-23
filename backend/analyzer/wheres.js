@@ -4,7 +4,7 @@ const cls = require('./clear');
 const gram = require('../info/gramatica');
 
 
-exports.where = function (texto) {
+exports.where = function (initText) {
 
     let address = {
         state: null,
@@ -12,16 +12,14 @@ exports.where = function (texto) {
         colony: null,
         street: null
     };
-    
+
     return new Promise((resolve, reject) => {
-        let nv = findPrepLug(texto);
+        let nv = findPrepLug(initText);
         if (nv.lug) {
-            texto = '';
-            texto = nv.lug;
-            maps.search(texto).then((address) => {
+            maps.search(nv.lug).then((address) => {
                 resolve({
                     address,
-                    newSearchTerm: nv.texto
+                    newSearchTerm: address ? nv.texto : initText
                 })
             })
         }

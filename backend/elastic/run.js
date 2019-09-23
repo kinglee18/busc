@@ -12,10 +12,10 @@ const client = require('./client');
  * 
  * @param {string []} paymentTypes -  payment types of business
  * @param {object} calculatedAddress - business calculatedAddress in previous analisys
- * @param {string} calculatedAddress.dir.municipality - 
- * @param {string} calculatedAddress.dir.colony - 
- * @param {string} calculatedAddress.dir.state - 
- * @param {string} calculatedAddress.dir.street - 
+ * @param {string} calculatedAddress.municipality - 
+ * @param {string} calculatedAddress.colony - 
+ * @param {string} calculatedAddress.state - 
+ * @param {string} calculatedAddress.street - 
  * @param {object} coordinates - coordinates privided by the browser
  * @param {string} coordinates.lat - latitude
  * @param {string} coordinates.lng - longitude
@@ -29,7 +29,7 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
 
     /*         const paymentQuery = getPaymentQuery(paymentTypes);
             const scheduleQuery = getScheduleQuery(hrs); */
-    addressFilter = getAddressFilter(calculatedAddress.dir, coordinates);
+    addressFilter = getAddressFilter(calculatedAddress, coordinates);
     if (addressFilter) {
         filter.push(addressFilter);
     }
@@ -44,7 +44,8 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
             Object.assign({
                 "query": {
                     "bool": {
-                        "must": [{ "match": { "bn_full_text": { "query": searchTerm, "_name": "match_exact_bn" } } }]
+                        "must": [{ "match": { "bn_full_text": { "query": searchTerm, "_name": "match_exact_bn" } } }],
+                        filter
                     }
                 },
                 "sort": [{ "points": { "order": "desc" } }, "_score"]
