@@ -1,5 +1,4 @@
 'use strict'
-const syn = require('../info/syn_where');
 const client = require('./client');
 
 /**
@@ -12,10 +11,9 @@ const client = require('./client');
  * 
  * @param {string []} paymentTypes -  payment types of business
  * @param {object} calculatedAddress - business calculatedAddress in previous analisys
- * @param {string} calculatedAddress.municipality - 
+ * @param {string} calculatedAddress.city - 
  * @param {string} calculatedAddress.colony - 
  * @param {string} calculatedAddress.state - 
- * @param {string} calculatedAddress.street - 
  * @param {object} coordinates - coordinates privided by the browser
  * @param {string} coordinates.lat - latitude
  * @param {string} coordinates.lng - longitude
@@ -164,7 +162,7 @@ function getAddressFilter(location, coordinates) {
         return {
             "match_phrase": {
                 "Appearances.Appearance.state": {
-                    "query": getAbrevWhere(location.state)
+                    "query": location.state
                 }
             }
         };
@@ -595,11 +593,3 @@ function asigDaySn(days) {
     return arr;
 }
 
-function getAbrevWhere(estado) {
-    for (let op of syn.data) {
-        if (op.valor == estado) {
-            return op.simb;
-        }
-    }
-    return null;
-}

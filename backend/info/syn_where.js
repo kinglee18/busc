@@ -60,6 +60,10 @@ exports.data = [
         valor: 'mexico'
     },
     {
+        simb: 'state of mexico',
+        valor: 'mexico'
+    },
+    {
         simb: 'mich',
         valor: 'michoacan'
     },
