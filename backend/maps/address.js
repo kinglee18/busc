@@ -27,7 +27,7 @@ function parseAddress(location) {
             address.colony = name;
         }
         else if (desc.types.includes('administrative_area_level_3') || (desc.types.includes('locality'))) {
-            if (name === 'mexico city')
+            if (name === 'mexico city' || name === 'ciudad de mexico')
                 address.state = 'mexico city';
             else
                 address.city = name;
@@ -38,9 +38,10 @@ function parseAddress(location) {
         else if (desc.types.includes('administrative_area_level_1')) {
             address.state = name;
         }
-    }
 
-    return address;// no entrega result de copyoacan 
+    }
+    address.state = getAbrevWhere(address.state);
+    return address;
 }
 
 function getAbrevWhere(estado) {

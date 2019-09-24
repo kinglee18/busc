@@ -29,7 +29,7 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
             const scheduleQuery = getScheduleQuery(hrs); */
     addressFilter = getAddressFilter(calculatedAddress, coordinates);
     if (addressFilter) {
-        filter.push(addressFilter);
+        filter = filter.concat(addressFilter);
     }
 
     const pagination = {
@@ -137,44 +137,46 @@ function getPaymentQuery(payments) {
  * the analisys or provided coordinates
  * @param {object} location - previously calculated address 
  * @param {object} coordinates - browser coordinates
- * @returns {object} - constains a fragment for query filter options 
+ * @returns {Array} - constains a fragment for query filter options 
  */
 function getAddressFilter(location, coordinates) {
+    let address = [];
     if (location) {
         if (location.colony) {
-            return {
+            address.push({
                 "match_phrase": {
                     "colony": {
                         "query": location.colony
                     }
                 }
-            };
+            });
         }
-        else if (location.municipality) {
-            return {
+        if (location.city) {
+            address.push({
                 "match_phrase": {
                     "Appearances.Appearance.city": {
-                        "query": location.municipality
+                        "query": location.city
                     }
                 }
-            };
+            });
         }
-        return {
+        address.push({
             "match_phrase": {
                 "Appearances.Appearance.state": {
                     "query": location.state
                 }
             }
-        };
+        });
+        return address;
     } else if (coordinates.lat) {
-        return {
+        address.push({
             "geo_distance": {
                 "distance": "10km",
                 "pin": [coordinates.lng, coordinates.lat]
             }
-        };
+        });
+        return address;
     }
-
 }
 
 /**
