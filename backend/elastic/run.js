@@ -197,6 +197,25 @@ exports.businessByBrand = function (brandname) {
     return client.getClient().search(body);
 }
 
+
+/**
+ * @param {string} id - if of the business
+ * @description Returns a business related by id
+ */
+exports.businessByID = function (id) {
+    const body = {
+        "index": process.env.negocios,
+        "body": {
+            "query": {
+                "match_phrase": {
+                    "_id": id
+                }
+            }
+        }
+    }
+    return client.getClient().search(body);
+}
+
 exports.claro_shop = function (page = 0, marcas, ctg, bn, price, tx) {
     let promesa = new Promise((resolve, reject) => {
 

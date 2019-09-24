@@ -19,7 +19,7 @@ app.use(bodyParser.json())
  * @param {string} req.query.searchTerm -business, category or location or  product
  */
 app.get('/node', (req, res) => {
-    
+
     proceso.analisys(req.query.searchTerm).then((json) => {
         elastic.searchBusiness(
             req.query.page,
@@ -30,13 +30,13 @@ app.get('/node', (req, res) => {
             { lat: parseFloat(req.query.lat), lng: parseFloat(req.query.lng) }
         ).then((response) => {
             const hits = response.responses[0].hits.hits.concat(response.responses[1].hits.hits);
-             const businesses = hits.map(business => {
+            const businesses = hits.map(business => {
                 return business._source;
             });
             res.status(200).send({
                 total: response.responses[0].hits.total + response.responses[1].hits.total,
                 info: businesses
-            }) 
+            })
         }).catch(error => {
             console.error(error);
             res.status(500).send(error);
@@ -64,6 +64,29 @@ app.get('/node/business_by_brand', (req, res) => {
     });
 });
 
+/**
+ * @desc Retrieves 
+ * @param {string} req.query.id - 
+ */
+app.get('/node/business/:id', (req, res) => {
+    elastic.businessByID(req.params.id).then((resp) => {
+        const business = resp.hits.hits.map(business => {
+            return business._source;
+        })
+
+        if (business.length) {
+            res.status(200).send(
+                business[0]
+            );
+        } else {
+            res.status(404).send()
+        }
+
+    }).catch(error => {
+        console.error(error);
+        res.status(500).send(error);
+    });
+});
 
 /**
  * @desc Retrieves all blog articles from database
