@@ -22,53 +22,99 @@ const client = require('./client');
  * @return {Promise<>}.
  */
 exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calculatedAddress, coordinates) {
-    let must = [], should = [], filter = [];
-    let addressFilter;
 
-    /*         const paymentQuery = getPaymentQuery(paymentTypes);
-            const scheduleQuery = getScheduleQuery(hrs); */
-    addressFilter = getAddressFilter(calculatedAddress, coordinates);
-    if (addressFilter) {
-        filter = filter.concat(addressFilter);
-    }
+    return getRelatedCategories(searchTerm).then(categories => {
 
-    const pagination = {
-        "from": page * 20,
-        "size": 20,
-    };
-    const requestBody = {
-        body: [
-            {},
-            Object.assign({
-                "query": {
-                    "bool": {
-                        "must": [{ "match": { "bn_full_text": { "query": searchTerm, "_name": "match_exact_bn" } } }],
-                        filter
-                    }
-                },
-                "sort": [{ "points": { "order": "desc" } }, "_score"]
-            }, pagination),
-            {},
-            Object.assign({
-                "query": {
-                    "bool": {
-                        should: {
+        categories = categories.hits.hits.map(category => {
+            return category._source.category;
+        });
+
+        let should = [], filter = [];
+        let addressFilter;
+
+        /*         const paymentQuery = getPaymentQuery(paymentTypes);
+                const scheduleQuery = getScheduleQuery(hrs); */
+        addressFilter = getAddressFilter(calculatedAddress, coordinates);
+        if (addressFilter) {
+            filter = filter.concat(addressFilter);
+        }
+        should.push(categoryQuery([searchTerm], 'match'));
+        should = should.concat(categoryQuery(categories, 'match_phrase'));
+
+        const pagination = {
+            "from": page * 20,
+            "size": 20,
+        };
+        const requestBody = {
+            body: [
+                {},
+                Object.assign({
+                    "query": {
+                        "bool": {
+                            "must": [{ "match": { "bn_full_text": { "query": searchTerm, "_name": "match_exact_bn" } } }],
+                            filter
+                        }
+                    },
+                    "sort": [{ "points": { "order": "desc" } }, "_score"]
+                }, pagination),
+                {},
+                Object.assign({
+                    "query": {
+                        "bool": {
+                            should,
+                            filter,
+                            "must_not": [{ "match": { "bn_full_text": { "query": searchTerm } } }]
+                        }
+                    },
+                    "sort": [{ "points": { "order": "desc" } }, { "bn.order": { "order": "asc" } }]
+                }, pagination)
+            ],
+            index: process.env.negocios
+        }
+        console.log(JSON.stringify(requestBody));
+        return client.getClient().msearch(requestBody);
+    });
+}
+
+/**
+ * 
+ * @param {Array<string>} categories - categories name to put in query 
+ * @return {Array<object>}
+*/
+function categoryQuery(categories, matchType) {
+    return categories.map(category => {
+        return JSON.parse(`{
+            "${matchType}": {
+                "Appearances.Appearance.categoryname": { "query": "${category}", "_name": "match_phrase_cat" }
+            }
+        }`)
+    });
+}
+
+/**
+ * 
+ * @param {string} searchTerm - term to search 
+ * @returns {Promise>} - Returns a elasticsearch result with the related categories from db
+ */
+function getRelatedCategories(searchTerm) {
+    const body = {
+        "index": 'mexobjectsdefinition',
+        "body": {
+            "query": {
+                "bool": {
+                    "should": [
+                        {
                             "match": {
-                                "Appearances.Appearance.categoryname": { "query": searchTerm, "_name": "match_phrase_cat" }
+                                "text": searchTerm
                             }
-                        },
-                        filter,
-                        "must_not": [{ "match": { "bn_full_text": { "query": searchTerm } } }]
-                    }
-                },
-                "sort": [{ "points": { "order": "desc" } }, { "bn.order": { "order": "asc" } }]
-            }, pagination)
-        ],
-        index: process.env.negocios
+                        }
+                    ]
+                }
+            },
+            size: 50
+        }
     }
-    console.log(JSON.stringify(requestBody));
-    return client.getClient().msearch(requestBody);
-
+    return client.getClient().search(body);
 }
 
 function getScheduleQuery(hrs) {
