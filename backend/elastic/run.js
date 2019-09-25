@@ -1,5 +1,4 @@
 'use strict'
-const syn = require('../info/syn_where');
 const client = require('./client');
 
 /**
@@ -12,10 +11,9 @@ const client = require('./client');
  * 
  * @param {string []} paymentTypes -  payment types of business
  * @param {object} calculatedAddress - business calculatedAddress in previous analisys
- * @param {string} calculatedAddress.dir.municipality - 
- * @param {string} calculatedAddress.dir.colony - 
- * @param {string} calculatedAddress.dir.state - 
- * @param {string} calculatedAddress.dir.street - 
+ * @param {string} calculatedAddress.city - 
+ * @param {string} calculatedAddress.colony - 
+ * @param {string} calculatedAddress.state - 
  * @param {object} coordinates - coordinates privided by the browser
  * @param {string} coordinates.lat - latitude
  * @param {string} coordinates.lng - longitude
@@ -29,9 +27,9 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
 
     /*         const paymentQuery = getPaymentQuery(paymentTypes);
             const scheduleQuery = getScheduleQuery(hrs); */
-    addressFilter = getAddressFilter(calculatedAddress.dir, coordinates);
+    addressFilter = getAddressFilter(calculatedAddress, coordinates);
     if (addressFilter) {
-        filter.push(addressFilter);
+        filter = filter.concat(addressFilter);
     }
 
     const pagination = {
@@ -44,7 +42,8 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
             Object.assign({
                 "query": {
                     "bool": {
-                        "must": [{ "match": { "bn_full_text": { "query": searchTerm, "_name": "match_exact_bn" } } }]
+                        "must": [{ "match": { "bn_full_text": { "query": searchTerm, "_name": "match_exact_bn" } } }],
+                        filter
                     }
                 },
                 "sort": [{ "points": { "order": "desc" } }, "_score"]
@@ -138,44 +137,46 @@ function getPaymentQuery(payments) {
  * the analisys or provided coordinates
  * @param {object} location - previously calculated address 
  * @param {object} coordinates - browser coordinates
- * @returns {object} - constains a fragment for query filter options 
+ * @returns {Array} - constains a fragment for query filter options 
  */
 function getAddressFilter(location, coordinates) {
+    let address = [];
     if (location) {
         if (location.colony) {
-            return {
+            address.push({
                 "match_phrase": {
                     "colony": {
                         "query": location.colony
                     }
                 }
-            };
+            });
         }
-        else if (location.municipality) {
-            return {
+        if (location.city) {
+            address.push({
                 "match_phrase": {
                     "Appearances.Appearance.city": {
-                        "query": location.municipality
+                        "query": location.city
                     }
                 }
-            };
+            });
         }
-        return {
+        address.push({
             "match_phrase": {
                 "Appearances.Appearance.state": {
-                    "query": getAbrevWhere(location.state)
+                    "query": location.state
                 }
             }
-        };
+        });
+        return address;
     } else if (coordinates.lat) {
-        return {
+        address.push({
             "geo_distance": {
                 "distance": "10km",
                 "pin": [coordinates.lng, coordinates.lat]
             }
-        };
+        });
+        return address;
     }
-
 }
 
 /**
@@ -189,6 +190,25 @@ exports.businessByBrand = function (brandname) {
             "query": {
                 "term": {
                     "brands.brandname.keyword": brandname
+                }
+            }
+        }
+    }
+    return client.getClient().search(body);
+}
+
+
+/**
+ * @param {string} id - if of the business
+ * @description Returns a business related by id
+ */
+exports.businessByID = function (id) {
+    const body = {
+        "index": process.env.negocios,
+        "body": {
+            "query": {
+                "match_phrase": {
+                    "_id": id
                 }
             }
         }
@@ -594,11 +614,3 @@ function asigDaySn(days) {
     return arr;
 }
 
-function getAbrevWhere(estado) {
-    for (let op of syn.data) {
-        if (op.valor == estado) {
-            return op.simb;
-        }
-    }
-    return null;
-}

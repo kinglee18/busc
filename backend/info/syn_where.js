@@ -60,6 +60,10 @@ exports.data = [
         valor: 'mexico'
     },
     {
+        simb: 'mex',
+        valor: 'state of mexico'
+    },
+    {
         simb: 'mich',
         valor: 'michoacan'
     },
@@ -136,8 +140,11 @@ exports.data = [
         valor: 'distrito federal'
     },
     {
-        simb: 'ciudad mexico',
-        valor: 'distrito federal'
+        simb: 'df',
+        valor: 'ciudad de mexico'
+    },
+    {
+        simb: 'df',
+        valor: 'mexico city'
     }
-
 ]
