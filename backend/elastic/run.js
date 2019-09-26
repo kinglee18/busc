@@ -22,8 +22,8 @@ const client = require('./client');
  * @return {Promise<>}.
  */
 exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calculatedAddress, coordinates) {
-    let must = [], should = [], filter = [];
-    let addressFilter;
+    let should = [], filter = [];
+    let  addressFilter;
 
     /*         const paymentQuery = getPaymentQuery(paymentTypes);
             const scheduleQuery = getScheduleQuery(hrs); */
@@ -36,6 +36,71 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
         "from": page * 20,
         "size": 20,
     };
+
+    return getRelatedCategories(searchTerm).then(categories => {
+
+        categories = categories.hits.hits.map(category => {
+            return category._source.category;
+        });
+
+        if (categories.length) {
+            should = should.concat(categoryQuery([searchTerm], 'match'));
+            should = should.concat(categoryQuery(categories, 'match_phrase'));
+            const requestBody = {
+                body:
+                    Object.assign({
+                        "query": {
+                            "bool": {
+                              "must": [
+                                {
+                                  "bool": {
+                                    should
+                                  }
+                                }
+                              ],
+                              "should": [
+                                {
+                                  "match": {
+                                    "bn": {
+                                      "query": searchTerm,
+                                      "_name": "match_bn"
+                                    }
+                                  }
+                                },
+                                {
+                                  "match_phrase": {
+                                    "productservices.prdserv.synonyms": {
+                                      "query": searchTerm,
+                                      "_name": "match_phrase_prdserv"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                        "sort": [{ "points": { "order": "desc" }}]
+                    }, pagination)
+                ,
+                index: process.env.negocios
+            }
+            console.log(JSON.stringify(requestBody));
+            return client.getClient().search(requestBody).then( response => {
+                if (response.hits.hits === 0 ){
+                    return multisearch(searchTerm, filter, pagination);
+                } else {
+                    return new Promise((resolve, reject) => {
+                        resolve(response);
+                    });
+                }
+            });
+        } else {
+            return multisearch(searchTerm, filter, pagination);
+        }
+    });
+}
+
+
+function multisearch(searchTerm, filter, pagination) {
     const requestBody = {
         body: [
             {},
@@ -75,7 +140,48 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
     }
     console.log(JSON.stringify(requestBody));
     return client.getClient().msearch(requestBody);
+}
 
+
+/**
+ * 
+ * @param {Array<string>} categories - categories name to put in query 
+ * @return {Array<object>}
+*/
+function categoryQuery(categories, matchType) {
+    return categories.map(category => {
+        return JSON.parse(`{
+            "${matchType}": {
+                "Appearances.Appearance.categoryname": { "query": "${category}", "_name": "match_phrase_cat" }
+            }
+        }`)
+    });
+}
+
+/**
+ * 
+ * @param {string} searchTerm - term to search 
+ * @returns {Promise>} - Returns a elasticsearch result with the related categories from db
+ */
+function getRelatedCategories(searchTerm) {
+    const body = {
+        "index": 'mexobjectsdefinition',
+        "body": {
+            "query": {
+                "bool": {
+                    "should": [
+                        {
+                            "match": {
+                                "text": searchTerm
+                            }
+                        }
+                    ]
+                }
+            },
+            size: 50
+        }
+    }
+    return client.getClient().search(body);
 }
 
 function getScheduleQuery(hrs) {

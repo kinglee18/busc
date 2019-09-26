@@ -29,14 +29,18 @@ app.get('/node', (req, res) => {
             json.location,
             { lat: parseFloat(req.query.lat), lng: parseFloat(req.query.lng) }
         ).then((response) => {
-            const hits = response.responses[0].hits.hits.concat(response.responses[1].hits.hits);
-            const businesses = hits.map(business => {
-                return business._source;
-            });
-            res.status(200).send({
-                total: response.responses[0].hits.total + response.responses[1].hits.total,
-                info: businesses
-            })
+            if (response.responses) {
+                const hits = response.responses[0].hits.hits.concat(response.responses[1].hits.hits);
+                res.status(200).send({
+                    total: response.responses[0].hits.total + response.responses[1].hits.total,
+                    info: parseBussineses(hits)
+                });
+            } else {
+                res.status(200).send({
+                    total: response.hits.total,
+                    info: parseBussineses(response.hits.hits)
+                });
+            }
         }).catch(error => {
             console.error(error);
             res.status(500).send(error);
@@ -44,19 +48,22 @@ app.get('/node', (req, res) => {
     })
 });
 
+function parseBussineses(businesses) {
+    return businesses.map(business => {
+        return business._source;
+    });
+}
+
+
 /**
  * @desc Retrieves all business related by brandname
  * @param {string} req.query.brandName - brandname to search in db
  */
 app.get('/node/business_by_brand', (req, res) => {
     elastic.businessByBrand(req.query.brandName).then((resp) => {
-        const businesses = resp.hits.hits.map(business => {
-            return business._source;
-        })
-
         res.status(200).send({
             total: resp.hits.total,
-            businesses
+            businesses: parseBussineses(resp.hits.hits)
         })
     }).catch(error => {
         console.error(error);
