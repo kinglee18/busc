@@ -82,7 +82,7 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                 ,
                 index: process.env.negocios
             }
-            console.log(JSON.stringify(requestBody));
+            console.log('query2 ',JSON.stringify(requestBody));
             return client.getClient().search(requestBody).then(response => {
                 if (response.hits.hits === 0) {
                     return multisearch(searchTerm, filter, pagination);
@@ -137,7 +137,7 @@ function multisearch(searchTerm, filter, pagination) {
         ],
         index: process.env.negocios
     }
-    console.log(JSON.stringify(requestBody));
+    console.log('multisearch ',JSON.stringify(requestBody));
     return client.getClient().msearch(requestBody);
 }
 
@@ -208,6 +208,7 @@ function getRelatedCategories(searchTerm) {
                 }
             },
             "sort": [
+                "_score",
                 {
                     "score": {
                         "order": "desc"
@@ -217,6 +218,7 @@ function getRelatedCategories(searchTerm) {
             size: 50
         }
     }
+    console.log('mexobjectsdefinition ',JSON.stringify(requestBody));
     return client.getClient().search(body);
 }
 
