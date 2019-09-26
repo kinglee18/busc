@@ -77,7 +77,7 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                                 ]
                             }
                         },
-                        "sort": [{ "points": { "order": "desc" } }]
+                        "sort": [{ "points": { "order": "desc" } },{"bn.order":{"order":"asc"}}]
                     }, pagination)
                 ,
                 index: process.env.negocios
@@ -218,7 +218,8 @@ function getRelatedCategories(searchTerm) {
             size: 50
         }
     }
-    console.log('mexobjectsdefinition ',JSON.stringify(requestBody));
+    console.log(searchTerm);
+    console.log('mexobjectsdefinition ',JSON.stringify(body));
     return client.getClient().search(body);
 }
 
