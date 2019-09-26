@@ -23,7 +23,7 @@ const client = require('./client');
  */
 exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calculatedAddress, coordinates) {
     let should = [], filter = [];
-    let  addressFilter;
+    let addressFilter;
 
     /*         const paymentQuery = getPaymentQuery(paymentTypes);
             const scheduleQuery = getScheduleQuery(hrs); */
@@ -51,41 +51,41 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                     Object.assign({
                         "query": {
                             "bool": {
-                              "must": [
-                                {
-                                  "bool": {
-                                    should
-                                  }
-                                }
-                              ],
-                              "should": [
-                                {
-                                  "match": {
-                                    "bn": {
-                                      "query": searchTerm,
-                                      "_name": "match_bn"
+                                "must": [
+                                    {
+                                        "bool": {
+                                            should
+                                        }
                                     }
-                                  }
-                                },
-                                {
-                                  "match_phrase": {
-                                    "productservices.prdserv.synonyms": {
-                                      "query": searchTerm,
-                                      "_name": "match_phrase_prdserv"
+                                ],
+                                "should": [
+                                    {
+                                        "match": {
+                                            "bn": {
+                                                "query": searchTerm,
+                                                "_name": "match_bn"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "match_phrase": {
+                                            "productservices.prdserv.synonyms": {
+                                                "query": searchTerm,
+                                                "_name": "match_phrase_prdserv"
+                                            }
+                                        }
                                     }
-                                  }
-                                }
-                              ]
+                                ]
                             }
-                          },
-                        "sort": [{ "points": { "order": "desc" }}]
+                        },
+                        "sort": [{ "points": { "order": "desc" } }]
                     }, pagination)
                 ,
                 index: process.env.negocios
             }
             console.log(JSON.stringify(requestBody));
-            return client.getClient().search(requestBody).then( response => {
-                if (response.hits.hits === 0 ){
+            return client.getClient().search(requestBody).then(response => {
+                if (response.hits.hits === 0) {
                     return multisearch(searchTerm, filter, pagination);
                 } else {
                     return new Promise((resolve, reject) => {
@@ -133,7 +133,7 @@ function multisearch(searchTerm, filter, pagination) {
                         "must_not": [{ "match": { "bn_full_text": { "query": searchTerm } } }]
                     }
                 },
-                "sort": ["_score",{ "points": { "order": "desc" } }, { "bn.order": { "order": "asc" } }]
+                "sort": ["_score", { "points": { "order": "desc" } }, { "bn.order": { "order": "asc" } }]
             }, pagination)
         ],
         index: process.env.negocios
@@ -171,13 +171,50 @@ function getRelatedCategories(searchTerm) {
                 "bool": {
                     "should": [
                         {
-                            "match": {
-                                "text": searchTerm
+                            "match_phrase": {
+                                "category": {
+                                    "query": searchTerm,
+                                    "_name": "match_cat"
+                                }
+                            }
+                        },
+                        {
+                            "match_phrase": {
+                                "text": {
+                                    "query": searchTerm,
+                                    "_name": "match_phrase_text"
+                                }
+                            }
+                        },
+                        {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match_phrase": {
+                                            "category": {
+                                                "query": searchTerm,
+                                                "_name": "match_phrase_category"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "match": {
+                                            "prefix": "category"
+                                        }
+                                    }
+                                ]
                             }
                         }
                     ]
                 }
             },
+            "sort": [
+                {
+                    "score": {
+                        "order": "desc"
+                    }
+                }
+            ],
             size: 50
         }
     }
