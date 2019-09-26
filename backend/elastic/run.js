@@ -117,16 +117,23 @@ function multisearch(searchTerm, filter, pagination) {
             Object.assign({
                 "query": {
                     "bool": {
-                        should: {
-                            "match": {
-                                "Appearances.Appearance.categoryname": { "query": searchTerm, "_name": "match_phrase_cat" }
+                        should: [
+                            {
+                                "match": {
+                                    "bn": { "query": searchTerm, "_name": "match_phrase_bn" }
+                                }
+                            },
+                            {
+                                "match": {
+                                    "Appearances.Appearance.categoryname": { "query": searchTerm, "_name": "match_phrase_cat" }
+                                }
                             }
-                        },
+                        ],
                         filter,
                         "must_not": [{ "match": { "bn_full_text": { "query": searchTerm } } }]
                     }
                 },
-                "sort": [{ "points": { "order": "desc" } }, { "bn.order": { "order": "asc" } }]
+                "sort": ["_score",{ "points": { "order": "desc" } }, { "bn.order": { "order": "asc" } }]
             }, pagination)
         ],
         index: process.env.negocios
