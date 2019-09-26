@@ -53,7 +53,21 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                                 "must": [
                                     {
                                         "bool": {
-                                            should
+                                            "should":[
+                                                {
+                                                    "match_phrase":{
+                                                        "Appearances.Appearance.categoryname.keyword":{
+                                                            "query": searchTerm,
+                                                            "_name": "match_phrase_cat_key"
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "bool": {
+                                                        should
+                                                    }
+                                                }
+                                            ]
                                         }
                                     }
                                 ],
@@ -77,12 +91,12 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                                 ]
                             }
                         },
-                        "sort": [{ "points": { "order": "desc" } }]
+                        "sort": [{ "points": { "order": "desc" } },{"bn.order":{"order":"asc"}}]
                     }, pagination)
                 ,
                 index: process.env.negocios
             }
-            console.log(JSON.stringify(requestBody));
+            console.log('query2 ',JSON.stringify(requestBody));
             return client.getClient().search(requestBody).then(response => {
                 if (response.hits.hits === 0) {
                     return multisearch(searchTerm, filter, pagination);
@@ -137,7 +151,7 @@ function multisearch(searchTerm, filter, pagination) {
         ],
         index: process.env.negocios
     }
-    console.log(JSON.stringify(requestBody));
+    console.log('multisearch ',JSON.stringify(requestBody));
     return client.getClient().msearch(requestBody);
 }
 
@@ -208,15 +222,18 @@ function getRelatedCategories(searchTerm) {
                 }
             },
             "sort": [
+                "_score",
                 {
                     "score": {
                         "order": "desc"
                     }
                 }
             ],
-            size: 50
+            size: 1
         }
     }
+    console.log(searchTerm);
+    console.log('mexobjectsdefinition ',JSON.stringify(body));
     return client.getClient().search(body);
 }
 
