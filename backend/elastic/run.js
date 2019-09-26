@@ -184,6 +184,11 @@ function getRelatedCategories(searchTerm) {
                 "bool": {
                     "should": [
                         {
+                            "regexp":{
+                                "category": `${searchTerm}.*`
+                            }
+                        },
+                        {
                             "match_phrase": {
                                 "category": {
                                     "query": searchTerm,
