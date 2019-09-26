@@ -22,6 +22,20 @@ const client = require('./client');
  * @return {Promise<>}.
  */
 exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calculatedAddress, coordinates) {
+    let should = [], filter = [];
+    let  addressFilter;
+
+    /*         const paymentQuery = getPaymentQuery(paymentTypes);
+            const scheduleQuery = getScheduleQuery(hrs); */
+    addressFilter = getAddressFilter(calculatedAddress, coordinates);
+    if (addressFilter) {
+        filter = filter.concat(addressFilter);
+    }
+
+    const pagination = {
+        "from": page * 20,
+        "size": 20,
+    };
 
     return getRelatedCategories(searchTerm).then(categories => {
 
@@ -29,52 +43,98 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
             return category._source.category;
         });
 
-        let should = [], filter = [];
-        let addressFilter;
-
-        /*         const paymentQuery = getPaymentQuery(paymentTypes);
-                const scheduleQuery = getScheduleQuery(hrs); */
-        addressFilter = getAddressFilter(calculatedAddress, coordinates);
-        if (addressFilter) {
-            filter = filter.concat(addressFilter);
+        if (categories.length) {
+            should = should.concat(categoryQuery([searchTerm], 'match'));
+            should = should.concat(categoryQuery(categories, 'match_phrase'));
+            const requestBody = {
+                body:
+                    Object.assign({
+                        "query": {
+                            "bool": {
+                              "must": [
+                                {
+                                  "bool": {
+                                    should
+                                  }
+                                }
+                              ],
+                              "should": [
+                                {
+                                  "match": {
+                                    "bn": {
+                                      "query": searchTerm,
+                                      "_name": "match_bn"
+                                    }
+                                  }
+                                },
+                                {
+                                  "match_phrase": {
+                                    "productservices.prdserv.synonyms": {
+                                      "query": searchTerm,
+                                      "_name": "match_phrase_prdserv"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                        "sort": [{ "points": { "order": "desc" }}]
+                    }, pagination)
+                ,
+                index: process.env.negocios
+            }
+            console.log(JSON.stringify(requestBody));
+            return client.getClient().search(requestBody).then( response => {
+                if (response.hits.hits === 0 ){
+                    return multisearch(searchTerm, filter, pagination);
+                } else {
+                    return new Promise((resolve, reject) => {
+                        resolve(response);
+                    });
+                }
+            });
+        } else {
+            return multisearch(searchTerm, filter, pagination);
         }
-        should.push(categoryQuery([searchTerm], 'match'));
-        should = should.concat(categoryQuery(categories, 'match_phrase'));
-
-        const pagination = {
-            "from": page * 20,
-            "size": 20,
-        };
-        const requestBody = {
-            body: [
-                {},
-                Object.assign({
-                    "query": {
-                        "bool": {
-                            "must": [{ "match": { "bn_full_text": { "query": searchTerm, "_name": "match_exact_bn" } } }],
-                            filter
-                        }
-                    },
-                    "sort": [{ "points": { "order": "desc" } }, "_score"]
-                }, pagination),
-                {},
-                Object.assign({
-                    "query": {
-                        "bool": {
-                            should,
-                            filter,
-                            "must_not": [{ "match": { "bn_full_text": { "query": searchTerm } } }]
-                        }
-                    },
-                    "sort": [{ "points": { "order": "desc" } }, { "bn.order": { "order": "asc" } }]
-                }, pagination)
-            ],
-            index: process.env.negocios
-        }
-        console.log(JSON.stringify(requestBody));
-        return client.getClient().msearch(requestBody);
     });
 }
+
+
+function multisearch(searchTerm, filter, pagination) {
+    const requestBody = {
+        body: [
+            {},
+            Object.assign({
+                "query": {
+                    "bool": {
+                        "must": [{ "match": { "bn_full_text": { "query": searchTerm, "_name": "match_exact_bn" } } }],
+                        filter
+                    }
+                },
+                "sort": [{ "points": { "order": "desc" } }, "_score"]
+            }, pagination),
+            {},
+            Object.assign({
+                "query": {
+                    "bool": {
+                        should: {
+                            "match": {
+                                "Appearances.Appearance.categoryname": { "query": searchTerm, "_name": "match_phrase_cat" }
+                            }
+                        },
+                        filter,
+                        "must_not": [{ "match": { "bn_full_text": { "query": searchTerm } } }]
+                    }
+                },
+                "sort": [{ "points": { "order": "desc" } }, { "bn.order": { "order": "asc" } }]
+            }, pagination)
+        ],
+        index: process.env.negocios
+    }
+    console.log(JSON.stringify(requestBody));
+    return client.getClient().msearch(requestBody);
+}
+
 
 /**
  * 
