@@ -53,7 +53,21 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                                 "must": [
                                     {
                                         "bool": {
-                                            should
+                                            "should":[
+                                                {
+                                                    "match_phrase":{
+                                                        "Appearances.Appearance.categoryname.keyword":{
+                                                            "query": searchTerm,
+                                                            "_name": "match_phrase_cat_key"
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "bool": {
+                                                        should
+                                                    }
+                                                }
+                                            ]
                                         }
                                     }
                                 ],
@@ -215,7 +229,7 @@ function getRelatedCategories(searchTerm) {
                     }
                 }
             ],
-            size: 50
+            size: 1
         }
     }
     console.log(searchTerm);
