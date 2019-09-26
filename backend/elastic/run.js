@@ -88,7 +88,8 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                                             }
                                         }
                                     }
-                                ]
+                                ],
+                                filter
                             }
                         },
                         "sort": [{ "points": { "order": "desc" } },{"bn.order":{"order":"asc"}}]
