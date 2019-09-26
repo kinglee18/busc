@@ -44,7 +44,6 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
         });
 
         if (categories.length) {
-            should = should.concat(categoryQuery([searchTerm], 'match'));
             should = should.concat(categoryQuery(categories, 'match_phrase'));
             const requestBody = {
                 body:
