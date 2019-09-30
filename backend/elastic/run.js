@@ -97,6 +97,7 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                 ,
                 index: process.env.negocios
             }
+            console.log('query2 ',JSON.stringify(requestBody));
             return client.getClient().search(requestBody).then(response => {
                 if (response.hits.hits === 0) {
                     return multisearch(searchTerm, filter, pagination);
@@ -112,47 +113,47 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
     });
 }
 
+
 function multisearch(searchTerm, filter, pagination) {
     const requestBody = {
-        body: 
+        body: [
+            {},
             Object.assign({
-                "query":{
-                    "bool":{
-                        "must":[
+                "query": {
+                    "bool": {
+                        "must": [{ "match": { "bn_full_text": { "query": searchTerm, "_name": "match_exact_bn" } } }],
+                        filter
+                    }
+                },
+                "sort": [{ "points": { "order": "desc" } }, "_score"]
+            }, pagination),
+            {},
+            Object.assign({
+                "query": {
+                    "bool": {
+                        should: [
                             {
-                                "match":{
-                                    "productservices.prdserv":{
-                                        "query":searchTerm,
-                                        "boost":50
-                                    }
-                                }
-                            }
-                        ],
-                        "should":[
-                            {
-                                "match":{
-                                    "bn":{
-                                        "query":searchTerm,
-                                        "boost":10
-                                    }
+                                "match": {
+                                    "bn": { "query": searchTerm, "_name": "match_phrase_bn" }
                                 }
                             },
                             {
-                                "match":{
-                                    "appearances.appearance.categoryname":{
-                                        "query":searchTerm,
-                                        "boost":10
-                                    }
+                                "match": {
+                                    "Appearances.Appearance.categoryname": { "query": searchTerm, "_name": "match_phrase_cat" }
                                 }
                             }
-                        ]
+                        ],
+                        filter,
+                        "must_not": [{ "match": { "bn_full_text": { "query": searchTerm } } }]
                     }
-                },"sort": [{ "points": { "order": "desc" } },{"bn.order":{"order":"asc"}}]            
-            }, pagination),
+                },
+                "sort": ["_score", { "points": { "order": "desc" } }, { "bn.order": { "order": "asc" } }]
+            }, pagination)
+        ],
         index: process.env.negocios
     }
     console.log('multisearch ',JSON.stringify(requestBody));
-    return client.getClient().search(requestBody);
+    return client.getClient().msearch(requestBody);
 }
 
 
@@ -198,7 +199,7 @@ function getRelatedCategories(searchTerm) {
                         },
                         {
                             "match_phrase": {
-                                "text_full_text": {
+                                "text": {
                                     "query": searchTerm,
                                     "_name": "match_phrase_text"
                                 }
@@ -233,7 +234,8 @@ function getRelatedCategories(searchTerm) {
                         "order": "desc"
                     }
                 }
-            ]
+            ],
+            size: 1
         }
     }
     console.log(searchTerm);
@@ -783,3 +785,4 @@ function asigDaySn(days) {
 
     return arr;
 }
+
