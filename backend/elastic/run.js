@@ -97,12 +97,13 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                 ,
                 index: process.env.negocios
             }
-            console.log('query2 ',JSON.stringify(requestBody));
+            
             return client.getClient().search(requestBody).then(response => {
                 if (response.hits.hits === 0) {
                     return multisearch(searchTerm, filter, pagination);
                 } else {
                     return new Promise((resolve, reject) => {
+                        console.log('query2 ',JSON.stringify(requestBody));
                         resolve(response);
                     });
                 }
@@ -116,44 +117,40 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
 
 function multisearch(searchTerm, filter, pagination) {
     const requestBody = {
-        body: [
-            {},
-            Object.assign({
-                "query": {
-                    "bool": {
-                        "must": [{ "match": { "bn_full_text": { "query": searchTerm, "_name": "match_exact_bn" } } }],
-                        filter
-                    }
-                },
-                "sort": [{ "points": { "order": "desc" } }, "_score"]
-            }, pagination),
-            {},
+        body: 
             Object.assign({
                 "query": {
                     "bool": {
                         should: [
                             {
                                 "match": {
-                                    "bn": { "query": searchTerm, "_name": "match_phrase_bn" }
+                                    "bn": { "query": searchTerm, "_name": "match_phrase_bn","boost":5 }
                                 }
                             },
                             {
                                 "match": {
-                                    "Appearances.Appearance.categoryname": { "query": searchTerm, "_name": "match_phrase_cat" }
+                                    "Appearances.Appearance.categoryname": { "query": searchTerm, "_name": "match_phrase_cat","boost":3 }
+                                }
+                            },
+                            {
+                                "match": {
+                                    "productservices.prdserv": {
+                                        "query": searchTerm,
+                                        "_name": "match_phrase_prdserv","boost":2
+                                    }
                                 }
                             }
                         ],
-                        filter,
-                        "must_not": [{ "match": { "bn_full_text": { "query": searchTerm } } }]
+                        filter
                     }
                 },
                 "sort": ["_score", { "points": { "order": "desc" } }, { "bn.order": { "order": "asc" } }]
             }, pagination)
-        ],
+        ,
         index: process.env.negocios
     }
     console.log('multisearch ',JSON.stringify(requestBody));
-    return client.getClient().msearch(requestBody);
+    return client.getClient().search(requestBody);
 }
 
 
@@ -199,9 +196,10 @@ function getRelatedCategories(searchTerm) {
                         },
                         {
                             "match_phrase": {
-                                "text": {
+                                "text_full_text": {
                                     "query": searchTerm,
                                     "_name": "match_phrase_text"
+                                    ,"boost":10
                                 }
                             }
                         },
@@ -228,14 +226,13 @@ function getRelatedCategories(searchTerm) {
                 }
             },
             "sort": [
-                "_score",
                 {
                     "score": {
                         "order": "desc"
                     }
-                }
-            ],
-            size: 1
+                },
+                "_score"
+            ]
         }
     }
     console.log(searchTerm);
