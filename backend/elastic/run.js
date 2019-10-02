@@ -53,10 +53,10 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                                 "must": [
                                     {
                                         "bool": {
-                                            "should":[
+                                            "should": [
                                                 {
-                                                    "match_phrase":{
-                                                        "Appearances.Appearance.categoryname.keyword":{
+                                                    "match_phrase": {
+                                                        "Appearances.Appearance.categoryname.keyword": {
                                                             "query": searchTerm,
                                                             "_name": "match_phrase_cat_key"
                                                         }
@@ -92,7 +92,7 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                                 filter
                             }
                         },
-                        "sort": [{ "points": { "order": "desc" } },{"bn.order":{"order":"asc"}}]
+                        "sort": [{ "points": { "order": "desc" } }].concat(alphabeticalOrder())
                     }, pagination)
                 ,
                 index: process.env.negocios
@@ -144,7 +144,7 @@ function multisearch(searchTerm, filter, pagination) {
                         filter
                     }
                 },
-                "sort": ["_score", { "points": { "order": "desc" } }, { "bn.order": { "order": "asc" } }]
+                "sort": ["_score", { "points": { "order": "desc" } }].concat(alphabeticalOrder())
             }, pagination)
         ,
         index: process.env.negocios
@@ -182,7 +182,7 @@ function getRelatedCategories(searchTerm) {
                 "bool": {
                     "should": [
                         {
-                            "regexp":{
+                            "regexp": {
                                 "category": `${searchTerm}.*`
                             }
                         },
@@ -236,8 +236,31 @@ function getRelatedCategories(searchTerm) {
         }
     }
     console.log(searchTerm);
-    console.log('mexobjectsdefinition ',JSON.stringify(body));
+    console.log('mexobjectsdefinition ', JSON.stringify(body));
     return client.getClient().search(body);
+}
+
+function alphabeticalOrder() {
+    return [{
+        "_script": {
+            "type": "number",
+            "script": {
+                "lang": "painless",
+                "inline": "return  doc['bn.keyword'].value.trim()==~ /\\d+.*/? 0: 1"
+            },
+            "order": "desc"
+        }
+    },
+    {
+        "_script": {
+            "type": "string",
+            "script": {
+                "lang": "painless",
+                "inline": "return  doc['bn.keyword'].value.trim();"
+            },
+            "order": "asc"
+        }
+    }];
 }
 
 function getScheduleQuery(hrs) {
@@ -782,4 +805,3 @@ function asigDaySn(days) {
 
     return arr;
 }
-
