@@ -181,11 +181,11 @@ function getRelatedCategories(searchTerm) {
             "query": {
                 "bool": {
                     "should": [
-                        {
-                            "regexp": {
-                                "category": `${searchTerm}.*`
-                            }
-                        },
+                        // {
+                        //     "regexp": {
+                        //         "category": `${searchTerm}.*`
+                        //     }
+                        // },
                         {
                             "match_phrase": {
                                 "category": {
