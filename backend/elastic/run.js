@@ -37,7 +37,7 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
         "size": 20,
     };
 
-    return categoryExact(searchTerm).then(categiasExactas => {
+    return categoryExact(searchTerm, filter, pagination).then(categiasExactas => {
         let totalCategiasExactas = categiasExactas.hits.total;
         
         console.log('IPRIMIENDO RESULTADO');
