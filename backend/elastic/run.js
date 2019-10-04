@@ -37,127 +37,83 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
         "size": 20,
     };
 
-    return categoryExact(searchTerm, filter, pagination).then(categiasExactas => {
-        let totalCategiasExactas = categiasExactas.hits.total;
-        
-        console.log('IPRIMIENDO RESULTADO');
-        console.log(totalCategiasExactas);
-        if(totalCategiasExactas > 0){
-            return new Promise((resolve, reject) => {
-                resolve(categiasExactas);
-            });
-        }else{
-            return getRelatedCategories(searchTerm).then(categories => {
+    return getRelatedCategories(searchTerm).then(categories => {
 
-                categories = categories.hits.hits.map(category => {
-                    return category._source.category;
-                });
-        
-                if (categories.length) {
-                    should = should.concat(categoryQuery(categories, 'match_phrase'));
-                    const requestBody = {
-                        body:
-                            Object.assign({
-                                "query": {
-                                    "bool": {
-                                        "must": [
-                                            {
-                                                "bool": {
-                                                    "should":[
-                                                        {
-                                                            "match_phrase":{
-                                                                "Appearances.Appearance.categoryname.keyword":{
-                                                                    "query": searchTerm,
-                                                                    "_name": "match_phrase_cat_key"
-                                                                }
-                                                            }
-                                                        },
-                                                        {
-                                                            "bool": {
-                                                                should
-                                                            }
+        categories = categories.hits.hits.map(category => {
+            return category._source.category;
+        });
+
+        if (categories.length) {
+            should = should.concat(categoryQuery(categories, 'match_phrase'));
+            const requestBody = {
+                body:
+                    Object.assign({
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "bool": {
+                                            "should": [
+                                                {
+                                                    "match_phrase": {
+                                                        "Appearances.Appearance.categoryname.keyword": {
+                                                            "query": searchTerm,
+                                                            "_name": "match_phrase_cat_key"
                                                         }
-                                                    ]
-                                                }
-                                            }
-                                        ],
-                                        "should": [
-                                            {
-                                                "match": {
-                                                    "bn": {
-                                                        "query": searchTerm,
-                                                        "_name": "match_bn"
+                                                    }
+                                                },
+                                                {
+                                                    "bool": {
+                                                        should
                                                     }
                                                 }
-                                            },
-                                            {
-                                                "match_phrase": {
-                                                    "productservices.prdserv.synonyms": {
-                                                        "query": searchTerm,
-                                                        "_name": "match_phrase_prdserv"
-                                                    }
-                                                }
-                                            }
-                                        ],
-                                        filter
+                                            ]
+                                        }
                                     }
-                                },
-                                "sort": [{ "points": { "order": "desc" } },{"bn.order":{"order":"asc"}}]
-                            }, pagination)
-                        ,
-                        index: process.env.negocios
-                    }
-                    console.log('query2 ',JSON.stringify(requestBody));
-                    return client.getClient().search(requestBody).then(response => {
-                        if (response.hits.hits === 0) {
-                            return multisearch(searchTerm, filter, pagination);
-                        } else {
-                            return new Promise((resolve, reject) => {
-                                resolve(response);
-                            });
-                        }
-                    });
-                } else {
+                                ],
+                                "should": [
+                                    {
+                                        "match": {
+                                            "bn": {
+                                                "query": searchTerm,
+                                                "_name": "match_bn"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "match_phrase": {
+                                            "productservices.prdserv.synonyms": {
+                                                "query": searchTerm,
+                                                "_name": "match_phrase_prdserv"
+                                            }
+                                        }
+                                    }
+                                ],
+                                filter
+                            }
+                        },
+                        "sort": [{ "points": { "order": "desc" } }].concat(alphabeticalOrder())
+                    }, pagination)
+                ,
+                index: process.env.negocios
+            }
+            
+            return client.getClient().search(requestBody).then(response => {
+                if (response.hits.hits === 0) {
                     return multisearch(searchTerm, filter, pagination);
+                } else {
+                    return new Promise((resolve, reject) => {
+                        console.log('query2 ',JSON.stringify(requestBody));
+                        resolve(response);
+                    });
                 }
             });
+        } else {
+            return multisearch(searchTerm, filter, pagination);
         }
     });
 }
 
-function categoryExact(searchTerm, filter, pagination){
-    const requestBody = {
-        body: 
-            Object.assign({
-                "query": {
-                    "bool": {
-                        "must": [
-                            {
-                                "match": {
-                                    "categoryname_full_text": {
-                                        "query": searchTerm,
-                                        "boost": 100
-                                    }
-                                }
-                            },
-                            {
-                                "match": {
-                                    "Appearances.Appearance.categoryname": {
-                                        "query": searchTerm,
-                                        "boost": 10
-                                    }
-                                }
-                            }
-                        ],
-                        filter
-                    }
-                },
-                "sort": [{ "points": { "order": "desc" } },{"bn.order":{"order":"asc"}}]
-            },pagination),
-        index: process.env.negocios
-    }
-    return client.getClient().search(requestBody);
-}
 
 function multisearch(searchTerm, filter, pagination) {
     const requestBody = {
@@ -653,7 +609,6 @@ exports.blog = function (page = 0, tx, tags, ctg, where) {
                         arr.push(op._source);
                     }
                 }
-
                 resolve({
                     info: arr,
                     total: resp.hits.total
