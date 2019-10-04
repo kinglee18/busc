@@ -40,6 +40,8 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
     return categoryExact(searchTerm).then(categiasExactas => {
         let totalCategiasExactas = categiasExactas.hits.total;
         
+        console.log('IPRIMIENDO RESULTADO');
+        console.log(totalCategiasExactas);
         if(totalCategiasExactas > 0){
             return new Promise((resolve, reject) => {
                 resolve(categiasExactas);
@@ -123,7 +125,7 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
     });
 }
 
-function categoryExact(searchTerm){
+function categoryExact(searchTerm, pagination){
     const requestBody = {
         body: 
             Object.assign({
@@ -146,11 +148,12 @@ function categoryExact(searchTerm){
                                     }
                                 }
                             }
-                        ]
+                        ],
+                        filter
                     }
                 },
                 "sort": [{ "points": { "order": "desc" } },{"bn.order":{"order":"asc"}}]
-            }),
+            },pagination),
         index: process.env.negocios
     }
     return client.getClient().search(requestBody);
