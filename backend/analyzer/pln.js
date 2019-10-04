@@ -6,8 +6,8 @@ exports.pln = function(texto) {
     let promesa = new Promise((resolve,reject) => {
         console.log('Dentro PLN');
         main.rules(texto).then((resp) => {
-            let info = JSON.parse(resp);
-            console.log(info);
+            let info = JSON.parse(JSON.stringify(resp));
+            //console.log(info);
             let data = findAll(texto,info);
             resolve(data);            
         })
