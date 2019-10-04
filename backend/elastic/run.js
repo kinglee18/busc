@@ -125,7 +125,7 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
     });
 }
 
-function categoryExact(searchTerm, pagination){
+function categoryExact(searchTerm, filter, pagination){
     const requestBody = {
         body: 
             Object.assign({
