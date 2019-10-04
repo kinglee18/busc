@@ -37,83 +37,124 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
         "size": 20,
     };
 
-    return getRelatedCategories(searchTerm).then(categories => {
+    return categoryExact(searchTerm).then(categiasExactas => {
+        let totalCategiasExactas = categiasExactas.hits.total;
+        
+        if(totalCategiasExactas > 0){
+            return new Promise((resolve, reject) => {
+                resolve(categiasExactas);
+            });
+        }else{
+            return getRelatedCategories(searchTerm).then(categories => {
 
-        categories = categories.hits.hits.map(category => {
-            return category._source.category;
-        });
-
-        if (categories.length) {
-            should = should.concat(categoryQuery(categories, 'match_phrase'));
-            const requestBody = {
-                body:
-                    Object.assign({
-                        "query": {
-                            "bool": {
-                                "must": [
-                                    {
-                                        "bool": {
-                                            "should": [
-                                                {
-                                                    "match_phrase": {
-                                                        "Appearances.Appearance.categoryname.keyword": {
-                                                            "query": searchTerm,
-                                                            "_name": "match_phrase_cat_key"
+                categories = categories.hits.hits.map(category => {
+                    return category._source.category;
+                });
+        
+                if (categories.length) {
+                    should = should.concat(categoryQuery(categories, 'match_phrase'));
+                    const requestBody = {
+                        body:
+                            Object.assign({
+                                "query": {
+                                    "bool": {
+                                        "must": [
+                                            {
+                                                "bool": {
+                                                    "should":[
+                                                        {
+                                                            "match_phrase":{
+                                                                "Appearances.Appearance.categoryname.keyword":{
+                                                                    "query": searchTerm,
+                                                                    "_name": "match_phrase_cat_key"
+                                                                }
+                                                            }
+                                                        },
+                                                        {
+                                                            "bool": {
+                                                                should
+                                                            }
                                                         }
-                                                    }
-                                                },
-                                                {
-                                                    "bool": {
-                                                        should
+                                                    ]
+                                                }
+                                            }
+                                        ],
+                                        "should": [
+                                            {
+                                                "match": {
+                                                    "bn": {
+                                                        "query": searchTerm,
+                                                        "_name": "match_bn"
                                                     }
                                                 }
-                                            ]
-                                        }
-                                    }
-                                ],
-                                "should": [
-                                    {
-                                        "match": {
-                                            "bn": {
-                                                "query": searchTerm,
-                                                "_name": "match_bn"
+                                            },
+                                            {
+                                                "match_phrase": {
+                                                    "productservices.prdserv.synonyms": {
+                                                        "query": searchTerm,
+                                                        "_name": "match_phrase_prdserv"
+                                                    }
+                                                }
                                             }
-                                        }
-                                    },
-                                    {
-                                        "match_phrase": {
-                                            "productservices.prdserv.synonyms": {
-                                                "query": searchTerm,
-                                                "_name": "match_phrase_prdserv"
-                                            }
-                                        }
+                                        ],
+                                        filter
                                     }
-                                ],
-                                filter
-                            }
-                        },
-                        "sort": [{ "points": { "order": "desc" } }].concat(alphabeticalOrder())
-                    }, pagination)
-                ,
-                index: process.env.negocios
-            }
-            
-            return client.getClient().search(requestBody).then(response => {
-                if (response.hits.hits === 0) {
-                    return multisearch(searchTerm, filter, pagination);
-                } else {
-                    return new Promise((resolve, reject) => {
-                        console.log('query2 ',JSON.stringify(requestBody));
-                        resolve(response);
+                                },
+                                "sort": [{ "points": { "order": "desc" } },{"bn.order":{"order":"asc"}}]
+                            }, pagination)
+                        ,
+                        index: process.env.negocios
+                    }
+                    console.log('query2 ',JSON.stringify(requestBody));
+                    return client.getClient().search(requestBody).then(response => {
+                        if (response.hits.hits === 0) {
+                            return multisearch(searchTerm, filter, pagination);
+                        } else {
+                            return new Promise((resolve, reject) => {
+                                resolve(response);
+                            });
+                        }
                     });
+                } else {
+                    return multisearch(searchTerm, filter, pagination);
                 }
             });
-        } else {
-            return multisearch(searchTerm, filter, pagination);
         }
     });
 }
 
+function categoryExact(searchTerm){
+    const requestBody = {
+        body: 
+            Object.assign({
+                "query": {
+                    "bool": {
+                        "must": [
+                            {
+                                "match": {
+                                    "categoryname_full_text": {
+                                        "query": searchTerm,
+                                        "boost": 100
+                                    }
+                                }
+                            },
+                            {
+                                "match": {
+                                    "Appearances.Appearance.categoryname": {
+                                        "query": searchTerm,
+                                        "boost": 10
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                },
+                "sort": [{ "points": { "order": "desc" } },{"bn.order":{"order":"asc"}}]
+            }),
+        index: process.env.negocios
+    }
+    return client.getClient().search(requestBody);
+}
 
 function multisearch(searchTerm, filter, pagination) {
     const requestBody = {
