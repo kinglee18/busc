@@ -199,6 +199,15 @@ function getRelatedCategories(searchTerm) {
                             }
                         },
                         {
+                            "match":{
+                                "text":{
+                                    "query":searchTerm,
+                                    "_name":"match_text",
+                                    "boost": 11
+                                }
+                            }
+                        },
+                        {
                             "bool": {
                                 "must": [
                                     {
