@@ -97,13 +97,13 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                 ,
                 index: process.env.negocios
             }
-            
+
             return client.getClient().search(requestBody).then(response => {
                 if (response.hits.hits === 0) {
                     return multisearch(searchTerm, filter, pagination);
                 } else {
                     return new Promise((resolve, reject) => {
-                        console.log('query2 ',JSON.stringify(requestBody));
+                        console.log('query2 ', JSON.stringify(requestBody));
                         resolve(response);
                     });
                 }
@@ -117,26 +117,26 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
 
 function multisearch(searchTerm, filter, pagination) {
     const requestBody = {
-        body: 
+        body:
             Object.assign({
                 "query": {
                     "bool": {
                         should: [
                             {
                                 "match": {
-                                    "bn": { "query": searchTerm, "_name": "match_phrase_bn","boost":5 }
+                                    "bn": { "query": searchTerm, "_name": "match_phrase_bn", "boost": 5 }
                                 }
                             },
                             {
                                 "match": {
-                                    "Appearances.Appearance.categoryname": { "query": searchTerm, "_name": "match_phrase_cat","boost":3 }
+                                    "Appearances.Appearance.categoryname": { "query": searchTerm, "_name": "match_phrase_cat", "boost": 3 }
                                 }
                             },
                             {
                                 "match": {
                                     "productservices.prdserv": {
                                         "query": searchTerm,
-                                        "_name": "match_phrase_prdserv","boost":2
+                                        "_name": "match_phrase_prdserv", "boost": 2
                                     }
                                 }
                             }
@@ -149,7 +149,7 @@ function multisearch(searchTerm, filter, pagination) {
         ,
         index: process.env.negocios
     }
-    console.log('multisearch ',JSON.stringify(requestBody));
+    console.log('multisearch ', JSON.stringify(requestBody));
     return client.getClient().search(requestBody);
 }
 
@@ -194,7 +194,7 @@ function getRelatedCategories(searchTerm) {
                                 "text_full_text": {
                                     "query": searchTerm,
                                     "_name": "match_phrase_text"
-                                    ,"boost":10
+                                    , "boost": 10
                                 }
                             }
                         },
@@ -253,6 +253,18 @@ function alphabeticalOrder() {
                 "lang": "painless",
                 "inline": "return  doc['bn.keyword'].value.trim();"
             },
+            "order": "asc"
+        }
+    }, {
+        "physicalstate.keyword": {
+            "order": "asc"
+        },
+    }, {
+        "colony.keyword": {
+            "order": "asc"
+        },
+    }, {
+        "physicalcity.keyword": {
             "order": "asc"
         }
     }];
@@ -340,7 +352,7 @@ function getAddressFilter(location, coordinates) {
         }
         if (location.city) {
             address.push({
-                "match_phrase": {
+                "match": {
                     "Appearances.Appearance.city": {
                         "query": location.city
                     }
