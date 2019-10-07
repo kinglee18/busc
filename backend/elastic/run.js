@@ -340,7 +340,7 @@ function getAddressFilter(location, coordinates) {
         }
         if (location.city) {
             address.push({
-                "match_phrase": {
+                "match": {
                     "Appearances.Appearance.city": {
                         "query": location.city
                     }
