@@ -64,6 +64,10 @@ exports.data = [
         valor: 'state of mexico'
     },
     {
+        simb: 'mex',
+        valor: 'estado de mexico'
+    },
+    {
         simb: 'mich',
         valor: 'michoacan'
     },
@@ -112,7 +116,7 @@ exports.data = [
         valor: 'tabasco'
     },
     {
-        simb: 'tamps',
+        simb: 'tams',
         valor: 'tamaulipas'
     },
     {
