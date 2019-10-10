@@ -235,7 +235,7 @@ function getRelatedCategories(searchTerm) {
                         },
                         {
                             "match_phrase": {
-                                "text_full_text": {
+                                "text": {
                                     "query": searchTerm,
                                     "_name": "match_phrase_text_full_text"
                                     , "boost": 10

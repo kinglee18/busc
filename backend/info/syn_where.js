@@ -101,7 +101,7 @@ exports.data = [
     },
     {
         simb: 'slp',
-        valor: 'san luis potosí'
+        valor: 'san luis potosi'
     },
     {
         simb: 'sin',
@@ -133,7 +133,7 @@ exports.data = [
     },
     {
         simb: 'zac',
-        valor: 'zacateca'
+        valor: 'zacatecas'
     },
     {
         simb: 'df',
