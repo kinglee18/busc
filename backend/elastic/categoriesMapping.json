@@ -1,0 +1,75 @@
+{
+    "mexobjectsdefinition": {
+      "settings": {
+        "index": {
+          "number_of_shards": "5",
+          "provided_name": "mexobjectsdefinition",
+          "creation_date": "1569601036185",
+          "analysis": {
+            "filter": {
+              "spanish_stop_filter": {
+                "type": "stop",
+                "stopwords": "_spanish_"
+              },
+              "asciifolding_filter_two": {
+                "type": "asciifolding",
+                "preserve_original": "true"
+              },
+              "spanish_stemmer": {
+                "type": "stemmer",
+                "language": "spanish"
+              },
+              "unique_filter": {
+                "type": "unique",
+                "only_in_same_position": "true"
+              },
+              "asciifolding_filter": {
+                "type": "asciifolding",
+                "preserve_original": "true"
+              }
+            },
+            "analyzer": {
+              "keyword_analyzer_dos": {
+                "filter": [
+                  "apostrophe",
+                  "asciifolding_filter",
+                  "lowercase",
+                  "spanish_stop_filter",
+                  "spanish_stemmer",
+                  "unique_filter"
+                ],
+                "char_filter": "multispaces",
+                "tokenizer": "standard"
+              },
+              "spanish_analyzer": {
+                "filter": [
+                  "apostrophe",
+                  "asciifolding_filter",
+                  "lowercase",
+                  "spanish_stop_filter",
+                  "spanish_stemmer",
+                  "unique_filter"
+                ],
+                "tokenizer": "standard"
+              },
+              "plural_analyzer": {
+                "type": "snowball"
+              }
+            },
+            "char_filter": {
+              "multispaces": {
+                "pattern": " +",
+                "type": "pattern_replace",
+                "replacement": " "
+              }
+            }
+          },
+          "number_of_replicas": "1",
+          "uuid": "MerFLwZNQH271T1-G_RnKg",
+          "version": {
+            "created": "6010299"
+          }
+        }
+      }
+    }
+  }
