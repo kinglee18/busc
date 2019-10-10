@@ -22,8 +22,7 @@ const client = require('./client');
  * @return {Promise<>}.
  */
 exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calculatedAddress, coordinates) {
-    console.log('params',page = 0, searchTerm, hrs, paymentTypes, calculatedAddress, coordinates);
-    let should = [], filter = [];
+    let should = [], filter = []; 
     let addressFilter;
 
     /*         const paymentQuery = getPaymentQuery(paymentTypes);
@@ -37,6 +36,8 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
         "from": page * 20,
         "size": 20,
     };
+
+    searchTerm = stopPhrases(searchTerm);
 
     return getRelatedCategories(searchTerm).then(categories => {
 
@@ -144,7 +145,6 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
     });
 }
 
-
 function multisearch(searchTerm, filter, pagination) {
     const requestBody = {
         body:
@@ -183,6 +183,23 @@ function multisearch(searchTerm, filter, pagination) {
     return client.getClient().search(requestBody);
 }
 
+/* función para omitir ciertas busquedas */
+function stopPhrases(searchTerm){
+    let phrases = [
+                    "interrupcion de embarazo", 
+                    "embarazo no deseado", 
+                    "clinica de aborto", 
+                    "clinica de abortos", 
+                    "clinicas de aborto", 
+                    "clinicas de abortos", 
+                    "clinica para aborto", 
+                    "clinica para abortos", 
+                    "clinicas para aborto", 
+                    "clinicas para abortos"
+                  ];
+
+    return searchTerm = (phrases.indexOf(searchTerm.replace(/([\ \t]+(?=[\ \t])|^\s+|\s+$)/g, '')) == -1) ? searchTerm : '';
+}
 
 /**
  * 
