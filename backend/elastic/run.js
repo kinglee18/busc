@@ -44,13 +44,10 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
         categories = categories.hits.hits.map(category => {
             return category._source.category;
         });
-        console.log('categories_0',categories[0]);
-        console.log('categories.length',categories.length);
-        console.log(searchTerm,searchTerm.split(" ").length);
+
         if (categories.length) {
 
             if( searchTerm,searchTerm.split(" ").length == 1 && typeof calculatedAddress == 'undefined' && searchTerm==categories[0].toLowerCase() ){
-                console.log("busqueda de una sola palabra con categoria que existe literalmente y sin lugar");
                 var requestBody = {
                     body:
                         Object.assign({
