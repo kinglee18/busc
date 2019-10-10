@@ -1,108 +1,85 @@
 {
     "mappings": {
-        "default": {
-            "properties": {
-                "category": {
-                    "type": "text",
-                    "fields": {
-                        "category_full_text": {
-                            "type": "text",
-                            "analyzer": "keyword_analyzer_dos"
-                        }
-                    },
-                    "analyzer": "spanish_analyzer"
-                },
-                "forceRelevance": {
-                    "type": "long"
-                },
-                "idstring": {
-                    "type": "keyword"
-                },
-                "prefix": {
-                    "type": "text",
-                    "fields": {
-                        "keyword": {
-                            "type": "keyword",
-                            "ignore_above": 256
-                        }
-                    }
-                },
-                "score": {
-                    "type": "long"
-                },
-                "text": {
-                    "type": "text",
-                    "fields": {
-                        "keyword": {
-                            "type": "keyword",
-                            "ignore_above": 256
-                        }
-                    },
-                    "copy_to": [
-                        "text_full_text"
-                    ],
-                    "analyzer": "spanish_analyzer"
-                },
-                "text_full_text": {
-                    "type": "text",
-                    "analyzer": "keyword_analyzer_dos"
-                }
+      "default": {
+        "properties": {
+          "category": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            },
+            "analyzer": "spanish_analyzer"
+          },
+          "forceRelevance": {
+            "type": "long"
+          },
+          "idstring": {
+            "type": "keyword"
+          },
+          "prefix": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
             }
+          },
+          "score": {
+            "type": "long"
+          },
+          "text": {
+            "type": "text",
+            "analyzer": "spanish_keyword"
+          }
         }
+      }
     },
     "settings": {
-        "index": {
-            "analysis": {
-                "filter": {
-                    "spanish_stop_filter": {
-                        "type": "stop",
-                        "stopwords": "_spanish_"
-                    },
-                    "spanish_stemmer": {
-                        "type": "stemmer",
-                        "language": "spanish"
-                    },
-                    "unique_filter": {
-                        "type": "unique",
-                        "only_in_same_position": "true"
-                    },
-                    "asciifolding_filter": {
-                        "type": "asciifolding",
-                        "preserve_original": "true"
-                    }
-                },
-                "analyzer": {
-                    "keyword_analyzer_dos": {
-                        "filter": [
-                            "lowercase",
-                            "asciifolding_filter"
-                        ],
-                        "char_filter": "multispaces",
-                        "tokenizer": "keyword"
-                    },
-                    "spanish_analyzer": {
-                        "filter": [
-                            "apostrophe",
-                            "asciifolding_filter",
-                            "lowercase",
-                            "spanish_stop_filter",
-                            "spanish_stemmer",
-                            "unique_filter"
-                        ],
-                        "tokenizer": "standard"
-                    },
-                    "plural_analyzer": {
-                        "type": "snowball"
-                    }
-                },
-                "char_filter": {
-                    "multispaces": {
-                        "pattern": " +",
-                        "type": "pattern_replace",
-                        "replacement": " "
-                    }
-                }
+      "index": {
+        "analysis": {
+          "filter": {
+            "spanish_stop_filter": {
+              "type": "stop",
+              "stopwords": "_spanish_"
+            },
+            "spanish_stemmer": {
+              "type": "stemmer",
+              "language": "spanish"
+            },
+            "unique_filter": {
+              "type": "unique",
+              "only_in_same_position": "true"
+            },
+            "asciifolding_filter": {
+              "type": "asciifolding",
+              "preserve_original": "true"
             }
+          },
+          "analyzer": {
+            "spanish_analyzer": {
+              "filter": [
+                "apostrophe",
+                "asciifolding_filter",
+                "lowercase",
+                "spanish_stop_filter",
+                "spanish_stemmer"
+              ],
+              "tokenizer": "standard"
+            },
+            "spanish_keyword": {
+              "filter": [
+                "apostrophe",
+                "asciifolding_filter",
+                "lowercase",
+                "spanish_stemmer"
+              ],
+              "tokenizer": "keyword"
+            }
+          }
         }
+      }
     }
-}
+  }
