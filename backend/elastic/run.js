@@ -22,6 +22,7 @@ const client = require('./client');
  * @return {Promise<>}.
  */
 exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calculatedAddress, coordinates) {
+    console.log('params',page = 0, searchTerm, hrs, paymentTypes, calculatedAddress, coordinates);
     let should = [], filter = [];
     let addressFilter;
 
@@ -42,61 +43,90 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
         categories = categories.hits.hits.map(category => {
             return category._source.category;
         });
-
+        console.log('categories.length',categories.length);
+        console.log(searchTerm,searchTerm.split(" ").length);
         if (categories.length) {
-            should = should.concat(categoryQuery(categories, 'match_phrase'));
-            const requestBody = {
-                body:
-                    Object.assign({
-                        "query": {
-                            "bool": {
-                                "must": [
-                                    {
-                                        "bool": {
-                                            "should": [
-                                                {
-                                                    "match_phrase": {
-                                                        "Appearances.Appearance.categoryname.keyword": {
-                                                            "query": searchTerm,
-                                                            "_name": "match_phrase_cat_key"
-                                                        }
-                                                    }
-                                                },
-                                                {
-                                                    "bool": {
-                                                        should
-                                                    }
-                                                }
-                                            ]
-                                        }
-                                    }
-                                ],
-                                "should": [
-                                    {
+
+            if( searchTerm,searchTerm.split(" ").length == 1 && typeof calculatedAddress == 'undefined' ){
+                console.log("busqueda de una sola palabra con categoria que existe literalmente y sin lugar");
+                var requestBody = {
+                    body:
+                        Object.assign({
+                            "query": {
+                                "bool":{
+                                    "must":{
                                         "match": {
-                                            "bn": {
-                                                "query": searchTerm,
-                                                "_name": "match_bn"
-                                            }
+                                            "categoryname_full_text": searchTerm
                                         }
                                     },
-                                    {
-                                        "match_phrase": {
-                                            "productservices.prdserv.synonyms": {
-                                                "query": searchTerm,
-                                                "_name": "match_phrase_prdserv"
+                                    filter
+                                }
+                            },
+                            "sort": [
+                                {"points": {"order": "desc"}},
+                                {"bn.order": {"order":"asc"}}
+                            ]
+                        }, pagination)
+                    ,
+                    index: process.env.negocios
+                }
+            }else{
+                should = should.concat(categoryQuery(categories, 'match_phrase'));
+                var requestBody = {
+                    body:
+                        Object.assign({
+                            "query": {
+                                "bool": {
+                                    "must": [
+                                        {
+                                            "bool": {
+                                                "should": [
+                                                    {
+                                                        "match_phrase": {
+                                                            "Appearances.Appearance.categoryname.keyword": {
+                                                                "query": searchTerm,
+                                                                "_name": "match_phrase_cat_key"
+                                                            }
+                                                        }
+                                                    },
+                                                    {
+                                                        "bool": {
+                                                            should
+                                                        }
+                                                    }
+                                                ]
                                             }
                                         }
-                                    }
-                                ],
-                                filter
-                            }
-                        },
-                        "sort": [{ "points": { "order": "desc" } }].concat(alphabeticalOrder())
-                    }, pagination)
-                ,
-                index: process.env.negocios
+                                    ],
+                                    "should": [
+                                        {
+                                            "match": {
+                                                "bn": {
+                                                    "query": searchTerm,
+                                                    "_name": "match_bn"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "match_phrase": {
+                                                "productservices.prdserv.synonyms": {
+                                                    "query": searchTerm,
+                                                    "_name": "match_phrase_prdserv"
+                                                }
+                                            }
+                                        }
+                                    ],
+                                    filter
+                                }
+                            },
+                            "sort": [{ "points": { "order": "desc" } }].concat(alphabeticalOrder())
+                        }, pagination)
+                    ,
+                    index: process.env.negocios
+                }
             }
+
+            console.log('requestBody ', JSON.stringify(requestBody));
 
             return client.getClient().search(requestBody).then(response => {
                 if (response.hits.hits === 0) {
@@ -193,8 +223,17 @@ function getRelatedCategories(searchTerm) {
                             "match_phrase": {
                                 "text_full_text": {
                                     "query": searchTerm,
-                                    "_name": "match_phrase_text"
+                                    "_name": "match_phrase_text_full_text"
                                     , "boost": 10
+                                }
+                            }
+                        },
+                        {
+                            "match_phrase": {
+                                "text": {
+                                    "query": searchTerm,
+                                    "_name": "match_phrase_text"
+                                    , "boost": 5
                                 }
                             }
                         },
@@ -205,7 +244,8 @@ function getRelatedCategories(searchTerm) {
                                         "match_phrase": {
                                             "category": {
                                                 "query": searchTerm,
-                                                "_name": "match_phrase_category"
+                                                "_name": "match_phrase_category",
+                                                "boost":15
                                             }
                                         }
                                     },
