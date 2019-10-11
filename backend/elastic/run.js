@@ -46,8 +46,9 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
         });
 
         if (categories.length) {
-
             if( searchTerm,searchTerm.split(" ").length == 1 && typeof calculatedAddress == 'undefined' && searchTerm==categories[0].toLowerCase() ){
+                should = should.concat(categoryQuery(categories, 'match_phrase'));
+
                 var requestBody = {
                     body:
                         Object.assign({
@@ -58,6 +59,7 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                                             "categoryname_full_text": searchTerm
                                         }
                                     },
+                                    should,
                                     filter
                                 }
                             },
@@ -70,6 +72,7 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                     index: process.env.negocios
                 }
             }else{
+
                 should = should.concat(categoryQuery(categories, 'match_phrase'));
                 var requestBody = {
                     body:
@@ -124,7 +127,6 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                     index: process.env.negocios
                 }
             }
-
 
             return client.getClient().search(requestBody).then(response => {
                 if (response.hits.hits === 0) {
@@ -204,10 +206,12 @@ function stopPhrases(searchTerm){
  * @return {Array<object>}
 */
 function categoryQuery(categories, matchType) {
+    var boost =categories.length;
     return categories.map(category => {
+        boost--;
         return JSON.parse(`{
             "${matchType}": {
-                "Appearances.Appearance.categoryname": { "query": "${category}", "_name": "match_phrase_cat" }
+                "Appearances.Appearance.categoryname": { "query": "${category}", "_name": "match_phrase_cat", "boost":"${boost}" }
             }
         }`)
     });
@@ -221,67 +225,29 @@ function categoryQuery(categories, matchType) {
 function getRelatedCategories(searchTerm) {
     const body = {
         "index": 'mexobjectsdefinition',
-        "body": {
-            "query": {
+        "body":{ 
+            "query":{
                 "bool": {
                     "should": [
                         {
-                            "match_phrase": {
-                                "category": {
-                                    "query": searchTerm,
-                                    "_name": "match_cat"
+                            "match_phrase":{
+                                "category":{
+                                "query":searchTerm,
+                                "boost":100
                                 }
                             }
                         },
                         {
                             "match_phrase": {
-                                "text": {
-                                    "query": searchTerm,
-                                    "_name": "match_phrase_text_full_text"
-                                    , "boost": 10
+                                "text":{
+                                "query": searchTerm,
+                                "boost":50
                                 }
-                            }
-                        },
-                        {
-                            "match_phrase": {
-                                "text": {
-                                    "query": searchTerm,
-                                    "_name": "match_phrase_text"
-                                    , "boost": 5
-                                }
-                            }
-                        },
-                        {
-                            "bool": {
-                                "must": [
-                                    {
-                                        "match_phrase": {
-                                            "category": {
-                                                "query": searchTerm,
-                                                "_name": "match_phrase_category",
-                                                "boost":15
-                                            }
-                                        }
-                                    },
-                                    {
-                                        "match": {
-                                            "prefix": "category"
-                                        }
-                                    }
-                                ]
                             }
                         }
                     ]
                 }
-            },
-            "sort": [
-                "_score",
-                {
-                    "score": {
-                        "order": "desc"
-                    }
-                }
-            ]
+            }
         }
     }
     console.log(searchTerm);
