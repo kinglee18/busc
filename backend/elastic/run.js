@@ -243,29 +243,15 @@ function getRelatedCategories(searchTerm) {
                             }
                         },
                         {
-                            "match_phrase": {
-                                "text": {
-                                    "query": searchTerm,
-                                    "_name": "match_phrase_text"
-                                    , "boost": 5
-                                }
-                            }
-                        },
-                        {
                             "bool": {
                                 "must": [
                                     {
                                         "match_phrase": {
-                                            "category": {
+                                            "category.keyword": {
                                                 "query": searchTerm,
                                                 "_name": "match_phrase_category",
                                                 "boost":15
                                             }
-                                        }
-                                    },
-                                    {
-                                        "match": {
-                                            "prefix": "category"
                                         }
                                     }
                                 ]
