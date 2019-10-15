@@ -22,7 +22,12 @@ const client = require('./client');
  * @return {Promise<>}.
  */
 exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calculatedAddress, coordinates) {
-    let should = [], filter = []; 
+    const pagination = {
+        "from": page * 20,
+        "size": 20,
+    };
+    const SCORE_AND_POINTS_SORTING = ["_score", { "points": { "order": "desc" } }].concat(alphabeticalOrder());
+    let should = [], filter = [];
     let addressFilter;
 
     /*         const paymentQuery = getPaymentQuery(paymentTypes);
@@ -31,11 +36,6 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
     if (addressFilter) {
         filter = filter.concat(addressFilter);
     }
-
-    const pagination = {
-        "from": page * 20,
-        "size": 20,
-    };
 
     searchTerm = stopPhrases(searchTerm);
 
@@ -46,91 +46,46 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
         });
 
         if (categories.length) {
-            if( searchTerm,searchTerm.split(" ").length == 1 && typeof calculatedAddress == 'undefined' && searchTerm==categories[0].toLowerCase() ){
-                should = should.concat(categoryQuery(categories, 'match_phrase'));
-
-                var requestBody = {
-                    body:
-                        Object.assign({
-                            "query": {
-                                "bool":{
-                                    "must":{
+            should = should.concat(categoryQuery(categories, 'match'));
+            var requestBody = {
+                body:
+                    Object.assign({
+                        "query": {
+                            "bool": {
+                                should: should.concat([
+                                    {
                                         "match": {
-                                            "categoryname_full_text": searchTerm
+                                            "bn": {
+                                                "query": searchTerm,
+                                                "_name": "match_bn",
+                                                boost: 0
+                                            }
                                         }
                                     },
-                                    should,
-                                    filter
-                                }
-                            },
-                            "sort": [
-                                {"points": {"order": "desc"}},
-                                {"bn.order": {"order":"asc"}}
-                            ]
-                        }, pagination)
-                    ,
-                    index: process.env.negocios
-                }
-            }else{
+                                    {
+                                        "match_phrase": {
+                                            "productservices.prdserv.synonyms": {
+                                                "query": searchTerm,
+                                                "_name": "match_phrase_prdserv",
+                                                boost: 0
+                                            }
+                                        }
+                                    }
 
-                should = should.concat(categoryQuery(categories, 'match_phrase'));
-                var requestBody = {
-                    body:
-                        Object.assign({
-                            "query": {
-                                "bool": {
-                                    "must": [
-                                        {
-                                            "bool": {
-                                                "should": [
-                                                    {
-                                                        "match_phrase": {
-                                                            "Appearances.Appearance.categoryname.keyword": {
-                                                                "query": searchTerm,
-                                                                "_name": "match_phrase_cat_key"
-                                                            }
-                                                        }
-                                                    },
-                                                    {
-                                                        "bool": {
-                                                            should
-                                                        }
-                                                    }
-                                                ]
-                                            }
-                                        }
-                                    ],
-                                    "should": [
-                                        {
-                                            "match": {
-                                                "bn": {
-                                                    "query": searchTerm,
-                                                    "_name": "match_bn"
-                                                }
-                                            }
-                                        },
-                                        {
-                                            "match_phrase": {
-                                                "productservices.prdserv.synonyms": {
-                                                    "query": searchTerm,
-                                                    "_name": "match_phrase_prdserv"
-                                                }
-                                            }
-                                        }
-                                    ],
-                                    filter
-                                }
-                            },
-                            "sort": [{ "points": { "order": "desc" } }].concat(alphabeticalOrder())
-                        }, pagination)
-                    ,
-                    index: process.env.negocios
-                }
+                                ]),
+                                filter
+                            }
+                        },
+                        sort: SCORE_AND_POINTS_SORTING
+                    }, pagination)
+                ,
+                index: process.env.negocios,
+                searchType: 'dfs_query_then_fetch'
             }
 
             return client.getClient().search(requestBody).then(response => {
                 if (response.hits.hits === 0) {
-                    return multisearch(searchTerm, filter, pagination);
+                    return multisearch(searchTerm, filter, pagination, SCORE_AND_POINTS_SORTING);
                 } else {
                     return new Promise((resolve, reject) => {
                         console.log('query2 ', JSON.stringify(requestBody));
@@ -139,12 +94,12 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                 }
             });
         } else {
-            return multisearch(searchTerm, filter, pagination);
+            return multisearch(searchTerm, filter, pagination, SCORE_AND_POINTS_SORTING);
         }
     });
 }
 
-function multisearch(searchTerm, filter, pagination) {
+function multisearch(searchTerm, filter, pagination, sort) {
     const requestBody = {
         body:
             Object.assign({
@@ -173,7 +128,7 @@ function multisearch(searchTerm, filter, pagination) {
                         filter
                     }
                 },
-                "sort": ["_score", { "points": { "order": "desc" } }].concat(alphabeticalOrder())
+                sort
             }, pagination)
         ,
         index: process.env.negocios
@@ -183,19 +138,19 @@ function multisearch(searchTerm, filter, pagination) {
 }
 
 /* función para omitir ciertas busquedas */
-function stopPhrases(searchTerm){
+function stopPhrases(searchTerm) {
     let phrases = [
-                    "interrupcion de embarazo", 
-                    "embarazo no deseado", 
-                    "clinica de aborto", 
-                    "clinica de abortos", 
-                    "clinicas de aborto", 
-                    "clinicas de abortos", 
-                    "clinica para aborto", 
-                    "clinica para abortos", 
-                    "clinicas para aborto", 
-                    "clinicas para abortos"
-                  ];
+        "interrupcion de embarazo",
+        "embarazo no deseado",
+        "clinica de aborto",
+        "clinica de abortos",
+        "clinicas de aborto",
+        "clinicas de abortos",
+        "clinica para aborto",
+        "clinica para abortos",
+        "clinicas para aborto",
+        "clinicas para abortos"
+    ];
 
     return searchTerm = (phrases.indexOf(searchTerm.replace(/([\ \t]+(?=[\ \t])|^\s+|\s+$)/g, '')) == -1) ? searchTerm : '';
 }
@@ -206,12 +161,12 @@ function stopPhrases(searchTerm){
  * @return {Array<object>}
 */
 function categoryQuery(categories, matchType) {
-    var boost =categories.length;
+    var boost = categories.length + 1;
     return categories.map(category => {
         boost--;
         return JSON.parse(`{
             "${matchType}": {
-                "Appearances.Appearance.categoryname": { "query": "${category}", "_name": "match_phrase_cat", "boost":"${boost}" }
+                "categoryname_full_text": { "query": "${category}", "_name": "match_${category}", "boost":"${boost}" }
             }
         }`)
     });
@@ -225,29 +180,53 @@ function categoryQuery(categories, matchType) {
 function getRelatedCategories(searchTerm) {
     const body = {
         "index": 'mexobjectsdefinition',
-        "body":{ 
-            "query":{
+        "body": {
+            "query": {
                 "bool": {
                     "should": [
                         {
-                            "match_phrase":{
-                                "category":{
-                                "query":searchTerm,
-                                "boost":100
+                            "match_phrase": {
+                                "category": {
+                                    "query": searchTerm,
+                                    "_name": "match_cat"
                                 }
                             }
                         },
                         {
                             "match_phrase": {
-                                "text":{
-                                "query": searchTerm,
-                                "boost":50
+                                "text": {
+                                    "query": searchTerm,
+                                    "_name": "match_phrase_text_full_text"
+                                    , "boost": 10
                                 }
+                            }
+                        },
+                        {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match_phrase": {
+                                            "category.keyword": {
+                                                "query": searchTerm,
+                                                "_name": "match_phrase_category",
+                                                "boost": 15
+                                            }
+                                        }
+                                    }
+                                ]
                             }
                         }
                     ]
                 }
-            }
+            },
+            "sort": [
+                "_score",
+                {
+                    "score": {
+                        "order": "desc"
+                    }
+                }
+            ]
         }
     }
     console.log(searchTerm);
