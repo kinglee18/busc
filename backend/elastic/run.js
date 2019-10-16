@@ -108,7 +108,7 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                                         },
                                         {
                                             "match_phrase": {
-                                                "productservices.prdserv.synonyms": {
+                                                "productservices.prdserv.spanish": {
                                                     "query": searchTerm,
                                                     "_name": "match_phrase_prdserv"
                                                 }
@@ -161,7 +161,7 @@ function multisearch(searchTerm, filter, pagination) {
                             },
                             {
                                 "match": {
-                                    "productservices.prdserv": {
+                                    "productservices.prdserv.spanish": {
                                         "query": searchTerm,
                                         "_name": "match_phrase_prdserv", "boost": 2
                                     }
@@ -384,7 +384,7 @@ function getAddressFilter(location, coordinates) {
         if (location.colony) {
             address.push({
                 "match_phrase": {
-                    "colony": {
+                    "colony.spanish": {
                         "query": location.colony
                     }
                 }
@@ -393,7 +393,7 @@ function getAddressFilter(location, coordinates) {
         if (location.city) {
             address.push({
                 "match": {
-                    "Appearances.Appearance.city": {
+                    "Appearances.Appearance.city.spanish": {
                         "query": location.city
                     }
                 }
