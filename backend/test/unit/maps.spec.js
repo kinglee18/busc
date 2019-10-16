@@ -36,10 +36,9 @@ describe('Google maps functionality', function () {
     it('should return an object with only the state field', (done) => {
         for (let name of abbreviatedStates.data) {
             maps.search(name.valor).then(result => {
-                assert.notExists(result.city, "eliminar " + result.city)
-            }).catch(error => {
-                console.log(error);
-            })
+                assert.notExists(result.city, "eliminar " + result.city);
+                assert.exists(result.state);
+            });
         }
         done();
     });

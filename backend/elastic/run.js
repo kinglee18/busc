@@ -401,7 +401,7 @@ function getAddressFilter(location, coordinates) {
         }
         address.push({
             "match_phrase": {
-                "Appearances.Appearance.state": {
+                "Appearances.Appearance.state.keyword": {
                     "query": location.state
                 }
             }
