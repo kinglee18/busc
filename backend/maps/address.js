@@ -1,6 +1,8 @@
 const axios = require('axios');
 const cls = require('../analyzer/clear');
 const syn = require('../info/syn_where');
+const CITIES_TO_EXCLUDE = require('../info/cities');
+
 
 exports.search = async function (texto) {
     let palabras = texto.split(' ');
@@ -40,13 +42,33 @@ function parseAddress(location) {
         }
 
     }
+    address.city = cleanStateName(address.city);
     address.state = getAbrevWhere(address.state);
     return address;
 }
 
-function getAbrevWhere(estado) {
+/**
+ * 
+ * @param {string} city - name of the city to delete
+ * @description - delete the name of the city which is the same as the state
+ */
+function cleanStateName(city) {
+    for (let cityName of CITIES_TO_EXCLUDE.data) {
+        if (city === cityName) return null;
+    }
+    return city;
+}
+
+/**
+ * 
+ * @param {string} state - name of the state to be abbreviated 
+ * @returns {string} - abbreviaated statename used for elasticsearch queries
+ * @description transforms the name of the state provided by google maps
+ *  into state name abbreviaated for bussiness statename field
+ */
+function getAbrevWhere(state) {
     for (let op of syn.data) {
-        if (op.valor == estado) {
+        if (op.valor == state) {
             return op.simb;
         }
     }
