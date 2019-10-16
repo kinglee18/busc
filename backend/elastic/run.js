@@ -100,7 +100,7 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                                     "should": [
                                         {
                                             "match": {
-                                                "bn": {
+                                                "bn.spanish": {
                                                     "query": searchTerm,
                                                     "_name": "match_bn"
                                                 }
@@ -151,7 +151,7 @@ function multisearch(searchTerm, filter, pagination) {
                         should: [
                             {
                                 "match": {
-                                    "bn": { "query": searchTerm, "_name": "match_phrase_bn", "boost": 5 }
+                                    "bn.spanish": { "query": searchTerm, "_name": "match_phrase_bn", "boost": 5 }
                                 }
                             },
                             {
