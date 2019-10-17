@@ -55,23 +55,20 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                                 should: should.concat([
                                     {
                                         "match": {
-                                            "bn": {
+                                            "bn.spanish": {
                                                 "query": searchTerm,
-                                                "_name": "match_bn",
-                                                boost: 0
+                                                "_name": "match_bn"
                                             }
                                         }
                                     },
                                     {
                                         "match_phrase": {
-                                            "productservices.prdserv.synonyms": {
+                                            "productservices.prdserv.spanish": {
                                                 "query": searchTerm,
-                                                "_name": "match_phrase_prdserv",
-                                                boost: 0
+                                                "_name": "match_phrase_prdserv"
                                             }
                                         }
                                     }
-
                                 ]),
                                 filter
                             }
@@ -82,6 +79,8 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                 index: process.env.negocios,
                 searchType: 'dfs_query_then_fetch'
             }
+            
+            console.log('primer consulta ', JSON.stringify(requestBody));
 
             return client.getClient().search(requestBody).then(response => {
                 if (response.hits.hits === 0) {
@@ -93,7 +92,7 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                     });
                 }
             });
-        } else {
+        }else{
             return multisearch(searchTerm, filter, pagination, SCORE_AND_POINTS_SORTING);
         }
     });
@@ -108,7 +107,7 @@ function multisearch(searchTerm, filter, pagination, sort) {
                         should: [
                             {
                                 "match": {
-                                    "bn": { "query": searchTerm, "_name": "match_phrase_bn", "boost": 5 }
+                                    "bn.spanish": { "query": searchTerm, "_name": "match_phrase_bn", "boost": 5 }
                                 }
                             },
                             {
@@ -118,7 +117,7 @@ function multisearch(searchTerm, filter, pagination, sort) {
                             },
                             {
                                 "match": {
-                                    "productservices.prdserv": {
+                                    "productservices.prdserv.spanish": {
                                         "query": searchTerm,
                                         "_name": "match_phrase_prdserv", "boost": 2
                                     }
@@ -343,7 +342,7 @@ function getAddressFilter(location, coordinates) {
         if (location.colony) {
             address.push({
                 "match_phrase": {
-                    "colony": {
+                    "colony.spanish": {
                         "query": location.colony
                     }
                 }
@@ -352,7 +351,7 @@ function getAddressFilter(location, coordinates) {
         if (location.city) {
             address.push({
                 "match": {
-                    "Appearances.Appearance.city": {
+                    "Appearances.Appearance.city.spanish": {
                         "query": location.city
                     }
                 }
@@ -360,7 +359,7 @@ function getAddressFilter(location, coordinates) {
         }
         address.push({
             "match_phrase": {
-                "Appearances.Appearance.state": {
+                "Appearances.Appearance.state.keyword": {
                     "query": location.state
                 }
             }

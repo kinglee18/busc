@@ -8,10 +8,6 @@ exports.data = [
         valor: 'baja california'
     },
     {
-        simb: 'bcn',
-        valor: 'baja california norte'
-    },
-    {
         simb: 'bcs',
         valor: 'baja california sur'
     },
@@ -96,7 +92,7 @@ exports.data = [
         valor: 'queretaro'
     },
     {
-        simb: 'q roo',
+        simb: 'qr',
         valor: 'quintana roo'
     },
     {
@@ -137,10 +133,6 @@ exports.data = [
     },
     {
         simb: 'df',
-        valor: 'distrito federal'
-    },
-    {
-        simb: 'cdmx',
         valor: 'distrito federal'
     },
     {

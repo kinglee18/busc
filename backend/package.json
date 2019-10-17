@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha 'test/unit/*.spec.js'"
+    "test": "mocha 'test/*/*.spec.js' --timeout 15000"
   },
   "author": "eduardo.hernandez@seccionamarilla.com",
   "license": "ISC",
@@ -25,6 +25,7 @@
     "xml2js": "^0.4.19"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
     "mocha": "^6.2.0"
   }
 }
