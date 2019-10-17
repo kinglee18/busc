@@ -1,181 +1,142 @@
 {
   "settings": {
-    "index": {
-      "number_of_shards": "5",
-      "provided_name": "businesslistingsacom",
-      "creation_date": "1570654909217",
-      "analysis": {
-        "filter": {
-          "spanish_stop_filter": {
-            "type": "stop",
-            "stopwords": "_spanish_"
-          },
-          "synonym": {
-            "type": "synonym",
-            "synonyms_path": "synonym.txt"
-          },
-          "unique_filter": {
-            "type": "unique",
-            "only_in_same_position": "true"
-          },
-          "stop_words_filter": {
-            "type": "stop",
-            "stopwords": [
-              "alguna",
-              "alguno",
-              "ambos",
-              "aqui",
-              "arriba",
-              "bajo",
-              "cada",
-              "dentro",
-              "fin",
-              "hacemos",
-              "hacen",
-              "hacer",
-              "intento",
-              "largo",
-              "mio",
-              "modo",
-              "podemos",
-              "poder",
-              "puede",
-              "pueden",
-              "puedo",
-              "sabe",
-              "sabemos",
-              "saben",
-              "saber",
-              "sabes",
-              "ser",
-              "sin",
-              "solamente",
-              "solo",
-              "tener",
-              "tiempo",
-              "tras",
-              "ultimo",
-              "usa",
-              "usamos",
-              "usan",
-              "usar",
-              "usas",
-              "uso",
-              "va",
-              "valor",
-              "vamos",
-              "van",
-              "vaya",
-              "verdad",
-              "verdadera",
-              "cabe",
-              "hacia",
-              "salvo",
-              "segun",
-              "so",
-              "aborto",
-              "abortos",
-              "legrado"
-            ]
-          },
-          "asciifolding_filter_two": {
-            "type": "asciifolding",
-            "preserve_original": "true"
-          },
-          "spanish_stemmer": {
-            "type": "stemmer",
-            "language": "spanish"
-          },
-          "asciifolding_filter": {
-            "type": "asciifolding",
-            "preserve_original": "true"
-          },
-          "autocomplete_filter": {
-            "max_shingle_size": "5",
-            "min_shingle_size": "3",
-            "type": "shingle"
-          }
+    "analysis": {
+      "filter": {
+        "spanish_stop_filter": {
+          "type": "stop",
+          "stopwords": "_spanish_"
         },
-        "char_filter": {
-          "multispaces": {
-            "pattern": " +",
-            "type": "pattern_replace",
-            "replacement": " "
-          }
+        "synonym": {
+          "type": "synonym",
+          "synonyms_path": "synonym.txt"
         },
-        "analyzer": {
-          "stopped_spanish_words_analyzer": {
-            "filter": [
-              "apostrophe",
-              "asciifolding_filter",
-              "lowercase",
-              "spanish_stop_filter",
-              "stop_words_filter",
-              "spanish_stemmer",
-              "unique_filter"
-            ],
-            "tokenizer": "standard"
-          },
-          "synonym_analyzer": {
-            "filter": [
-              "apostrophe",
-              "asciifolding_filter",
-              "lowercase",
-              "spanish_stop_filter",
-              "stop_words_filter",
-              "spanish_stemmer",
-              "unique_filter"
-            ],
-            "tokenizer": "standard"
-          },
-          "keyword_analyzer": {
-            "filter": [
-              "asciifolding_filter",
-              "lowercase"
-            ],
-            "ignore_above": "256",
-            "tokenizer": "keyword"
-          },
-          "keyword_analyzer_dos": {
-            "filter": [
-              "lowercase",
-              "asciifolding_filter_two"
-            ],
-            "char_filter": "multispaces",
-            "tokenizer": "keyword"
-          },
-          "spanish_analyzer": {
-            "filter": [
-              "apostrophe",
-              "asciifolding_filter",
-              "lowercase",
-              "spanish_stop_filter",
-              "stop_words_filter",
-              "spanish_stemmer",
-              "unique_filter"
-            ],
-            "tokenizer": "standard"
-          },
-          "autocomplete_analyzer": {
-            "filter": [
-              "asciifolding_filter",
-              "lowercase",
-              "autocomplete_filter"
-            ],
-            "tokenizer": "standard"
-          }
+        "unique_filter": {
+          "type": "unique",
+          "only_in_same_position": "true"
+        },
+        "stop_words_filter": {
+          "type": "stop",
+          "stopwords": [
+            "alguna",
+            "alguno",
+            "ambos",
+            "aqui",
+            "arriba",
+            "bajo",
+            "cada",
+            "dentro",
+            "fin",
+            "hacemos",
+            "hacen",
+            "hacer",
+            "intento",
+            "largo",
+            "mio",
+            "modo",
+            "podemos",
+            "poder",
+            "puede",
+            "pueden",
+            "puedo",
+            "sabe",
+            "sabemos",
+            "saben",
+            "saber",
+            "sabes",
+            "ser",
+            "sin",
+            "solamente",
+            "solo",
+            "tener",
+            "tiempo",
+            "tras",
+            "ultimo",
+            "usa",
+            "usamos",
+            "usan",
+            "usar",
+            "usas",
+            "uso",
+            "va",
+            "valor",
+            "vamos",
+            "van",
+            "vaya",
+            "verdad",
+            "verdadera",
+            "cabe",
+            "hacia",
+            "salvo",
+            "segun",
+            "so",
+            "aborto",
+            "abortos",
+            "legrado"
+          ]
+        },
+        "asciifolding_filter_two": {
+          "type": "asciifolding",
+          "preserve_original": "true"
+        },
+        "spanish_stemmer": {
+          "type": "stemmer",
+          "language": "spanish"
+        },
+        "asciifolding_filter": {
+          "type": "asciifolding",
+          "preserve_original": "true"
+        },
+        "autocomplete_filter": {
+          "max_shingle_size": "5",
+          "min_shingle_size": "3",
+          "type": "shingle"
+        }
+      },
+      "analyzer": {
+        "keyword_analyzer": {
+          "filter": [
+            "asciifolding_filter",
+            "lowercase"
+          ],
+          "ignore_above": "256",
+          "tokenizer": "keyword"
+        },
+        "keyword_analyzer_dos": {
+          "filter": [
+            "lowercase",
+            "asciifolding_filter_two"
+          ],
+          "char_filter": "multispaces",
+          "tokenizer": "keyword"
         },
         "spanish_analyzer": {
           "filter": [
-            "synonym"
+            "synonym",
+            "apostrophe",
+            "asciifolding_filter",
+            "lowercase",
+            "spanish_stop_filter",
+            "stop_words_filter",
+            "spanish_stemmer",
+            "unique_filter"
+          ],
+          "tokenizer": "standard"
+        },
+        "autocomplete_analyzer": {
+          "filter": [
+            "asciifolding_filter",
+            "lowercase",
+            "autocomplete_filter"
           ],
           "tokenizer": "standard"
         }
       },
-      "number_of_replicas": "1",
-      "uuid": "EpGiBN6yTWSvn6m9sHKwcw",
-      "version": {
-        "created": "6010299"
+      "char_filter": {
+        "multispaces": {
+          "pattern": " +",
+          "type": "pattern_replace",
+          "replacement": " "
+        }
       }
     }
   },
@@ -207,10 +168,10 @@
                     },
                     "synonyms": {
                       "type": "text",
-                      "analyzer": "synonym_analyzer"
+                      "analyzer": "spanish_analyzer"
                     }
                   },
-                  "analyzer": "stopped_spanish_words_analyzer"
+                  "analyzer": "spanish_analyzer"
                 },
                 "branchname": {
                   "type": "text",
@@ -225,10 +186,10 @@
                     },
                     "synonyms": {
                       "type": "text",
-                      "analyzer": "synonym_analyzer"
+                      "analyzer": "spanish_analyzer"
                     }
                   },
-                  "analyzer": "stopped_spanish_words_analyzer"
+                  "analyzer": "spanish_analyzer"
                 },
                 "categoryid": {
                   "type": "long",
@@ -254,10 +215,10 @@
                     },
                     "synonyms": {
                       "type": "text",
-                      "analyzer": "synonym_analyzer"
+                      "analyzer": "spanish_analyzer"
                     }
                   },
-                  "analyzer": "stopped_spanish_words_analyzer"
+                  "analyzer": "spanish_analyzer"
                 },
                 "colony": {
                   "type": "text",
@@ -272,10 +233,10 @@
                     },
                     "synonyms": {
                       "type": "text",
-                      "analyzer": "synonym_analyzer"
+                      "analyzer": "spanish_analyzer"
                     }
                   },
-                  "analyzer": "stopped_spanish_words_analyzer"
+                  "analyzer": "spanish_analyzer"
                 },
                 "lat": {
                   "type": "long",
@@ -350,10 +311,10 @@
                     },
                     "synonyms": {
                       "type": "text",
-                      "analyzer": "synonym_analyzer"
+                      "analyzer": "spanish_analyzer"
                     }
                   },
-                  "analyzer": "stopped_spanish_words_analyzer"
+                  "analyzer": "spanish_analyzer"
                 },
                 "physicalstate": {
                   "type": "text",
@@ -368,10 +329,10 @@
                     },
                     "synonyms": {
                       "type": "text",
-                      "analyzer": "synonym_analyzer"
+                      "analyzer": "spanish_analyzer"
                     }
                   },
-                  "analyzer": "stopped_spanish_words_analyzer"
+                  "analyzer": "spanish_analyzer"
                 },
                 "state": {
                   "type": "text",
@@ -386,10 +347,10 @@
                     },
                     "synonyms": {
                       "type": "text",
-                      "analyzer": "synonym_analyzer"
+                      "analyzer": "spanish_analyzer"
                     }
                   },
-                  "analyzer": "stopped_spanish_words_analyzer"
+                  "analyzer": "spanish_analyzer"
                 },
                 "zip": {
                   "type": "keyword",
@@ -524,14 +485,14 @@
             },
             "synonyms": {
               "type": "text",
-              "analyzer": "synonym_analyzer"
+              "analyzer": "spanish_analyzer"
             }
           },
           "copy_to": [
             "bn_autocomplete",
             "bn_full_text"
           ],
-          "analyzer": "stopped_spanish_words_analyzer"
+          "analyzer": "spanish_analyzer"
         },
         "bn_autocomplete": {
           "type": "completion",
@@ -651,10 +612,10 @@
                     },
                     "synonyms": {
                       "type": "text",
-                      "analyzer": "synonym_analyzer"
+                      "analyzer": "spanish_analyzer"
                     }
                   },
-                  "analyzer": "stopped_spanish_words_analyzer"
+                  "analyzer": "spanish_analyzer"
                 },
                 "colony": {
                   "type": "text",
@@ -669,10 +630,10 @@
                     },
                     "synonyms": {
                       "type": "text",
-                      "analyzer": "synonym_analyzer"
+                      "analyzer": "spanish_analyzer"
                     }
                   },
-                  "analyzer": "stopped_spanish_words_analyzer"
+                  "analyzer": "spanish_analyzer"
                 },
                 "lat": {
                   "type": "text",
@@ -695,10 +656,10 @@
                     },
                     "synonyms": {
                       "type": "text",
-                      "analyzer": "synonym_analyzer"
+                      "analyzer": "spanish_analyzer"
                     }
                   },
-                  "analyzer": "stopped_spanish_words_analyzer"
+                  "analyzer": "spanish_analyzer"
                 },
                 "orientacion": {
                   "type": "text",
@@ -712,7 +673,7 @@
                       "analyzer": "spanish_analyzer"
                     }
                   },
-                  "analyzer": "stopped_spanish_words_analyzer"
+                  "analyzer": "spanish_analyzer"
                 },
                 "phone1": {
                   "type": "text",
@@ -799,10 +760,10 @@
                     },
                     "synonyms": {
                       "type": "text",
-                      "analyzer": "synonym_analyzer"
+                      "analyzer": "spanish_analyzer"
                     }
                   },
-                  "analyzer": "stopped_spanish_words_analyzer"
+                  "analyzer": "spanish_analyzer"
                 },
                 "physicalstate": {
                   "type": "text",
@@ -817,10 +778,10 @@
                     },
                     "synonyms": {
                       "type": "text",
-                      "analyzer": "synonym_analyzer"
+                      "analyzer": "spanish_analyzer"
                     }
                   },
-                  "analyzer": "stopped_spanish_words_analyzer"
+                  "analyzer": "spanish_analyzer"
                 },
                 "zip": {
                   "type": "keyword",
@@ -845,10 +806,10 @@
                 },
                 "synonyms": {
                   "type": "text",
-                  "analyzer": "synonym_analyzer"
+                  "analyzer": "spanish_analyzer"
                 }
               },
-              "analyzer": "stopped_spanish_words_analyzer"
+              "analyzer": "spanish_analyzer"
             }
           }
         },
@@ -869,10 +830,10 @@
             },
             "synonyms": {
               "type": "text",
-              "analyzer": "synonym_analyzer"
+              "analyzer": "spanish_analyzer"
             }
           },
-          "analyzer": "stopped_spanish_words_analyzer",
+          "analyzer": "spanish_analyzer",
           "fielddata": true
         },
         "colony": {
@@ -889,10 +850,10 @@
             },
             "synonyms": {
               "type": "text",
-              "analyzer": "synonym_analyzer"
+              "analyzer": "spanish_analyzer"
             }
           },
-          "analyzer": "stopped_spanish_words_analyzer"
+          "analyzer": "spanish_analyzer"
         },
         "comentarios": {
           "type": "text"
@@ -1056,10 +1017,10 @@
             },
             "synonyms": {
               "type": "text",
-              "analyzer": "synonym_analyzer"
+              "analyzer": "spanish_analyzer"
             }
           },
-          "analyzer": "stopped_spanish_words_analyzer"
+          "analyzer": "spanish_analyzer"
         },
         "items": {
           "properties": {
@@ -1210,10 +1171,10 @@
             },
             "synonyms": {
               "type": "text",
-              "analyzer": "synonym_analyzer"
+              "analyzer": "spanish_analyzer"
             }
           },
-          "analyzer": "stopped_spanish_words_analyzer"
+          "analyzer": "spanish_analyzer"
         },
         "physicalstate": {
           "type": "text",
@@ -1229,10 +1190,10 @@
             },
             "synonyms": {
               "type": "text",
-              "analyzer": "synonym_analyzer"
+              "analyzer": "spanish_analyzer"
             }
           },
-          "analyzer": "stopped_spanish_words_analyzer"
+          "analyzer": "spanish_analyzer"
         },
         "pin": {
           "type": "geo_point"
@@ -1255,10 +1216,10 @@
                 },
                 "synonyms": {
                   "type": "text",
-                  "analyzer": "synonym_analyzer"
+                  "analyzer": "spanish_analyzer"
                 }
               },
-              "analyzer": "stopped_spanish_words_analyzer"
+              "analyzer": "spanish_analyzer"
             }
           }
         },
@@ -1296,10 +1257,10 @@
                 },
                 "synonyms": {
                   "type": "text",
-                  "analyzer": "synonym_analyzer"
+                  "analyzer": "spanish_analyzer"
                 }
               },
-              "analyzer": "stopped_spanish_words_analyzer"
+              "analyzer": "spanish_analyzer"
             }
           }
         },
@@ -1316,10 +1277,10 @@
             },
             "synonyms": {
               "type": "text",
-              "analyzer": "synonym_analyzer"
+              "analyzer": "spanish_analyzer"
             }
           },
-          "analyzer": "stopped_spanish_words_analyzer"
+          "analyzer": "spanish_analyzer"
         },
         "statename": {
           "type": "text",
@@ -1334,10 +1295,10 @@
             },
             "synonyms": {
               "type": "text",
-              "analyzer": "synonym_analyzer"
+              "analyzer": "spanish_analyzer"
             }
           },
-          "analyzer": "stopped_spanish_words_analyzer"
+          "analyzer": "spanish_analyzer"
         },
         "summary": {
           "type": "text"
