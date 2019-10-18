@@ -79,7 +79,7 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                 index: process.env.negocios,
                 searchType: 'dfs_query_then_fetch'
             }
-            
+
             console.log('primer consulta ', JSON.stringify(requestBody));
 
             return client.getClient().search(requestBody).then(response => {
@@ -92,7 +92,7 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                     });
                 }
             });
-        }else{
+        } else {
             return multisearch(searchTerm, filter, pagination, SCORE_AND_POINTS_SORTING);
         }
     });
@@ -112,7 +112,11 @@ function multisearch(searchTerm, filter, pagination, sort) {
                             },
                             {
                                 "match": {
-                                    "Appearances.Appearance.categoryname": { "query": searchTerm, "_name": "match_phrase_cat", "boost": 3 }
+                                    "Appearances.Appearance.categoryname.spanish": {
+                                        "query": searchTerm,
+                                        "_name": "match_phrase_cat",
+                                        "boost": 3
+                                    }
                                 }
                             },
                             {
@@ -120,6 +124,14 @@ function multisearch(searchTerm, filter, pagination, sort) {
                                     "productservices.prdserv.spanish": {
                                         "query": searchTerm,
                                         "_name": "match_phrase_prdserv", "boost": 2
+                                    }
+                                }
+                            },
+                            {
+                                "match": {
+                                    "productservices.prdserv.keyword": {
+                                        "query": searchTerm,
+                                        "_name": "match_phrase_prdserv", "boost": 4
                                     }
                                 }
                             }
