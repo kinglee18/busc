@@ -52,24 +52,28 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                     Object.assign({
                         "query": {
                             "bool": {
-                                should: should.concat([
-                                    {
-                                        "match": {
-                                            "bn.spanish": {
-                                                "query": searchTerm,
-                                                "_name": "match_bn"
+                                "must": {
+                                    "bool": {
+                                        should: should.concat([
+                                            {
+                                                "match": {
+                                                    "bn.spanish": {
+                                                        "query": searchTerm,
+                                                        "_name": "match_bn"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "match_phrase": {
+                                                    "productservices.prdserv.spanish": {
+                                                        "query": searchTerm,
+                                                        "_name": "match_phrase_prdserv"
+                                                    }
+                                                }
                                             }
-                                        }
-                                    },
-                                    {
-                                        "match_phrase": {
-                                            "productservices.prdserv.spanish": {
-                                                "query": searchTerm,
-                                                "_name": "match_phrase_prdserv"
-                                            }
-                                        }
+                                        ])
                                     }
-                                ]),
+                                },
                                 filter
                             }
                         },
@@ -104,38 +108,42 @@ function multisearch(searchTerm, filter, pagination, sort) {
             Object.assign({
                 "query": {
                     "bool": {
-                        should: [
-                            {
-                                "match": {
-                                    "bn.spanish": { "query": searchTerm, "_name": "match_phrase_bn", "boost": 5 }
-                                }
-                            },
-                            {
-                                "match": {
-                                    "Appearances.Appearance.categoryname.spanish": {
-                                        "query": searchTerm,
-                                        "_name": "match_phrase_cat",
-                                        "boost": 3
+                        must: {
+                            bool: {
+                                should: [
+                                    {
+                                        "match": {
+                                            "bn.spanish": { "query": searchTerm, "_name": "match_phrase_bn", "boost": 5 }
+                                        }
+                                    },
+                                    {
+                                        "match": {
+                                            "Appearances.Appearance.categoryname.spanish": {
+                                                "query": searchTerm,
+                                                "_name": "match_phrase_cat",
+                                                "boost": 3
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "match": {
+                                            "productservices.prdserv.spanish": {
+                                                "query": searchTerm,
+                                                "_name": "match_phrase_prdserv", "boost": 2
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "match": {
+                                            "productservices.prdserv.keyword": {
+                                                "query": searchTerm,
+                                                "_name": "match_phrase_prdserv", "boost": 4
+                                            }
+                                        }
                                     }
-                                }
-                            },
-                            {
-                                "match": {
-                                    "productservices.prdserv.spanish": {
-                                        "query": searchTerm,
-                                        "_name": "match_phrase_prdserv", "boost": 2
-                                    }
-                                }
-                            },
-                            {
-                                "match": {
-                                    "productservices.prdserv.keyword": {
-                                        "query": searchTerm,
-                                        "_name": "match_phrase_prdserv", "boost": 4
-                                    }
-                                }
+                                ]
                             }
-                        ],
+                        },
                         filter
                     }
                 },
