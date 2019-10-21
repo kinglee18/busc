@@ -42,7 +42,7 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
     return getRelatedCategories(searchTerm).then(categories => {
 
         categories = categories.hits.hits.map(category => {
-            return category._source.category;
+            return category._source;
         });
 
         if (categories.length) {
@@ -55,6 +55,19 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                                 "must": {
                                     "bool": {
                                         should: should.concat([
+                                            {
+                                                "constant_score": {
+                                                    "filter": {
+                                                        "match": {
+                                                            "categoryname_full_text": {
+                                                                "query": searchTerm,
+                                                                "_name": "matchcat",
+                                                            }
+                                                        }
+                                                    },
+                                                    "boost": 150
+                                                }
+                                            },
                                             {
                                                 "match": {
                                                     "bn.spanish": {
@@ -178,18 +191,29 @@ function stopPhrases(searchTerm) {
 
 /**
  * 
- * @param {Array<string>} categories - categories name to put in query 
+ * @param {Array<object>} categories - categories name to put in query 
  * @return {Array<object>}
 */
 function categoryQuery(categories, matchType) {
     var boost = categories.length + 1;
     return categories.map(category => {
         boost--;
+        if (category.score) {
+            return JSON.parse(`{
+                "constant_score":{
+                    "filter": {
+                        "match": {
+                            "categoryname_full_text": { "query": "${category.category}", "_name": "match_${category.category}" }
+                        }
+                    },
+                        "boost": "${category.score}"
+            }}`);
+        }
         return JSON.parse(`{
             "${matchType}": {
-                "categoryname_full_text": { "query": "${category}", "_name": "match_${category}", "boost":"${boost}" }
+                "categoryname_full_text": { "query": "${category.category}", "_name": "match_${category.category}", "boost":"${boost}" }
             }
-        }`)
+        }`);
     });
 }
 
