@@ -59,7 +59,8 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                                                 "match": {
                                                     "bn.spanish": {
                                                         "query": searchTerm,
-                                                        "_name": "match_bn"
+                                                        "_name": "match_bn",
+                                                        "boost": 0
                                                     }
                                                 }
                                             },
@@ -67,7 +68,8 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
                                                 "match_phrase": {
                                                     "productservices.prdserv.spanish": {
                                                         "query": searchTerm,
-                                                        "_name": "match_phrase_prdserv"
+                                                        "_name": "match_phrase_prdserv",
+                                                        "boost": 0
                                                     }
                                                 }
                                             }
