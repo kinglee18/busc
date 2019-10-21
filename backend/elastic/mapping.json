@@ -60,8 +60,10 @@
                     "categoryname_full_text"
                   ],
                   "fields": {
-                    "type": "text",
-                    "analyzer": "spanish_analyzer"
+                    "spanish": {
+                      "type": "text",
+                      "analyzer": "spanish_analyzer"
+                    }
                   }
                 },
                 "city": {
