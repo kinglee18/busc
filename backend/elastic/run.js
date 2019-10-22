@@ -10,10 +10,10 @@ const client = require('./client');
  * @param {string[]} hrs.day - business schedule 
  * 
  * @param {string []} paymentTypes -  payment types of business
- * @param {object} calculatedAddress - business calculatedAddress in previous analisys
- * @param {string} calculatedAddress.city - 
- * @param {string} calculatedAddress.colony - 
- * @param {string} calculatedAddress.state - 
+ * @param {object} address - business address in previous analisys
+ * @param {string} address.city - 
+ * @param {string} address.colony - 
+ * @param {string} address.state - 
  * @param {object} coordinates - coordinates privided by the browser
  * @param {string} coordinates.lat - latitude
  * @param {string} coordinates.lng - longitude
@@ -21,7 +21,7 @@ const client = require('./client');
  * 
  * @return {Promise<>}.
  */
-exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calculatedAddress, coordinates) {
+function searchBusiness(page = 0, searchTerm, hrs, paymentTypes, address, coordinates) {
     const pagination = {
         "from": page * 20,
         "size": 20,
@@ -32,7 +32,7 @@ exports.searchBusiness = function (page = 0, searchTerm, hrs, paymentTypes, calc
 
     /*         const paymentQuery = getPaymentQuery(paymentTypes);
             const scheduleQuery = getScheduleQuery(hrs); */
-    addressFilter = getAddressFilter(calculatedAddress, coordinates);
+    addressFilter = getAddressFilter(address, coordinates);
     if (addressFilter) {
         filter = filter.concat(addressFilter);
     }
@@ -158,10 +158,10 @@ function multisearch(searchTerm, filter, pagination) {
                         },
                         "script_score": {
                             "script": {
-                              "source": "doc['points'].value == 10 ? 0:  doc['points'].value"
+                                "source": "doc['points'].value == 10 ? 0:  doc['points'].value"
                             }
-                          },
-                          "boost_mode": "multiply"
+                        },
+                        "boost_mode": "multiply"
                     }
                 },
                 sort: ["_score"].concat(alphabeticalOrder())
@@ -380,8 +380,8 @@ function getPaymentQuery(payments) {
 /**
  * @description - generates an object depending on the calculated address by 
  * the analisys or provided coordinates
- * @param {object} location - previously calculated address 
- * @param {object} coordinates - browser coordinates
+ * @param {object} location (optional)- previously calculated address 
+ * @param {object} coordinates (optional) - browser coordinates
  * @returns {Array} - constains a fragment for query filter options 
  */
 function getAddressFilter(location, coordinates) {
@@ -413,10 +413,10 @@ function getAddressFilter(location, coordinates) {
             }
         });
         return address;
-    } else if (coordinates.lat) {
+    } else if (coordinates) {
         address.push({
             "geo_distance": {
-                "distance": "10km",
+                "distance": "5km",
                 "pin": [coordinates.lng, coordinates.lat]
             }
         });
@@ -857,3 +857,5 @@ function asigDaySn(days) {
 
     return arr;
 }
+
+module.exports = { getAddressFilter, searchBusiness }

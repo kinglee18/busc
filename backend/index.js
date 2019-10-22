@@ -21,13 +21,14 @@ app.use(bodyParser.json())
 app.get('/node', (req, res) => {
 
     proceso.analisys(req.query.searchTerm).then((json) => {
+        const coordinates = req.query.lat && req.query.lng ? { lat: parseFloat(req.query.lat), lng: parseFloat(req.query.lng) } : undefined;
         elastic.searchBusiness(
             req.query.page,
             json.newSearchTerm,
             json.schedule,
             json.payments,
             json.location,
-            { lat: parseFloat(req.query.lat), lng: parseFloat(req.query.lng) }
+            coordinates
         ).then((response) => {
             if (response.responses) {
                 const hits = response.responses[0].hits.hits.concat(response.responses[1].hits.hits);
