@@ -681,7 +681,7 @@
                 },
                 "link": {
                   "type": "text",
-                  "index": false
+                  "index": true
                 },
                 "lon": {
                   "type": "float",
