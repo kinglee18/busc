@@ -17,35 +17,41 @@ app.use(bodyParser.json())
 /**
  * @desc Retrieves all business related by name, category, products and services
  * @param {string} req.query.searchTerm -business, category or location or  product
+ * @param {string} req.query.lat - browser detected latitude
+ * @param {string} req.query.lng - browser detected longitude
+ * 
  */
 app.get('/node', (req, res) => {
+    const validation = validParams(req.query);
+    const address = req.query.state ? {
+        state: req.query.state,
+        city: req.query.city,
+        colony: req.query.colony
+    } : undefined;
+    const coordinates = req.query.lat && req.query.lng ? { lat: parseFloat(req.query.lat), lng: parseFloat(req.query.lng) } : undefined;
 
-    proceso.analisys(req.query.searchTerm).then((json) => {
-        elastic.searchBusiness(
-            req.query.page,
-            json.newSearchTerm,
-            json.schedule,
-            json.payments,
-            json.location,
-            { lat: parseFloat(req.query.lat), lng: parseFloat(req.query.lng) }
-        ).then((response) => {
-            if (response.responses) {
-                const hits = response.responses[0].hits.hits.concat(response.responses[1].hits.hits);
-                res.status(200).send({
-                    total: response.responses[0].hits.total + response.responses[1].hits.total,
-                    info: parseBussineses(hits)
-                });
-            } else {
+    if (validation.valid) {
+        proceso.analisys(req.query.searchTerm).then((json) => {
+            elastic.searchBusiness(
+                req.query.page,
+                json.newSearchTerm,
+                json.schedule,
+                json.payments,
+                json.location || address,
+                coordinates
+            ).then((response) => {
                 res.status(200).send({
                     total: response.hits.total,
                     info: parseBussineses(response.hits.hits)
                 });
-            }
-        }).catch(error => {
-            console.error(error);
-            res.status(500).send(error);
-        })
-    })
+            }).catch(error => {
+                console.error(error);
+                res.status(500).send(error);
+            });
+        });
+    } else {
+        res.status(400).send(validation);
+    }
 });
 
 function parseBussineses(businesses) {
@@ -54,6 +60,18 @@ function parseBussineses(businesses) {
     });
 }
 
+function validParams(params) {
+    if ((params.lat && !params.lng) || (!params.lat && params.lng)) {
+        return { valid: false, msg: 'malformed coordinates' };
+    }
+    if ((params.city && !params.state)) {
+        return { valid: false, msg: 'missing param: state' };
+    }
+    if ((params.colony && !params.city)) {
+        return { valid: false, msg: 'missing param: city' };
+    }
+    return params.searchTerm ? { valid: true } : { valid: false, msg: 'missing param: searchTerm' };
+}
 
 /**
  * @desc Retrieves all business related by brandname
@@ -141,3 +159,5 @@ http.listen(port = 3008, function () {
     process.env = Object.assign(process.env, config[envName])
     console.log("servidor corriendo en ambiente ", envName);
 });
+
+module.exports = { validParams };
