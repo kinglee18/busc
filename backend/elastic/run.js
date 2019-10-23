@@ -207,7 +207,7 @@ function categoryQuery(categories, matchType) {
                 "constant_score":{
                     "filter": {
                         "match": {
-                            "categoryname_full_text": { "query": "${category.category}", "_name": "match_${category.category}" }
+                            "categoryname_full_text": { "query": "${category.category}", "fuzziness": 1 , "_name": "match_${category.category}" }
                         }
                     },
                         "boost": "${category.score}"
@@ -215,7 +215,7 @@ function categoryQuery(categories, matchType) {
         }
         return JSON.parse(`{
             "${matchType}": {
-                "categoryname_full_text": { "query": "${category.category}", "_name": "match_${category.category}", "boost":"${boost}" }
+                "categoryname_full_text": { "query": "${category.category}", "fuzziness": 1 , "_name": "match_${category.category}", "boost":"${boost}" }
             }
         }`);
     });
