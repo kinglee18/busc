@@ -1264,6 +1264,13 @@
             "max_shingle_size": "5",
             "min_shingle_size": "3",
             "type": "shingle"
+          },
+          "custom_stems": {
+            "type": "stemmer_override",
+            "rules": [
+              "salas => sala",
+              "sala => sala"
+            ]
           }
         },
         "analyzer": {
@@ -1291,6 +1298,7 @@
               "lowercase",
               "spanish_stop_filter",
               "stop_words_filter",
+              "custom_stems",
               "spanish_stemmer",
               "unique_filter"
             ],
