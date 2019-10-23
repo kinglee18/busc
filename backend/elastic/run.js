@@ -14,6 +14,8 @@ const client = require('./client');
  * @param {string} address.city - 
  * @param {string} address.colony - 
  * @param {string} address.state - 
+ * @param {string} address.physicalcity - 
+ * @param {string} address.physicalstate - 
  * @param {object} coordinates - coordinates privided by the browser
  * @param {string} coordinates.lat - latitude
  * @param {string} coordinates.lng - longitude
@@ -405,13 +407,33 @@ function getAddressFilter(location, coordinates) {
                 }
             });
         }
-        address.push({
-            "match_phrase": {
-                "Appearances.Appearance.state.keyword": {
-                    "query": location.state
+        if (location.state) {
+            address.push({
+                "match_phrase": {
+                    "Appearances.Appearance.state.keyword": {
+                        "query": location.state
+                    }
                 }
-            }
-        });
+            });
+        }
+        if (location.physicalcity) {
+            address.push({
+                "match": {
+                    "physicalcity.keyword": {
+                        "query": location.physicalcity
+                    }
+                }
+            });
+        }
+        if (location.physicalstate) {
+            address.push({
+                "match_phrase": {
+                    "physicalstate.keyword": {
+                        "query": location.physicalstate
+                    }
+                }
+            });
+        }
         return address;
     } else if (coordinates) {
         address.push({
