@@ -450,7 +450,7 @@ function getAddressFilter(location, coordinates) {
  * @param {string} brandname - name of the business
  * @description Returns all business related by brandname in elastic
  */
-exports.businessByBrand = function (brandname) {
+ function businessByBrand (brandname) {
     const body = {
         "index": process.env.negocios,
         "body": {
@@ -469,7 +469,7 @@ exports.businessByBrand = function (brandname) {
  * @param {string} id - if of the business
  * @description Returns a business related by id
  */
-exports.businessByID = function (id) {
+ function businessByID (id) {
     const body = {
         "index": process.env.negocios,
         "body": {
@@ -483,7 +483,7 @@ exports.businessByID = function (id) {
     return client.getClient().search(body);
 }
 
-exports.claro_shop = function (page = 0, marcas, ctg, bn, price, tx) {
+ function claro_shop (page = 0, marcas, ctg, bn, price, tx) {
     let promesa = new Promise((resolve, reject) => {
 
         let busq = [];
@@ -620,7 +620,7 @@ exports.claro_shop = function (page = 0, marcas, ctg, bn, price, tx) {
     return promesa;
 }
 
-exports.blog = function (page = 0, tx, tags, ctg, where) {
+ function blog (page = 0, tx, tags, ctg, where) {
     let promesa = new Promise((resolve, reject) => {
 
         let busq = [];
@@ -880,4 +880,4 @@ function asigDaySn(days) {
     return arr;
 }
 
-module.exports = { getAddressFilter, searchBusiness }
+module.exports = { getAddressFilter, searchBusiness, businessByBrand, businessByID, claro_shop, blog }
