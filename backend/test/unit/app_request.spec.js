@@ -22,8 +22,18 @@ describe('Validates app responses', () => {
         assert.deepEqual(response, { valid: true });
     });
 
-    it('should return an errorif no searchTerm is provided and coordinates are not', () => {
+    it('should return an error if no searchTerm is provided and coordinates are not', () => {
         const response = functs.validParams({ lng: '19.002', lat: '234.3434'});
         assert.deepEqual(response, { valid: false, "msg": "missing param: searchTerm" });
+    });
+
+    it('should return an error if city is provided and state not', () => {
+        const response = functs.validParams({ city: 'coyoacan'});
+        assert.deepEqual(response, { valid: false, "msg": "missing param: state" });
+    });
+
+    it('should return an error if colony is provided and city not', () => {
+        const response = functs.validParams({ colony: 'educacion'});
+        assert.deepEqual(response, { valid: false, "msg": "missing param: city" });
     });
 });

@@ -23,16 +23,21 @@ app.use(bodyParser.json())
  */
 app.get('/node', (req, res) => {
     const validation = validParams(req.query);
+    const address = req.query.state ? {
+        state: req.query.state,
+        city: req.query.city,
+        colony: req.query.colony
+    } : undefined;
+    const coordinates = req.query.lat && req.query.lng ? { lat: parseFloat(req.query.lat), lng: parseFloat(req.query.lng) } : undefined;
+
     if (validation.valid) {
         proceso.analisys(req.query.searchTerm).then((json) => {
-
-            const coordinates = req.query.lat && req.query.lng ? { lat: parseFloat(req.query.lat), lng: parseFloat(req.query.lng) } : undefined;
             elastic.searchBusiness(
                 req.query.page,
                 json.newSearchTerm,
                 json.schedule,
                 json.payments,
-                json.location,
+                json.location || address,
                 coordinates
             ).then((response) => {
                 res.status(200).send({
@@ -58,6 +63,12 @@ function parseBussineses(businesses) {
 function validParams(params) {
     if ((params.lat && !params.lng) || (!params.lat && params.lng)) {
         return { valid: false, msg: 'malformed coordinates' };
+    }
+    if ((params.city && !params.state)) {
+        return { valid: false, msg: 'missing param: state' };
+    }
+    if ((params.colony && !params.city)) {
+        return { valid: false, msg: 'missing param: city' };
     }
     return params.searchTerm ? { valid: true } : { valid: false, msg: 'missing param: searchTerm' };
 }
