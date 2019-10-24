@@ -29,12 +29,13 @@ app.get('/node', (req, res) => {
         colony: req.query.colony
     } : undefined;
     const coordinates = req.query.lat && req.query.lng ? { lat: parseFloat(req.query.lat), lng: parseFloat(req.query.lng) } : undefined;
-
+    const organicCodes = ['BRO', 'BRP', 'DIA', 'ORO', 'PIP', 'PLA', 'SPN'];
     if (validation.valid) {
         proceso.analisys(req.query.searchTerm).then((json) => {
             elastic.searchBusiness(
                 req.query.page,
                 json.newSearchTerm,
+                req.query.organic ? organicCodes: undefined,
                 json.schedule,
                 json.payments,
                 json.location || address,

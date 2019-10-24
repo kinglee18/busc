@@ -4,11 +4,11 @@ const client = require('./client');
 /**
  * @param {number} page - Page number to search in elastic db 
  * @param {string} searchTerm - searchTerm
+ * @param {string[]} organicCodes - list of organic package codes to filter 
  * @param {object} hrs - business schedule 
  * @param {string} hrs.hrs - business schedule 
  * @param {string} hrs.valor - business schedule 
  * @param {string[]} hrs.day - business schedule 
- * 
  * @param {string []} paymentTypes -  payment types of business
  * @param {object} address - business address in previous analisys
  * @param {string} address.city - 
@@ -23,22 +23,20 @@ const client = require('./client');
  * 
  * @return {Promise<>}.
  */
-function searchBusiness(page = 0, searchTerm, hrs, paymentTypes, address, coordinates) {
+function searchBusiness(page = 0, searchTerm, organicCodes, hrs, paymentTypes, address, coordinates) {
     const pagination = {
         "from": page * 20,
         "size": 20,
     };
     const SCORE_AND_POINTS_SORTING = ["_score", { "points": { "order": "desc" } }].concat(alphabeticalOrder());
     let should = [], filter = [];
-    let addressFilter;
 
     /*         const paymentQuery = getPaymentQuery(paymentTypes);
             const scheduleQuery = getScheduleQuery(hrs); */
-    addressFilter = getAddressFilter(address, coordinates);
-    if (addressFilter) {
-        filter = filter.concat(addressFilter);
-    }
-
+    filter = filter.concat(
+        getAddressFilter(address, coordinates),
+        organicCodes ? [{ match: { listingtype: organicCodes.join(' ') } }] : []
+    );
     searchTerm = stopPhrases(searchTerm);
 
     return getRelatedCategories(searchTerm).then(categories => {
@@ -87,15 +85,12 @@ function searchBusiness(page = 0, searchTerm, hrs, paymentTypes, address, coordi
                 index: process.env.negocios,
                 searchType: 'dfs_query_then_fetch'
             }
-
-            console.log('primer consulta ', JSON.stringify(requestBody));
-
+            console.log('query2 ', JSON.stringify(requestBody));
             return client.getClient().search(requestBody).then(response => {
                 if (response.hits.hits === 0) {
                     return multisearch(searchTerm, filter, pagination);
                 } else {
                     return new Promise((resolve, reject) => {
-                        console.log('query2 ', JSON.stringify(requestBody));
                         resolve(response);
                     });
                 }
@@ -162,8 +157,7 @@ function multisearch(searchTerm, filter, pagination) {
                             "script": {
                                 "source": "doc['points'].value == 10 ? 0:  doc['points'].value"
                             }
-                        },
-                        "boost_mode": "multiply"
+                        }
                     }
                 },
                 sort: ["_score"].concat(alphabeticalOrder())
@@ -278,7 +272,6 @@ function getRelatedCategories(searchTerm) {
             ]
         }
     }
-    console.log(searchTerm);
     console.log('mexobjectsdefinition ', JSON.stringify(body));
     return client.getClient().search(body);
 }
@@ -434,7 +427,6 @@ function getAddressFilter(location, coordinates) {
                 }
             });
         }
-        return address;
     } else if (coordinates) {
         address.push({
             "geo_distance": {
@@ -442,15 +434,15 @@ function getAddressFilter(location, coordinates) {
                 "pin": [coordinates.lng, coordinates.lat]
             }
         });
-        return address;
     }
+    return address;
 }
 
 /**
  * @param {string} brandname - name of the business
  * @description Returns all business related by brandname in elastic
  */
- function businessByBrand (brandname) {
+function businessByBrand(brandname) {
     const body = {
         "index": process.env.negocios,
         "body": {
@@ -469,7 +461,7 @@ function getAddressFilter(location, coordinates) {
  * @param {string} id - if of the business
  * @description Returns a business related by id
  */
- function businessByID (id) {
+function businessByID(id) {
     const body = {
         "index": process.env.negocios,
         "body": {
@@ -483,7 +475,7 @@ function getAddressFilter(location, coordinates) {
     return client.getClient().search(body);
 }
 
- function claro_shop (page = 0, marcas, ctg, bn, price, tx) {
+function claro_shop(page = 0, marcas, ctg, bn, price, tx) {
     let promesa = new Promise((resolve, reject) => {
 
         let busq = [];
@@ -620,7 +612,7 @@ function getAddressFilter(location, coordinates) {
     return promesa;
 }
 
- function blog (page = 0, tx, tags, ctg, where) {
+function blog(page = 0, tx, tags, ctg, where) {
     let promesa = new Promise((resolve, reject) => {
 
         let busq = [];
