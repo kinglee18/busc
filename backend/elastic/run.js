@@ -614,7 +614,7 @@ function blog(page = 0, tx, tags, ctg, where) {
         let busq = [];
         let filtro = [];
 
-        if (where.state) {
+        if (where) {
             filtro.push({
                 "nested": {
                     "path": "categories",
