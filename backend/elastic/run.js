@@ -24,10 +24,7 @@ const client = require('./client');
  * @return {Promise<>}.
  */
 function searchBusiness(page = 0, searchTerm, organicCodes, hrs, paymentTypes, address, coordinates) {
-    const pagination = {
-        "from": page * 20,
-        "size": 20,
-    };
+
     const SCORE_AND_POINTS_SORTING = ["_score", { "points": { "order": "desc" } }].concat(alphabeticalOrder());
     let should = [], filter = [];
 
@@ -48,47 +45,40 @@ function searchBusiness(page = 0, searchTerm, organicCodes, hrs, paymentTypes, a
         if (categories.length) {
             should = should.concat(categoryQuery(categories, 'match'));
             var requestBody = {
-                body:
-                    Object.assign({
-                        "query": {
+                "query": {
+                    "bool": {
+                        "must": {
                             "bool": {
-                                "must": {
-                                    "bool": {
-                                        should: should.concat([
-                                            {
-                                                "match": {
-                                                    "bn.spanish": {
-                                                        "query": searchTerm,
-                                                        "_name": "match_bn",
-                                                        "boost": 0
-                                                    }
-                                                }
-                                            },
-                                            {
-                                                "match_phrase": {
-                                                    "productservices.prdserv.spanish": {
-                                                        "query": searchTerm,
-                                                        "_name": "match_phrase_prdserv_key",
-                                                        "boost": 0
-                                                    }
-                                                }
+                                should: should.concat([
+                                    {
+                                        "match": {
+                                            "bn.spanish": {
+                                                "query": searchTerm,
+                                                "_name": "match_bn",
+                                                "boost": 0
                                             }
-                                        ])
+                                        }
+                                    },
+                                    {
+                                        "match_phrase": {
+                                            "productservices.prdserv.spanish": {
+                                                "query": searchTerm,
+                                                "_name": "match_phrase_prdserv_key",
+                                                "boost": 0
+                                            }
+                                        }
                                     }
-                                },
-                                filter
+                                ])
                             }
                         },
-                        sort: SCORE_AND_POINTS_SORTING
-                    }, pagination)
-                ,
-                index: process.env.negocios,
-                searchType: 'dfs_query_then_fetch'
+                        filter
+                    }
+                }
             }
-            console.log('query2 ', JSON.stringify(requestBody));
-            return client.getClient().search(requestBody).then(response => {
+            console.log('query2 ');
+            return sendRequest(page, requestBody, SCORE_AND_POINTS_SORTING, organicCodes).then(response => {
                 if (response.hits.hits === 0) {
-                    return multisearch(searchTerm, filter, pagination);
+                    return multisearch(page, searchTerm, filter, organicCodes);
                 } else {
                     return new Promise((resolve, reject) => {
                         resolve(response);
@@ -96,76 +86,87 @@ function searchBusiness(page = 0, searchTerm, organicCodes, hrs, paymentTypes, a
                 }
             });
         } else {
-            return multisearch(searchTerm, filter, pagination);
+            return multisearch(page, searchTerm, filter, organicCodes);
         }
     });
 }
 
-function multisearch(searchTerm, filter, pagination) {
+function multisearch(page, searchTerm, filter, organicCodes) {
     const requestBody = {
-        body:
-            Object.assign({
-                "query": {
-                    "function_score": {
-                        "query": {
-                            "bool": {
-                                must: {
-                                    bool: {
-                                        should: [
-                                            {
-                                                "match_phrase": {
-                                                    "bn.spanish": { "query": searchTerm, "_name": "match_phrase_bn", "boost": 5 }
-                                                }
-                                            },
-                                            {
-                                                "match": {
-                                                    "bn.spanish": { "query": searchTerm, "_name": "match_phrase_bn", "boost": 2 }
-                                                }
-                                            },
-                                            {
-                                                "match": {
-                                                    "Appearances.Appearance.categoryname.spanish": {
-                                                        "query": searchTerm,
-                                                        "_name": "match_phrase_cat",
-                                                        "boost": 4
-                                                    }
-                                                }
-                                            },
-                                            {
-                                                "match": {
-                                                    "productservices.prdserv.spanish": {
-                                                        "query": searchTerm,
-                                                        "_name": "match_phrase_prdserv", "boost": 2
-                                                    }
-                                                }
-                                            },
-                                            {
-                                                "match": {
-                                                    "productservices.prdserv.keyword": {
-                                                        "query": searchTerm,
-                                                        "_name": "match_phrase_prdserv", "boost": 4
-                                                    }
-                                                }
-                                            }
-                                        ]
+        "query": {
+            "bool": {
+                must: {
+                    bool: {
+                        should: [
+                            {
+                                "match_phrase": {
+                                    "bn.spanish": { "query": searchTerm, "_name": "match_phrase_bn", "boost": 5 }
+                                }
+                            },
+                            {
+                                "match": {
+                                    "bn.spanish": { "query": searchTerm, "_name": "match_phrase_bn", "boost": 2 }
+                                }
+                            },
+                            {
+                                "match": {
+                                    "Appearances.Appearance.categoryname.spanish": {
+                                        "query": searchTerm,
+                                        "_name": "match_phrase_cat",
+                                        "boost": 4
                                     }
-                                },
-                                filter
+                                }
+                            },
+                            {
+                                "match": {
+                                    "productservices.prdserv.spanish": {
+                                        "query": searchTerm,
+                                        "_name": "match_phrase_prdserv", "boost": 2
+                                    }
+                                }
+                            },
+                            {
+                                "match": {
+                                    "productservices.prdserv.keyword": {
+                                        "query": searchTerm,
+                                        "_name": "match_phrase_prdserv", "boost": 4
+                                    }
+                                }
                             }
-                        },
-                        "script_score": {
-                            "script": {
-                                "source": "doc['points'].value == 10 ? 0:  doc['points'].value"
-                            }
-                        }
+                        ]
                     }
                 },
-                sort: ["_score"].concat(alphabeticalOrder())
-            }, pagination)
-        ,
-        index: process.env.negocios
+                filter
+            }
+        },
+        "script_score": {
+            "script": {
+                "source": "doc['points'].value == 10 ? 0:  doc['points'].value"
+            }
+        }
     }
-    console.log('multisearch ', JSON.stringify(requestBody));
+    console.log('multisearch ');
+    return sendRequest(page, requestBody, ["_score"].concat(alphabeticalOrder()), organicCodes);
+}
+
+
+function sendRequest(page, request, sort, organicCodes) {
+    sort = organicCodes ? {} : sort;
+    const pagination = {
+        "from": page * 20,
+        "size": 20,
+    };
+    const requestBody = {
+        body: Object.assign({
+            query: {
+                "function_score": Object.assign({}, request, organicCodes ? { "random_score": {} } : {})
+            },
+            sort
+        }, pagination),
+        index: process.env.negocios,
+        searchType: 'dfs_query_then_fetch'
+    };
+
     return client.getClient().search(requestBody);
 }
 
