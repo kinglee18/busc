@@ -138,11 +138,6 @@ function multisearch(page, searchTerm, filter, organicCodes) {
                 },
                 filter
             }
-        },
-        "script_score": {
-            "script": {
-                "source": "doc['points'].value == 10 ? 0:  doc['points'].value"
-            }
         }
     }
     console.log('multisearch ');
