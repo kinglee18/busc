@@ -1,5 +1,5 @@
 .vscode/launch.json
 alexa/node_modules/
 backend/node_modules/
+backend/.vscode/
 backend/.vscode
-root_file_system/.vscode/launch.json

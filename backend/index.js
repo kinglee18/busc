@@ -7,7 +7,7 @@ const auto = require('./http/autocomplete');
 const bodyParser = require('body-parser');
 const config = require('./config');
 const cors = require("cors");
-const blog = require('./analyzer/blog');
+const blog = require('./elastic/blog');
 const clr1 = require('./analyzer/claro_shop');
 
 app.use(cors());
@@ -35,7 +35,7 @@ app.get('/node', (req, res) => {
             elastic.searchBusiness(
                 req.query.page,
                 json.newSearchTerm,
-                req.query.organic ? organicCodes: undefined,
+                req.query.organic ? organicCodes : undefined,
                 json.schedule,
                 json.payments,
                 json.location || address,
@@ -43,7 +43,7 @@ app.get('/node', (req, res) => {
             ).then((response) => {
                 res.status(200).send({
                     total: response.hits.total,
-                    info: parseBussineses(response.hits.hits)
+                    info: parseElasticElements(response.hits.hits)
                 });
             }).catch(error => {
                 console.error(error);
@@ -55,9 +55,9 @@ app.get('/node', (req, res) => {
     }
 });
 
-function parseBussineses(businesses) {
-    return businesses.map(business => {
-        return business._source;
+function parseElasticElements(elements) {
+    return elements.map(obj => {
+        return obj._source;
     });
 }
 
@@ -76,7 +76,7 @@ app.get('/node/business_by_brand', (req, res) => {
     elastic.businessByBrand(req.query.brandName).then((resp) => {
         res.status(200).send({
             total: resp.hits.total,
-            businesses: parseBussineses(resp.hits.hits)
+            businesses: parseElasticElements(resp.hits.hits)
         })
     }).catch(error => {
         console.error(error);
@@ -113,12 +113,19 @@ app.get('/node/business/:id', (req, res) => {
  * @param {string} req.query.searchTerm - business, category or location or  product
  */
 app.get('/node/blog', (req, res) => {
-    proceso.analisys(req.query.searchTerm).then(analisys => {
-        blog.blog(analisys.newSearchTerm).then(blog => {
-            elastic.blog(req.query.page, analisys.newSearchTerm, blog.tags, blog.ctg, analisys.location).then((resp) => {
-                res.status(200).send(resp);
-            });
+    blog.searchRelatedArticles(
+        req.query.searchTerm,
+        req.query.page,
+        req.query.page_size,
+        req.query.category
+    ).then((resp) => {
+        res.status(200).send({
+            total: resp.hits.total,
+            info: parseElasticElements(resp.hits.hits)
         });
+    }).catch(error => {
+        console.error(error);
+        res.status(500).send(error);
     });
 });
 
