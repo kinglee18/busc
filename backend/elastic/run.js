@@ -129,7 +129,7 @@ function multisearch(page, searchTerm, filter, organicCodes) {
                                 "match": {
                                     "productservices.prdserv.keyword": {
                                         "query": searchTerm,
-                                        "_name": "match_phrase_prdserv", "boost": 4
+                                        "_name": "match_phrase_prdserv", "boost": 5
                                     }
                                 }
                             }
@@ -154,14 +154,26 @@ function sendRequest(page, request, sort, organicCodes) {
     const requestBody = {
         body: Object.assign({
             query: {
-                "function_score": Object.assign({}, request, organicCodes ? { "random_score": {} } : {})
+                "function_score": Object.assign(
+                    {},
+                    request,
+                    organicCodes ? { "random_score": {} } : {},
+                    {
+                        "boost_mode": "sum",
+                        "script_score": {
+                            "script": {
+                                "source": "doc['points'].value"
+                            }
+                        }
+                    }
+                )
             },
             sort
         }, pagination),
         index: process.env.negocios,
         searchType: 'dfs_query_then_fetch'
     };
-
+    console.log(JSON.stringify(requestBody));
     return client.getClient().search(requestBody);
 }
 
