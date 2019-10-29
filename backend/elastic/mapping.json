@@ -1269,7 +1269,9 @@
             "type": "stemmer_override",
             "rules": [
               "salas => sala",
-              "sala => sala"
+              "sala => sala",
+              "tacos => taco",
+              "taco => taco"
             ]
           }
         },
