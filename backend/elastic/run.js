@@ -620,88 +620,6 @@ function claro_shop(page = 0, marcas, ctg, bn, price, tx) {
     return promesa;
 }
 
-function blog(page = 0, tx, tags, ctg, where) {
-    let promesa = new Promise((resolve, reject) => {
-
-        let busq = [];
-        let filtro = [];
-
-        if (where) {
-            filtro.push({
-                "nested": {
-                    "path": "categories",
-                    "query": {
-                        "match": { "categories.slug": where.state }
-                    }
-                }
-            });
-        }
-
-        busq.push({
-            "match": {
-                "title": tx
-            }
-        })
-        busq.push({
-            "match": {
-                "excerpt": tx
-            }
-        })
-
-        if (tags.length > 0) {
-            let nv = '';
-            for (let i in tags) {
-                busq.push({
-                    "match": {
-                        "tags.slug": tags[i]
-                    }
-                })
-            }
-        }
-
-        for (let i in ctg) {
-            busq.push({
-                "match": {
-                    "categories.slug": ctg[i]
-                }
-            })
-        }
-
-        let query = {
-            "bool": {
-                "should": busq,
-                "filter": filtro
-            }
-        }
-
-        if (tags.length > 0 || ctg.length > 0) {
-            client.getClient().search({
-                "index": process.env.blog,
-                "body": {
-                    "from": 10 * page,
-                    "size": 10,
-                    "query": query
-                }
-            }).then((resp) => {
-                let arr = [];
-                if (resp.hits.total > 0) {
-                    for (let op of resp.hits.hits) {
-                        arr.push(op._source);
-                    }
-                }
-                resolve({
-                    info: arr,
-                    total: resp.hits.total
-                });
-            })
-        }
-        else resolve({
-            info: [],
-            total: 0
-        });
-    });
-    return promesa;
-}
 
 function asigDay(days, hora) {
     let arr = [];
@@ -880,4 +798,4 @@ function asigDaySn(days) {
     return arr;
 }
 
-module.exports = { getAddressFilter, searchBusiness, businessByBrand, businessByID, claro_shop, blog }
+module.exports = { getAddressFilter, searchBusiness, businessByBrand, businessByID, claro_shop }

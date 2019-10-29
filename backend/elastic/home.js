@@ -1,23 +1,5 @@
 const client = require('./client');
 
-/*function adn() {
-	return {
-            "index": "scrapping",
-            "type": "default",
-            "body": {
-                "size":1,
-                "query": {
-                    "match_all":{}
-                },
-                "sort":
-                {
-                    "date":"desc"
-                }
-			}
-
-        };        
-}*/
-
 function blog() {
 	return {
             "index": process.env.blog,
@@ -67,24 +49,6 @@ function blogCtg(nombre) {
 	return query;
 }
 
-function claro() {
-	return {
-            "index": process.env.claro_shop,
-            "type": "default",
-            "body": {
-                "size":3,
-                "query": {
-                    "match_all":{}
-                },
-                "sort":
-                {
-                    "date":"desc"
-                }
-			}
-
-        };        
-}
-
 function neg() {
 	return {
             "index": process.env.negocios,
@@ -101,8 +65,7 @@ function neg() {
 }
 
 exports.inicio = function() {
-    
-    
+
     let promesa = new Promise((resolve,reject) => {
 
         Promise.all([
