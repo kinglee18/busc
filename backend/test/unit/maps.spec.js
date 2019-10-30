@@ -1,6 +1,6 @@
 
 var assert = require('chai').assert
-const maps = require('../../maps/address');
+const maps = require('../../services/maps');
 const abbreviatedStates = require('../../info/syn_where');
 
 
