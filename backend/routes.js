@@ -105,11 +105,11 @@ routes.get('/node/business/:id', (req, res) => {
 
 /**
  * @desc Retrieves all blog articles from database
- * @param {string} req.query.searchTerm - business, category or location or  product
+ * @param {string} req.query.search_term - business, category or location or  product
  */
 routes.get('/node/blog', (req, res) => {
     blog.searchRelatedArticles(
-        req.query.searchTerm,
+        req.query.search_term,
         req.query.page,
         req.query.page_size,
         req.query.category
@@ -126,11 +126,11 @@ routes.get('/node/blog', (req, res) => {
 
 /**
  * @desc Retrieves all claro shop products
- * @param {string} req.query.searchTerm - business, category or location or  product
+ * @param {string} req.query.search_term - business, category or location or  product
  */
 routes.get('/node/claroshop', (req, res) => {
-    proceso.analisys(req.query.searchTerm).then((analisys) => {
-        clr1.claro_shop(analisys.newSearchTerm).then(claro => {
+    proceso.analisys(req.query.search_term).then((analisys) => {
+        clr1.claro_shop(analisys.newSearcherm).then(claro => {
             elastic.claro_shop(req.query.page, claro.marcas, claro.ctg, claro.bn, analisys.price, claro.tx).then((resp) => {
                 res.status(200).send(resp);
             });

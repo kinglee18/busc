@@ -7,7 +7,7 @@ const websiteRoutes = require('./routes');
 
 express.use(cors());
 express.use(bodyParser.json());
-express.use(websiteRoutes)
+express.use(websiteRoutes.routes)
 
 
 /**

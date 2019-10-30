@@ -158,7 +158,7 @@ function sendRequest(page, request, sort, organicCodes) {
                     {},
                     request,
                     organicCodes ? { "random_score": {} } : {},
-                    {
+                    organicCodes ? {} : {
                         "boost_mode": "sum",
                         "script_score": {
                             "script": {
