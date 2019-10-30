@@ -115,11 +115,3 @@ exports.query_claro_shop_esp = function(tx,marcas) {
 		}
     });
 }
-
-/*exports.run(tx,marcas,ctg,bn) {
-    if(marcas.length > 0 || ctg.length > 0 || bn.length > 0) {
-        let query = {
-            
-        }
-    }
-}*/

@@ -1,17 +1,9 @@
-const elastic = require('../elastic/analyzer_where');
 const maps = require('../maps/address');
 const cls = require('./clear');
 const gram = require('../info/gramatica');
 
 
 exports.where = function (initText) {
-
-    let address = {
-        state: null,
-        city: null,
-        colony: null,
-        street: null
-    };
 
     return new Promise((resolve, reject) => {
         let nv = findPrepLug(initText);
