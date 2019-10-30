@@ -1,5 +1,5 @@
 var assert = require('chai').assert;
-const functs = require('../../index');
+const functs = require('../../routes');
 
 describe('Validates app responses', () => {
     it('should return an error if searchTerm is not provided', () => {

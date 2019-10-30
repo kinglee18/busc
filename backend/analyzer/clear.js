@@ -85,32 +85,3 @@ function removeStopLt(tx) {
     else return palabras.join(' ').trim();
     
 }
-
-exports.onlyLetters = function(texto) {
-    texto = texto.toLowerCase();
-    texto = accents.remove(texto);
-    let frag = texto.split('');
-    frag.push(' ')
-    //console.log(frag);
-    let bn = false;
-    let tx = "";
-    let palabras = [];
-    for(let p in frag) {
-        let num = frag[p].charCodeAt(0);
-        if(num == 32/*|| num == 45*/) {
-            if(tx.length > 0) {
-                palabras.push(tx.trim());
-                tx = "";
-            }
-        }
-        else if(!(num<97 && (num<48 || num>57) || num >122)) {
-            tx = tx +frag[p]
-        }
-    }
-    return palabras.join(' ');
-}
-
-
-exports.textPlural = function(tx) {
-	let texto = null;
-}

@@ -21,7 +21,7 @@ exports.searchRelatedArticles = function (searchTerm, page = 0, pageSize = 10, c
     const query = {
         "bool": {
             filter,
-            "should": [
+            "should": searchTerm ? [
                 {
                     "multi_match": {
                         "query": searchTerm,
@@ -38,7 +38,7 @@ exports.searchRelatedArticles = function (searchTerm, page = 0, pageSize = 10, c
                         }
                     }
                 }
-            ]
+            ] : []
         }
     };
 
