@@ -183,8 +183,15 @@ exports.getPakmailByText = function (text) {
     return client.search(pakmailStructure({
         "bool": {
             "should": [
-                { "match": { "name": text } },
-
+                {
+                    "match": {
+                        "name": {
+                            "_name": "name",
+                            "query": text,
+                            "boost": 2
+                      }
+                    }
+                },
                 { "match": { "address": text } }
             ]
         }
