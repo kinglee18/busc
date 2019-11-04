@@ -1,4 +1,4 @@
-const maps = require('../maps/address');
+const maps = require('../services/maps');
 const cls = require('./clear');
 const gram = require('../info/gramatica');
 

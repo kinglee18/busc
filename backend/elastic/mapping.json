@@ -1,1174 +1,1172 @@
 {
   "mappings": {
-    "default": {
-      "properties": {
-        "AMUpdate": {
-          "type": "text",
-          "index": false
-        },
-        "Appearances": {
-          "properties": {
-            "Appearance": {
-              "properties": {
-                "ID": {
-                  "type": "long",
-                  "index": false
-                },
-                "address": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "text",
-                      "analyzer": "keyword_analyzer"
-                    },
-                    "spanish": {
-                      "type": "text",
-                      "analyzer": "spanish_analyzer"
-                    },
-                    "synonyms": {
-                      "type": "text",
-                      "analyzer": "spanish_analyzer"
-                    }
+    "properties": {
+      "AMUpdate": {
+        "type": "text",
+        "index": false
+      },
+      "Appearances": {
+        "properties": {
+          "Appearance": {
+            "properties": {
+              "ID": {
+                "type": "long",
+                "index": false
+              },
+              "address": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "text",
+                    "analyzer": "keyword_analyzer"
                   },
-                  "analyzer": "spanish_analyzer"
-                },
-                "branchname": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "text",
-                      "analyzer": "keyword_analyzer"
-                    },
-                    "spanish": {
-                      "type": "text",
-                      "analyzer": "spanish_analyzer"
-                    },
-                    "synonyms": {
-                      "type": "text",
-                      "analyzer": "spanish_analyzer"
-                    }
+                  "spanish": {
+                    "type": "text",
+                    "analyzer": "spanish_analyzer"
                   },
-                  "analyzer": "spanish_analyzer"
-                },
-                "categoryid": {
-                  "type": "long",
-                  "index": false
-                },
-                "categoryname": {
-                  "type": "text",
-                  "copy_to": [
-                    "categoryname_full_text"
-                  ],
-                  "fields": {
-                    "spanish": {
-                      "type": "text",
-                      "analyzer": "spanish_analyzer"
-                    }
+                  "synonyms": {
+                    "type": "text",
+                    "analyzer": "spanish_analyzer"
                   }
                 },
-                "city": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "text",
-                      "analyzer": "keyword_analyzer"
-                    },
-                    "spanish": {
-                      "type": "text",
-                      "analyzer": "spanish_analyzer"
-                    },
-                    "synonyms": {
-                      "type": "text",
-                      "analyzer": "spanish_analyzer"
-                    }
+                "analyzer": "spanish_analyzer"
+              },
+              "branchname": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "text",
+                    "analyzer": "keyword_analyzer"
                   },
-                  "analyzer": "spanish_analyzer"
-                },
-                "colony": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "text",
-                      "analyzer": "keyword_analyzer"
-                    },
-                    "spanish": {
-                      "type": "text",
-                      "analyzer": "spanish_analyzer"
-                    },
-                    "synonyms": {
-                      "type": "text",
-                      "analyzer": "spanish_analyzer"
-                    }
+                  "spanish": {
+                    "type": "text",
+                    "analyzer": "spanish_analyzer"
                   },
-                  "analyzer": "spanish_analyzer"
-                },
-                "lat": {
-                  "type": "long",
-                  "index": false
-                },
-                "localflag": {
-                  "type": "boolean",
-                  "index": false
-                },
-                "lon": {
-                  "type": "long",
-                  "index": false
-                },
-                "orientacion": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone1": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone10": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone11": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone2": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone3": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone4": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone5": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone6": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone7": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone8": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone9": {
-                  "type": "text",
-                  "index": false
-                },
-                "physicalcity": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "text",
-                      "analyzer": "keyword_analyzer"
-                    },
-                    "spanish": {
-                      "type": "text",
-                      "analyzer": "spanish_analyzer"
-                    },
-                    "synonyms": {
-                      "type": "text",
-                      "analyzer": "spanish_analyzer"
-                    }
-                  },
-                  "analyzer": "spanish_analyzer"
-                },
-                "physicalstate": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "text",
-                      "analyzer": "keyword_analyzer"
-                    },
-                    "spanish": {
-                      "type": "text",
-                      "analyzer": "spanish_analyzer"
-                    },
-                    "synonyms": {
-                      "type": "text",
-                      "analyzer": "spanish_analyzer"
-                    }
-                  },
-                  "analyzer": "spanish_analyzer"
-                },
-                "state": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "text",
-                      "analyzer": "keyword_analyzer"
-                    },
-                    "spanish": {
-                      "type": "text",
-                      "analyzer": "spanish_analyzer"
-                    },
-                    "synonyms": {
-                      "type": "text",
-                      "analyzer": "spanish_analyzer"
-                    }
-                  },
-                  "analyzer": "spanish_analyzer"
-                },
-                "zip": {
-                  "type": "keyword",
-                  "ignore_above": 256
-                }
-              }
-            }
-          }
-        },
-        "DestinationNetwork": {
-          "type": "text",
-          "index": false
-        },
-        "Synonyms": {
-          "properties": {
-            "SynonymRelation": {
-              "properties": {
-                "Matched": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "keyword",
-                      "ignore_above": 256
-                    }
+                  "synonyms": {
+                    "type": "text",
+                    "analyzer": "spanish_analyzer"
                   }
                 },
-                "Searched": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "keyword",
-                      "ignore_above": 256
-                    }
+                "analyzer": "spanish_analyzer"
+              },
+              "categoryid": {
+                "type": "long",
+                "index": false
+              },
+              "categoryname": {
+                "type": "text",
+                "copy_to": [
+                  "categoryname_full_text"
+                ],
+                "fields": {
+                  "spanish": {
+                    "type": "text",
+                    "analyzer": "spanish_analyzer"
                   }
-                }
-              }
-            }
-          }
-        },
-        "aMUpdate": {
-          "type": "text",
-          "fields": {
-            "keyword": {
-              "type": "keyword",
-              "ignore_above": 256
-            }
-          }
-        },
-        "autocomplete_field": {
-          "type": "completion",
-          "analyzer": "autocomplete_analyzer",
-          "preserve_separators": true,
-          "preserve_position_increments": true,
-          "max_input_length": 50
-        },
-        "bn": {
-          "type": "text",
-          "fields": {
-            "keyword": {
-              "type": "text",
-              "analyzer": "keyword_analyzer",
-              "fielddata": true
-            },
-            "order": {
-              "type": "keyword"
-            },
-            "spanish": {
-              "type": "text",
-              "analyzer": "spanish_analyzer"
-            },
-            "synonyms": {
-              "type": "text",
-              "analyzer": "spanish_analyzer"
-            }
-          },
-          "copy_to": [
-            "bn_autocomplete",
-            "bn_full_text"
-          ],
-          "analyzer": "spanish_analyzer"
-        },
-        "bn_autocomplete": {
-          "type": "completion",
-          "analyzer": "simple",
-          "preserve_separators": true,
-          "preserve_position_increments": true,
-          "max_input_length": 100
-        },
-        "bn_full_text": {
-          "type": "text",
-          "analyzer": "keyword_analyzer_dos"
-        },
-        "branches": {
-          "properties": {
-            "branch": {
-              "properties": {
-                "Address": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "keyword",
-                      "ignore_above": 256
-                    }
-                  }
-                },
-                "Colony": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "keyword",
-                      "ignore_above": 256
-                    }
-                  }
-                },
-                "Lat": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "keyword",
-                      "ignore_above": 256
-                    }
-                  }
-                },
-                "Lon": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "keyword",
-                      "ignore_above": 256
-                    }
-                  }
-                },
-                "Name": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "keyword",
-                      "ignore_above": 256
-                    }
-                  }
-                },
-                "Orientacion": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "keyword",
-                      "ignore_above": 256
-                    }
-                  }
-                },
-                "Phone1": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "keyword",
-                      "ignore_above": 256
-                    }
-                  }
-                },
-                "Physicalcity": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "keyword",
-                      "ignore_above": 256
-                    }
-                  }
-                },
-                "Physicalstate": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "keyword",
-                      "ignore_above": 256
-                    }
-                  }
-                },
-                "Zip": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "keyword",
-                      "ignore_above": 256
-                    }
-                  }
-                },
-                "address": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "text",
-                      "analyzer": "keyword_analyzer"
-                    },
-                    "spanish": {
-                      "type": "text",
-                      "analyzer": "spanish_analyzer"
-                    },
-                    "synonyms": {
-                      "type": "text",
-                      "analyzer": "spanish_analyzer"
-                    }
-                  },
-                  "analyzer": "spanish_analyzer"
-                },
-                "colony": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "text",
-                      "analyzer": "keyword_analyzer"
-                    },
-                    "spanish": {
-                      "type": "text",
-                      "analyzer": "spanish_analyzer"
-                    },
-                    "synonyms": {
-                      "type": "text",
-                      "analyzer": "spanish_analyzer"
-                    }
-                  },
-                  "analyzer": "spanish_analyzer"
-                },
-                "lat": {
-                  "type": "text",
-                  "index": false
-                },
-                "lon": {
-                  "type": "text",
-                  "index": false
-                },
-                "name": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "text",
-                      "analyzer": "keyword_analyzer"
-                    },
-                    "spanish": {
-                      "type": "text",
-                      "analyzer": "spanish_analyzer"
-                    },
-                    "synonyms": {
-                      "type": "text",
-                      "analyzer": "spanish_analyzer"
-                    }
-                  },
-                  "analyzer": "spanish_analyzer"
-                },
-                "orientacion": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "text",
-                      "analyzer": "keyword_analyzer"
-                    },
-                    "spanish": {
-                      "type": "text",
-                      "analyzer": "spanish_analyzer"
-                    }
-                  },
-                  "analyzer": "spanish_analyzer"
-                },
-                "phone1": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone10": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone11": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone12": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone13": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone14": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone15": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone16": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone17": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone18": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone2": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone3": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone4": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone5": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone6": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone7": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone8": {
-                  "type": "text",
-                  "index": false
-                },
-                "phone9": {
-                  "type": "text",
-                  "index": false
-                },
-                "physicalcity": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "text",
-                      "analyzer": "keyword_analyzer"
-                    },
-                    "spanish": {
-                      "type": "text",
-                      "analyzer": "spanish_analyzer"
-                    },
-                    "synonyms": {
-                      "type": "text",
-                      "analyzer": "spanish_analyzer"
-                    }
-                  },
-                  "analyzer": "spanish_analyzer"
-                },
-                "physicalstate": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "text",
-                      "analyzer": "keyword_analyzer"
-                    },
-                    "spanish": {
-                      "type": "text",
-                      "analyzer": "spanish_analyzer"
-                    },
-                    "synonyms": {
-                      "type": "text",
-                      "analyzer": "spanish_analyzer"
-                    }
-                  },
-                  "analyzer": "spanish_analyzer"
-                },
-                "zip": {
-                  "type": "keyword",
-                  "ignore_above": 256
-                }
-              }
-            }
-          }
-        },
-        "brands": {
-          "properties": {
-            "brandname": {
-              "type": "text",
-              "fields": {
-                "keyword": {
-                  "type": "text",
-                  "analyzer": "keyword_analyzer"
-                },
-                "spanish": {
-                  "type": "text",
-                  "analyzer": "spanish_analyzer"
-                },
-                "synonyms": {
-                  "type": "text",
-                  "analyzer": "spanish_analyzer"
                 }
               },
-              "analyzer": "spanish_analyzer"
-            }
-          }
-        },
-        "categoryname_full_text": {
-          "type": "text",
-          "analyzer": "keyword_analyzer_dos"
-        },
-        "city": {
-          "type": "text",
-          "fields": {
-            "keyword": {
-              "type": "text",
-              "analyzer": "keyword_analyzer"
-            },
-            "spanish": {
-              "type": "text",
-              "analyzer": "spanish_analyzer"
-            },
-            "synonyms": {
-              "type": "text",
-              "analyzer": "spanish_analyzer"
-            }
-          },
-          "analyzer": "spanish_analyzer",
-          "fielddata": true
-        },
-        "colony": {
-          "type": "text",
-          "fields": {
-            "keyword": {
-              "type": "text",
-              "analyzer": "keyword_analyzer",
-              "fielddata": true
-            },
-            "spanish": {
-              "type": "text",
-              "analyzer": "spanish_analyzer"
-            },
-            "synonyms": {
-              "type": "text",
-              "analyzer": "spanish_analyzer"
-            }
-          },
-          "analyzer": "spanish_analyzer"
-        },
-        "comentarios": {
-          "type": "text"
-        },
-        "comment": {
-          "type": "nested"
-        },
-        "contenttypes": {
-          "properties": {
-            "contenttype": {
-              "properties": {
-                "documentid": {
-                  "type": "text",
-                  "index": false
-                },
-                "label": {
-                  "type": "text",
-                  "index": false
-                },
-                "lat": {
-                  "type": "float",
-                  "index": false
-                },
-                "link": {
-                  "type": "text",
-                  "index": true
-                },
-                "lon": {
-                  "type": "float",
-                  "index": false
-                },
-                "mmprmdesc": {
-                  "type": "text",
-                  "index": false
-                },
-                "mmprmfrom": {
-                  "type": "date",
-                  "index": false
-                },
-                "mmprmgan": {
-                  "type": "text",
-                  "index": false
-                },
-                "mmprmres": {
-                  "type": "text",
-                  "index": false
-                },
-                "mmprmto": {
-                  "type": "date",
-                  "index": false
-                },
-                "name": {
-                  "type": "text",
-                  "index": false
-                },
-                "number": {
-                  "type": "text",
-                  "index": false
-                },
-                "thumb": {
-                  "type": "text",
-                  "index": false
-                },
-                "type": {
-                  "type": "text",
-                  "index": false
-                },
-                "value": {
-                  "type": "text",
-                  "index": false
-                }
-              }
-            }
-          }
-        },
-        "destinationNetwork": {
-          "type": "text",
-          "fields": {
-            "keyword": {
-              "type": "keyword",
-              "ignore_above": 256
-            }
-          }
-        },
-        "features": {
-          "type": "nested",
-          "properties": {
-            "type": {
-              "properties": {
-                "feature": {
-                  "properties": {
-                    "content": {
-                      "type": "text",
-                      "fields": {
-                        "keyword": {
-                          "type": "keyword",
-                          "ignore_above": 256
-                        }
-                      }
-                    },
-                    "imagen": {
-                      "type": "text",
-                      "fields": {
-                        "keyword": {
-                          "type": "keyword",
-                          "ignore_above": 256
-                        }
-                      }
-                    },
-                    "url": {
-                      "type": "text",
-                      "fields": {
-                        "keyword": {
-                          "type": "keyword",
-                          "ignore_above": 256
-                        }
-                      }
-                    },
-                    "value": {
-                      "type": "text",
-                      "fields": {
-                        "keyword": {
-                          "type": "keyword",
-                          "ignore_above": 256
-                        }
-                      }
-                    }
+              "city": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "text",
+                    "analyzer": "keyword_analyzer"
+                  },
+                  "spanish": {
+                    "type": "text",
+                    "analyzer": "spanish_analyzer"
+                  },
+                  "synonyms": {
+                    "type": "text",
+                    "analyzer": "spanish_analyzer"
                   }
                 },
-                "name": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "keyword",
-                      "ignore_above": 256
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "fridayClose": {
-          "type": "date",
-          "format": "HH:mm:ss"
-        },
-        "fridayOpen": {
-          "type": "date",
-          "format": "HH:mm:ss"
-        },
-        "fullstreet": {
-          "type": "text",
-          "fields": {
-            "keyword": {
-              "type": "text",
-              "analyzer": "keyword_analyzer"
-            },
-            "spanish": {
-              "type": "text",
-              "analyzer": "spanish_analyzer"
-            },
-            "synonyms": {
-              "type": "text",
-              "analyzer": "spanish_analyzer"
-            }
-          },
-          "analyzer": "spanish_analyzer"
-        },
-        "items": {
-          "properties": {
-            "addinfo": {
-              "type": "text",
-              "index": false
-            },
-            "grfvf": {
-              "type": "text",
-              "index": false
-            },
-            "grfvl": {
-              "type": "text",
-              "index": false
-            },
-            "hlgcan": {
-              "type": "text",
-              "index": false
-            },
-            "imggifcan": {
-              "type": "text",
-              "index": false
-            },
-            "lke": {
-              "type": "text",
-              "index": false
-            },
-            "lkw": {
-              "type": "text",
-              "index": false
-            },
-            "llg": {
-              "type": "text",
-              "index": false
-            },
-            "mcr": {
-              "type": "text",
-              "index": false
-            },
-            "minisitezip": {
-              "type": "text",
-              "index": false
-            },
-            "product_code": {
-              "type": "text",
-              "index": false
-            },
-            "smsid": {
-              "type": "long",
-              "index": false
-            },
-            "smsplus": {
-              "type": "boolean",
-              "index": false
-            },
-            "tl": {
-              "type": "text",
-              "index": false
-            },
-            "tl300": {
-              "type": "text",
-              "index": false
-            },
-            "url": {
-              "type": "text",
-              "index": false
-            },
-            "vlgcan": {
-              "type": "text",
-              "index": false
-            }
-          }
-        },
-        "listadoid": {
-          "type": "long"
-        },
-        "listadoversion": {
-          "type": "long",
-          "index": false
-        },
-        "listingtype": {
-          "type": "text"
-        },
-        "mondayClose": {
-          "type": "date",
-          "format": "HH:mm:ss"
-        },
-        "mondayOpen": {
-          "type": "date",
-          "format": "HH:mm:ss"
-        },
-        "phisicalcity": {
-          "type": "text",
-          "fields": {
-            "keyword": {
-              "type": "keyword",
-              "ignore_above": 256
-            }
-          }
-        },
-        "phisicalstate": {
-          "type": "text",
-          "fields": {
-            "keyword": {
-              "type": "keyword",
-              "ignore_above": 256
-            }
-          }
-        },
-        "phones": {
-          "type": "nested",
-          "properties": {
-            "phone": {
-              "properties": {
-                "number": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "keyword",
-                      "ignore_above": 256
-                    }
-                  }
-                },
-                "type": {
-                  "type": "text",
-                  "fields": {
-                    "keyword": {
-                      "type": "keyword",
-                      "ignore_above": 256
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "physicalcity": {
-          "type": "text",
-          "fields": {
-            "keyword": {
-              "type": "text",
-              "analyzer": "keyword_analyzer",
-              "fielddata": true
-            },
-            "spanish": {
-              "type": "text",
-              "analyzer": "spanish_analyzer"
-            },
-            "synonyms": {
-              "type": "text",
-              "analyzer": "spanish_analyzer"
-            }
-          },
-          "analyzer": "spanish_analyzer"
-        },
-        "physicalstate": {
-          "type": "text",
-          "fields": {
-            "keyword": {
-              "type": "text",
-              "analyzer": "keyword_analyzer",
-              "fielddata": true
-            },
-            "spanish": {
-              "type": "text",
-              "analyzer": "spanish_analyzer"
-            },
-            "synonyms": {
-              "type": "text",
-              "analyzer": "spanish_analyzer"
-            }
-          },
-          "analyzer": "spanish_analyzer"
-        },
-        "pin": {
-          "type": "geo_point"
-        },
-        "points": {
-          "type": "long"
-        },
-        "productservices": {
-          "properties": {
-            "prdserv": {
-              "type": "text",
-              "fields": {
-                "keyword": {
-                  "type": "text",
-                  "analyzer": "keyword_analyzer"
-                },
-                "spanish": {
-                  "type": "text",
-                  "analyzer": "spanish_analyzer"
-                },
-                "synonyms": {
-                  "type": "text",
-                  "analyzer": "spanish_analyzer"
-                }
+                "analyzer": "spanish_analyzer"
               },
-              "analyzer": "spanish_analyzer"
-            }
-          }
-        },
-        "saturdayClose": {
-          "type": "date",
-          "format": "HH:mm:ss"
-        },
-        "saturdayOpen": {
-          "type": "date",
-          "format": "HH:mm:ss"
-        },
-        "serviceAll": {
-          "type": "boolean"
-        },
-        "sourcelistadoid": {
-          "type": "long",
-          "index": false
-        },
-        "sponserKeywords": {
-          "type": "text",
-          "index": false
-        },
-        "sponserkeywords": {
-          "properties": {
-            "sponserkeyword": {
-              "type": "text",
-              "fields": {
-                "keyword": {
-                  "type": "text",
-                  "analyzer": "keyword_analyzer"
+              "colony": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "text",
+                    "analyzer": "keyword_analyzer"
+                  },
+                  "spanish": {
+                    "type": "text",
+                    "analyzer": "spanish_analyzer"
+                  },
+                  "synonyms": {
+                    "type": "text",
+                    "analyzer": "spanish_analyzer"
+                  }
                 },
-                "spanish": {
-                  "type": "text",
-                  "analyzer": "spanish_analyzer"
-                },
-                "synonyms": {
-                  "type": "text",
-                  "analyzer": "spanish_analyzer"
-                }
+                "analyzer": "spanish_analyzer"
               },
-              "analyzer": "spanish_analyzer"
+              "lat": {
+                "type": "long",
+                "index": false
+              },
+              "localflag": {
+                "type": "boolean",
+                "index": false
+              },
+              "lon": {
+                "type": "long",
+                "index": false
+              },
+              "orientacion": {
+                "type": "text",
+                "index": false
+              },
+              "phone1": {
+                "type": "text",
+                "index": false
+              },
+              "phone10": {
+                "type": "text",
+                "index": false
+              },
+              "phone11": {
+                "type": "text",
+                "index": false
+              },
+              "phone2": {
+                "type": "text",
+                "index": false
+              },
+              "phone3": {
+                "type": "text",
+                "index": false
+              },
+              "phone4": {
+                "type": "text",
+                "index": false
+              },
+              "phone5": {
+                "type": "text",
+                "index": false
+              },
+              "phone6": {
+                "type": "text",
+                "index": false
+              },
+              "phone7": {
+                "type": "text",
+                "index": false
+              },
+              "phone8": {
+                "type": "text",
+                "index": false
+              },
+              "phone9": {
+                "type": "text",
+                "index": false
+              },
+              "physicalcity": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "text",
+                    "analyzer": "keyword_analyzer"
+                  },
+                  "spanish": {
+                    "type": "text",
+                    "analyzer": "spanish_analyzer"
+                  },
+                  "synonyms": {
+                    "type": "text",
+                    "analyzer": "spanish_analyzer"
+                  }
+                },
+                "analyzer": "spanish_analyzer"
+              },
+              "physicalstate": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "text",
+                    "analyzer": "keyword_analyzer"
+                  },
+                  "spanish": {
+                    "type": "text",
+                    "analyzer": "spanish_analyzer"
+                  },
+                  "synonyms": {
+                    "type": "text",
+                    "analyzer": "spanish_analyzer"
+                  }
+                },
+                "analyzer": "spanish_analyzer"
+              },
+              "state": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "text",
+                    "analyzer": "keyword_analyzer"
+                  },
+                  "spanish": {
+                    "type": "text",
+                    "analyzer": "spanish_analyzer"
+                  },
+                  "synonyms": {
+                    "type": "text",
+                    "analyzer": "spanish_analyzer"
+                  }
+                },
+                "analyzer": "spanish_analyzer"
+              },
+              "zip": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
             }
           }
-        },
-        "state": {
-          "type": "text",
-          "fields": {
-            "keyword": {
-              "type": "text",
-              "analyzer": "keyword_analyzer"
-            },
-            "spanish": {
-              "type": "text",
-              "analyzer": "spanish_analyzer"
-            },
-            "synonyms": {
-              "type": "text",
-              "analyzer": "spanish_analyzer"
-            }
-          },
-          "analyzer": "spanish_analyzer"
-        },
-        "statename": {
-          "type": "text",
-          "fields": {
-            "keyword": {
-              "type": "text",
-              "analyzer": "keyword_analyzer"
-            },
-            "spanish": {
-              "type": "text",
-              "analyzer": "spanish_analyzer"
-            },
-            "synonyms": {
-              "type": "text",
-              "analyzer": "spanish_analyzer"
-            }
-          },
-          "analyzer": "spanish_analyzer"
-        },
-        "summary": {
-          "type": "text"
-        },
-        "sundayClose": {
-          "type": "date",
-          "format": "HH:mm:ss"
-        },
-        "sundayOpen": {
-          "type": "date",
-          "format": "HH:mm:ss"
-        },
-        "thursdayClose": {
-          "type": "date",
-          "format": "HH:mm:ss"
-        },
-        "thursdayOpen": {
-          "type": "date",
-          "format": "HH:mm:ss"
-        },
-        "tuesdayClose": {
-          "type": "date",
-          "format": "HH:mm:ss"
-        },
-        "tuesdayOpen": {
-          "type": "date",
-          "format": "HH:mm:ss"
-        },
-        "wednesdayClose": {
-          "type": "date",
-          "format": "HH:mm:ss"
-        },
-        "wednesdayOpen": {
-          "type": "date",
-          "format": "HH:mm:ss"
-        },
-        "weekDayClose": {
-          "type": "date",
-          "format": "HH:mm:ss"
-        },
-        "weekDayOpen": {
-          "type": "date",
-          "format": "HH:mm:ss"
-        },
-        "xmlns:xsd": {
-          "type": "text",
-          "fields": {
-            "keyword": {
-              "type": "keyword",
-              "ignore_above": 256
-            }
-          }
-        },
-        "xmlns:xsi": {
-          "type": "text",
-          "fields": {
-            "keyword": {
-              "type": "keyword",
-              "ignore_above": 256
-            }
-          }
-        },
-        "zip": {
-          "type": "keyword"
-        },
-        "zipSpecified": {
-          "type": "boolean"
         }
+      },
+      "DestinationNetwork": {
+        "type": "text",
+        "index": false
+      },
+      "Synonyms": {
+        "properties": {
+          "SynonymRelation": {
+            "properties": {
+              "Matched": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "Searched": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "aMUpdate": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "autocomplete_field": {
+        "type": "completion",
+        "analyzer": "autocomplete_analyzer",
+        "preserve_separators": true,
+        "preserve_position_increments": true,
+        "max_input_length": 50
+      },
+      "bn": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "text",
+            "analyzer": "keyword_analyzer",
+            "fielddata": true
+          },
+          "order": {
+            "type": "keyword"
+          },
+          "spanish": {
+            "type": "text",
+            "analyzer": "spanish_analyzer"
+          },
+          "synonyms": {
+            "type": "text",
+            "analyzer": "spanish_analyzer"
+          }
+        },
+        "copy_to": [
+          "bn_autocomplete",
+          "bn_full_text"
+        ],
+        "analyzer": "spanish_analyzer"
+      },
+      "bn_autocomplete": {
+        "type": "completion",
+        "analyzer": "simple",
+        "preserve_separators": true,
+        "preserve_position_increments": true,
+        "max_input_length": 100
+      },
+      "bn_full_text": {
+        "type": "text",
+        "analyzer": "keyword_analyzer_dos"
+      },
+      "branches": {
+        "properties": {
+          "branch": {
+            "properties": {
+              "Address": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "Colony": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "Lat": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "Lon": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "Name": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "Orientacion": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "Phone1": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "Physicalcity": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "Physicalstate": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "Zip": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "address": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "text",
+                    "analyzer": "keyword_analyzer"
+                  },
+                  "spanish": {
+                    "type": "text",
+                    "analyzer": "spanish_analyzer"
+                  },
+                  "synonyms": {
+                    "type": "text",
+                    "analyzer": "spanish_analyzer"
+                  }
+                },
+                "analyzer": "spanish_analyzer"
+              },
+              "colony": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "text",
+                    "analyzer": "keyword_analyzer"
+                  },
+                  "spanish": {
+                    "type": "text",
+                    "analyzer": "spanish_analyzer"
+                  },
+                  "synonyms": {
+                    "type": "text",
+                    "analyzer": "spanish_analyzer"
+                  }
+                },
+                "analyzer": "spanish_analyzer"
+              },
+              "lat": {
+                "type": "text",
+                "index": false
+              },
+              "lon": {
+                "type": "text",
+                "index": false
+              },
+              "name": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "text",
+                    "analyzer": "keyword_analyzer"
+                  },
+                  "spanish": {
+                    "type": "text",
+                    "analyzer": "spanish_analyzer"
+                  },
+                  "synonyms": {
+                    "type": "text",
+                    "analyzer": "spanish_analyzer"
+                  }
+                },
+                "analyzer": "spanish_analyzer"
+              },
+              "orientacion": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "text",
+                    "analyzer": "keyword_analyzer"
+                  },
+                  "spanish": {
+                    "type": "text",
+                    "analyzer": "spanish_analyzer"
+                  }
+                },
+                "analyzer": "spanish_analyzer"
+              },
+              "phone1": {
+                "type": "text",
+                "index": false
+              },
+              "phone10": {
+                "type": "text",
+                "index": false
+              },
+              "phone11": {
+                "type": "text",
+                "index": false
+              },
+              "phone12": {
+                "type": "text",
+                "index": false
+              },
+              "phone13": {
+                "type": "text",
+                "index": false
+              },
+              "phone14": {
+                "type": "text",
+                "index": false
+              },
+              "phone15": {
+                "type": "text",
+                "index": false
+              },
+              "phone16": {
+                "type": "text",
+                "index": false
+              },
+              "phone17": {
+                "type": "text",
+                "index": false
+              },
+              "phone18": {
+                "type": "text",
+                "index": false
+              },
+              "phone2": {
+                "type": "text",
+                "index": false
+              },
+              "phone3": {
+                "type": "text",
+                "index": false
+              },
+              "phone4": {
+                "type": "text",
+                "index": false
+              },
+              "phone5": {
+                "type": "text",
+                "index": false
+              },
+              "phone6": {
+                "type": "text",
+                "index": false
+              },
+              "phone7": {
+                "type": "text",
+                "index": false
+              },
+              "phone8": {
+                "type": "text",
+                "index": false
+              },
+              "phone9": {
+                "type": "text",
+                "index": false
+              },
+              "physicalcity": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "text",
+                    "analyzer": "keyword_analyzer"
+                  },
+                  "spanish": {
+                    "type": "text",
+                    "analyzer": "spanish_analyzer"
+                  },
+                  "synonyms": {
+                    "type": "text",
+                    "analyzer": "spanish_analyzer"
+                  }
+                },
+                "analyzer": "spanish_analyzer"
+              },
+              "physicalstate": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "text",
+                    "analyzer": "keyword_analyzer"
+                  },
+                  "spanish": {
+                    "type": "text",
+                    "analyzer": "spanish_analyzer"
+                  },
+                  "synonyms": {
+                    "type": "text",
+                    "analyzer": "spanish_analyzer"
+                  }
+                },
+                "analyzer": "spanish_analyzer"
+              },
+              "zip": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          }
+        }
+      },
+      "brands": {
+        "properties": {
+          "brandname": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "text",
+                "analyzer": "keyword_analyzer"
+              },
+              "spanish": {
+                "type": "text",
+                "analyzer": "spanish_analyzer"
+              },
+              "synonyms": {
+                "type": "text",
+                "analyzer": "spanish_analyzer"
+              }
+            },
+            "analyzer": "spanish_analyzer"
+          }
+        }
+      },
+      "categoryname_full_text": {
+        "type": "text",
+        "analyzer": "keyword_analyzer_dos"
+      },
+      "city": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "text",
+            "analyzer": "keyword_analyzer"
+          },
+          "spanish": {
+            "type": "text",
+            "analyzer": "spanish_analyzer"
+          },
+          "synonyms": {
+            "type": "text",
+            "analyzer": "spanish_analyzer"
+          }
+        },
+        "analyzer": "spanish_analyzer",
+        "fielddata": true
+      },
+      "colony": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "text",
+            "analyzer": "keyword_analyzer",
+            "fielddata": true
+          },
+          "spanish": {
+            "type": "text",
+            "analyzer": "spanish_analyzer"
+          },
+          "synonyms": {
+            "type": "text",
+            "analyzer": "spanish_analyzer"
+          }
+        },
+        "analyzer": "spanish_analyzer"
+      },
+      "comentarios": {
+        "type": "text"
+      },
+      "comment": {
+        "type": "nested"
+      },
+      "contenttypes": {
+        "properties": {
+          "contenttype": {
+            "properties": {
+              "documentid": {
+                "type": "text",
+                "index": false
+              },
+              "label": {
+                "type": "text",
+                "index": false
+              },
+              "lat": {
+                "type": "float",
+                "index": false
+              },
+              "link": {
+                "type": "text",
+                "index": true
+              },
+              "lon": {
+                "type": "float",
+                "index": false
+              },
+              "mmprmdesc": {
+                "type": "text",
+                "index": false
+              },
+              "mmprmfrom": {
+                "type": "date",
+                "index": false
+              },
+              "mmprmgan": {
+                "type": "text",
+                "index": false
+              },
+              "mmprmres": {
+                "type": "text",
+                "index": false
+              },
+              "mmprmto": {
+                "type": "date",
+                "index": false
+              },
+              "name": {
+                "type": "text",
+                "index": false
+              },
+              "number": {
+                "type": "text",
+                "index": false
+              },
+              "thumb": {
+                "type": "text",
+                "index": false
+              },
+              "type": {
+                "type": "text",
+                "index": false
+              },
+              "value": {
+                "type": "text",
+                "index": false
+              }
+            }
+          }
+        }
+      },
+      "destinationNetwork": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "features": {
+        "type": "nested",
+        "properties": {
+          "type": {
+            "properties": {
+              "feature": {
+                "properties": {
+                  "content": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "imagen": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "url": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "value": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  }
+                }
+              },
+              "name": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "fridayClose": {
+        "type": "date",
+        "format": "HH:mm:ss"
+      },
+      "fridayOpen": {
+        "type": "date",
+        "format": "HH:mm:ss"
+      },
+      "fullstreet": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "text",
+            "analyzer": "keyword_analyzer"
+          },
+          "spanish": {
+            "type": "text",
+            "analyzer": "spanish_analyzer"
+          },
+          "synonyms": {
+            "type": "text",
+            "analyzer": "spanish_analyzer"
+          }
+        },
+        "analyzer": "spanish_analyzer"
+      },
+      "items": {
+        "properties": {
+          "addinfo": {
+            "type": "text",
+            "index": false
+          },
+          "grfvf": {
+            "type": "text",
+            "index": false
+          },
+          "grfvl": {
+            "type": "text",
+            "index": false
+          },
+          "hlgcan": {
+            "type": "text",
+            "index": false
+          },
+          "imggifcan": {
+            "type": "text",
+            "index": false
+          },
+          "lke": {
+            "type": "text",
+            "index": false
+          },
+          "lkw": {
+            "type": "text",
+            "index": false
+          },
+          "llg": {
+            "type": "text",
+            "index": false
+          },
+          "mcr": {
+            "type": "text",
+            "index": false
+          },
+          "minisitezip": {
+            "type": "text",
+            "index": false
+          },
+          "product_code": {
+            "type": "text",
+            "index": false
+          },
+          "smsid": {
+            "type": "long",
+            "index": false
+          },
+          "smsplus": {
+            "type": "boolean",
+            "index": false
+          },
+          "tl": {
+            "type": "text",
+            "index": false
+          },
+          "tl300": {
+            "type": "text",
+            "index": false
+          },
+          "url": {
+            "type": "text",
+            "index": false
+          },
+          "vlgcan": {
+            "type": "text",
+            "index": false
+          }
+        }
+      },
+      "listadoid": {
+        "type": "long"
+      },
+      "listadoversion": {
+        "type": "long",
+        "index": false
+      },
+      "listingtype": {
+        "type": "text"
+      },
+      "mondayClose": {
+        "type": "date",
+        "format": "HH:mm:ss"
+      },
+      "mondayOpen": {
+        "type": "date",
+        "format": "HH:mm:ss"
+      },
+      "phisicalcity": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "phisicalstate": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "phones": {
+        "type": "nested",
+        "properties": {
+          "phone": {
+            "properties": {
+              "number": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "type": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "physicalcity": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "text",
+            "analyzer": "keyword_analyzer",
+            "fielddata": true
+          },
+          "spanish": {
+            "type": "text",
+            "analyzer": "spanish_analyzer"
+          },
+          "synonyms": {
+            "type": "text",
+            "analyzer": "spanish_analyzer"
+          }
+        },
+        "analyzer": "spanish_analyzer"
+      },
+      "physicalstate": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "text",
+            "analyzer": "keyword_analyzer",
+            "fielddata": true
+          },
+          "spanish": {
+            "type": "text",
+            "analyzer": "spanish_analyzer"
+          },
+          "synonyms": {
+            "type": "text",
+            "analyzer": "spanish_analyzer"
+          }
+        },
+        "analyzer": "spanish_analyzer"
+      },
+      "pin": {
+        "type": "geo_point"
+      },
+      "points": {
+        "type": "long"
+      },
+      "productservices": {
+        "properties": {
+          "prdserv": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "text",
+                "analyzer": "keyword_analyzer"
+              },
+              "spanish": {
+                "type": "text",
+                "analyzer": "spanish_analyzer"
+              },
+              "synonyms": {
+                "type": "text",
+                "analyzer": "spanish_analyzer"
+              }
+            },
+            "analyzer": "spanish_analyzer"
+          }
+        }
+      },
+      "saturdayClose": {
+        "type": "date",
+        "format": "HH:mm:ss"
+      },
+      "saturdayOpen": {
+        "type": "date",
+        "format": "HH:mm:ss"
+      },
+      "serviceAll": {
+        "type": "boolean"
+      },
+      "sourcelistadoid": {
+        "type": "long",
+        "index": false
+      },
+      "sponserKeywords": {
+        "type": "text",
+        "index": false
+      },
+      "sponserkeywords": {
+        "properties": {
+          "sponserkeyword": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "text",
+                "analyzer": "keyword_analyzer"
+              },
+              "spanish": {
+                "type": "text",
+                "analyzer": "spanish_analyzer"
+              },
+              "synonyms": {
+                "type": "text",
+                "analyzer": "spanish_analyzer"
+              }
+            },
+            "analyzer": "spanish_analyzer"
+          }
+        }
+      },
+      "state": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "text",
+            "analyzer": "keyword_analyzer"
+          },
+          "spanish": {
+            "type": "text",
+            "analyzer": "spanish_analyzer"
+          },
+          "synonyms": {
+            "type": "text",
+            "analyzer": "spanish_analyzer"
+          }
+        },
+        "analyzer": "spanish_analyzer"
+      },
+      "statename": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "text",
+            "analyzer": "keyword_analyzer"
+          },
+          "spanish": {
+            "type": "text",
+            "analyzer": "spanish_analyzer"
+          },
+          "synonyms": {
+            "type": "text",
+            "analyzer": "spanish_analyzer"
+          }
+        },
+        "analyzer": "spanish_analyzer"
+      },
+      "summary": {
+        "type": "text"
+      },
+      "sundayClose": {
+        "type": "date",
+        "format": "HH:mm:ss"
+      },
+      "sundayOpen": {
+        "type": "date",
+        "format": "HH:mm:ss"
+      },
+      "thursdayClose": {
+        "type": "date",
+        "format": "HH:mm:ss"
+      },
+      "thursdayOpen": {
+        "type": "date",
+        "format": "HH:mm:ss"
+      },
+      "tuesdayClose": {
+        "type": "date",
+        "format": "HH:mm:ss"
+      },
+      "tuesdayOpen": {
+        "type": "date",
+        "format": "HH:mm:ss"
+      },
+      "wednesdayClose": {
+        "type": "date",
+        "format": "HH:mm:ss"
+      },
+      "wednesdayOpen": {
+        "type": "date",
+        "format": "HH:mm:ss"
+      },
+      "weekDayClose": {
+        "type": "date",
+        "format": "HH:mm:ss"
+      },
+      "weekDayOpen": {
+        "type": "date",
+        "format": "HH:mm:ss"
+      },
+      "xmlns:xsd": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "xmlns:xsi": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "zip": {
+        "type": "keyword"
+      },
+      "zipSpecified": {
+        "type": "boolean"
       }
     }
   },

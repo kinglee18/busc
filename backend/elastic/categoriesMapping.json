@@ -1,39 +1,37 @@
 {
   "mappings": {
-    "default": {
-      "properties": {
-        "category": {
-          "type": "text",
-          "fields": {
-            "keyword": {
-              "type": "text",
-              "analyzer": "spanish_keyword"
-            }
-          },
-          "analyzer": "spanish_analyzer"
-        },
-        "forceRelevance": {
-          "type": "long"
-        },
-        "idstring": {
-          "type": "keyword"
-        },
-        "prefix": {
-          "type": "text",
-          "fields": {
-            "keyword": {
-              "type": "keyword",
-              "ignore_above": 256
-            }
+    "properties": {
+      "category": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "text",
+            "analyzer": "spanish_keyword"
           }
         },
-        "score": {
-          "type": "long"
-        },
-        "text": {
-          "type": "text",
-          "analyzer": "spanish_keyword"
+        "analyzer": "spanish_analyzer"
+      },
+      "forceRelevance": {
+        "type": "long"
+      },
+      "idstring": {
+        "type": "keyword"
+      },
+      "prefix": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
         }
+      },
+      "score": {
+        "type": "long"
+      },
+      "text": {
+        "type": "text",
+        "analyzer": "spanish_keyword"
       }
     }
   },
