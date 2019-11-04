@@ -3,3 +3,4 @@ alexa/node_modules/
 backend/node_modules/
 backend/.vscode/
 backend/.vscode
+.vscode/settings.json

@@ -162,7 +162,7 @@ function sendRequest(page, request, sort, organicCodes) {
                         "boost_mode": "sum",
                         "script_score": {
                             "script": {
-                                "source": "doc['points'].value"
+                                "source": "doc['points'].size() > 0 ? doc['points'].value: 0"
                             }
                         }
                     }
