@@ -171,7 +171,8 @@ function sendRequest(page, request, sort, organicCodes) {
             sort
         }, pagination),
         index: process.env.negocios,
-        searchType: 'dfs_query_then_fetch'
+        searchType: 'dfs_query_then_fetch',
+        "track_total_hits": true
     };
     console.log(JSON.stringify(requestBody));
     return client.getClient().search(requestBody);

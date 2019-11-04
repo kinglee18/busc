@@ -70,7 +70,7 @@ function validParams(params) {
 routes.get('/node/business_by_brand', (req, res) => {
     elastic.businessByBrand(req.query.brandName).then((resp) => {
         res.status(200).send({
-            total: resp.hits.total,
+            total: resp.hits.total.value,
             businesses: parseElasticElements(resp.hits.hits)
         })
     }).catch(error => {
@@ -115,7 +115,7 @@ routes.get('/node/blog', (req, res) => {
         req.query.category
     ).then((resp) => {
         res.status(200).send({
-            total: resp.hits.total,
+            total: resp.hits.total.value,
             info: parseElasticElements(resp.hits.hits)
         });
     }).catch(error => {
