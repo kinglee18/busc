@@ -37,7 +37,7 @@ routes.get('/node', (req, res) => {
                 coordinates
             ).then((response) => {
                 res.status(200).send({
-                    total: response.hits.total,
+                    total: response.hits.total.value,
                     info: parseElasticElements(response.hits.hits)
                 });
             }).catch(error => {
