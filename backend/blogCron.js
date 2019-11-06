@@ -4,14 +4,13 @@ const BLOG_URL = 'https://blog.seccionamarilla.com.mx/api/get_posts';
 const client = elastic.getClient();
 
 exports.blogCron = function () {
-
     const totalLastPost = axios.get(BLOG_URL, {
         params: {
             page: 1, count: 20
         }
     });
     const totalElastic = client.count(
-        { index: process.env.blog }
+        { index:'blog_rep' }
     );
     Promise.all([totalElastic, totalLastPost]).then(response => {
         let postDiference = response[1].data.count_total - response[0].count;
@@ -21,9 +20,8 @@ exports.blogCron = function () {
     });
 }
 
-function updateElasticPosts(diference) {
+function updateElasticPosts(diference, page=1 ) {
     let count = diference >= 20 ? 20 : diference;
-    let page = 1;
     axios.get(BLOG_URL, {
         params: {
             page: page++, count
@@ -32,7 +30,7 @@ function updateElasticPosts(diference) {
         savePostInElastic(response.data.posts);
         diference -= 20;
         if (diference > 0) {
-            updateElasticPosts(diference);
+            updateElasticPosts(diference, page);
         }
     });
 }
