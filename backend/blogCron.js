@@ -1,16 +1,17 @@
 const axios = require('axios');
 const elastic = require('./elastic/client')
 const BLOG_URL = 'https://blog.seccionamarilla.com.mx/api/get_posts';
-const client = elastic.getClient();
 
 exports.blogCron = function () {
+    const client = elastic.getClient();
+
     const totalLastPost = axios.get(BLOG_URL, {
         params: {
             page: 1, count: 20
         }
     });
     const totalElastic = client.count(
-        { index:'blog_rep' }
+        { index: 'blog_rep' }
     );
     Promise.all([totalElastic, totalLastPost]).then(response => {
         let postDiference = response[1].data.count_total - response[0].count;
@@ -20,7 +21,7 @@ exports.blogCron = function () {
     });
 }
 
-function updateElasticPosts(diference, page=1 ) {
+function updateElasticPosts(diference, page = 1) {
     let count = diference >= 20 ? 20 : diference;
     axios.get(BLOG_URL, {
         params: {
@@ -36,19 +37,21 @@ function updateElasticPosts(diference, page=1 ) {
 }
 
 function savePostInElastic(posts) {
+    const client = elastic.getClient();
+
     let body = [];
     posts.forEach(element => {
         delete element.custom_fields.response_body
         element.content = element.content.replace(/(\r\n|\n|\r)/gm, "");
         element.excerpt = element.excerpt.replace(/(\r\n|\n|\r)/gm, "");
-        body.push({ "index": { } });
+        body.push({ "index": {} });
         body.push(element)
     });
-     client.bulk({
+    client.bulk({
         index: 'blog_rep',
         body
     }).then(data => {
-        console.log("insertados", posts.length);
+        console.log("Se ingresaron nuevos articulos:", posts.length);
     }).catch(err => {
         console.error(err);
     })

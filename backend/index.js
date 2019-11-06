@@ -3,7 +3,7 @@ const http = require('http').Server(express);
 const bodyParser = require('body-parser');
 const config = require('./config');
 const cors = require("cors");
-const websiteRoutes = require('./routes'); 
+const websiteRoutes = require('./routes');
 const cron = require('node-cron');
 const articlesJob = require('./blogCron');
 
@@ -21,8 +21,10 @@ http.listen(port = 3008, function () {
     console.log("servidor corriendo en ambiente ", envName);
 });
 
-
-cron.schedule('* 0 * * *', () => {
-    articlesJob.init();
+/**
+ * @desc the job will update blog articles at 3am everyday
+ */
+cron.schedule('0 3 * * *', () => {
+    articlesJob.blogCron();
     console.log('Ejecutando sincronizacion de ariculos en blog');
 });
