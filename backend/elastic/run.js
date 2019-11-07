@@ -661,4 +661,4 @@ function asigDaySn(days) {
     return arr;
 }
 
-module.exports = { getAddressFilter, searchBusiness, businessByBrand, businessByID, claro_shop }
+module.exports = { getAddressFilter, searchBusiness, businessByBrand, businessByID }
