@@ -6,8 +6,7 @@ const proceso = require('./app');
 const elastic = require('./elastic/run');
 const auto = require('./services/autocomplete');
 const blog = require('./elastic/blog');
-const clr1 = require('./analyzer/claro_shop');
-
+const products = require('./elastic/products');
 
 /**
  * @desc Retrieves all business related by name, category, products and services
@@ -130,10 +129,11 @@ routes.get('/node/blog', (req, res) => {
  */
 routes.get('/node/claroshop', (req, res) => {
     proceso.analisys(req.query.search_term).then((analisys) => {
-        clr1.claro_shop(analisys.newSearcherm).then(claro => {
-            elastic.claro_shop(req.query.page, claro.marcas, claro.ctg, claro.bn, analisys.price, claro.tx).then((resp) => {
-                res.status(200).send(resp);
-            });
+        products.searchRelatedProducts(req.query.page, claro.marcas, claro.ctg, claro.bn, analisys.price, claro.tx).then((resp) => {
+            res.status(200).send(resp);
+        }).catch(error => {
+            console.error(error);
+            res.status(500).send(error);
         });
     });
 });
@@ -148,4 +148,4 @@ io.on('connection', function (socket) {
     });
 })
 
-module.exports = {routes, validParams};
+module.exports = { routes, validParams };
