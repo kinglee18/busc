@@ -75,7 +75,6 @@ function searchBusiness(page = 0, searchTerm, organicCodes, hrs, paymentTypes, a
                     }
                 }
             }
-            console.log('query2 ');
             return sendRequest(page, requestBody, SCORE_AND_POINTS_SORTING, organicCodes).then(response => {
                 if (response.hits.hits === 0) {
                     return multisearch(page, searchTerm, filter, organicCodes);
@@ -140,7 +139,6 @@ function multisearch(page, searchTerm, filter, organicCodes) {
             }
         }
     }
-    console.log('multisearch ');
     return sendRequest(page, requestBody, ["_score"].concat(alphabeticalOrder()), organicCodes);
 }
 
@@ -174,7 +172,6 @@ function sendRequest(page, request, sort, organicCodes) {
         searchType: 'dfs_query_then_fetch',
         "track_total_hits": true
     };
-    console.log(JSON.stringify(requestBody));
     return client.getClient().search(requestBody);
 }
 
@@ -281,7 +278,6 @@ function getRelatedCategories(searchTerm) {
             ]
         }
     }
-    console.log('mexobjectsdefinition ', JSON.stringify(body));
     return client.getClient().search(body);
 }
 
