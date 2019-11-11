@@ -19,37 +19,41 @@ exports.searchRelatedArticles = function (searchTerm, page = 0, pageSize = 10, c
         }]);
     }
     const query = {
-        "bool": {
-            filter,
-            "should": searchTerm ? [
-                {
-                    "multi_match": {
-                        "query": searchTerm,
-                        "fields": ["title", "excerpt", "tags.slug"]
-                    }
-                },
-                {
-                    "nested": {
-                        "path": "categories",
-                        "query": {
-                            "match": {
-                                "categories.slug": searchTerm
+        "function_score": {
+            "query": {
+                "bool": {
+                    filter,
+                    "should": searchTerm ? [
+                        {
+                            "multi_match": {
+                                "query": searchTerm,
+                                "fields": ["title", "excerpt", "tags.slug"]
+                            }
+                        },
+                        {
+                            "nested": {
+                                "path": "categories",
+                                "query": {
+                                    "match": {
+                                        "categories.slug": searchTerm
+                                    }
+                                }
                             }
                         }
-                    }
+                    ] : []
                 }
-            ] : []
+            },
+            "random_score": {}
         }
     };
     console.log(JSON.stringify(query));
-    
+
     return client.getClient().search({
         "index": process.env.blog,
         "body": {
             "from": pageSize * page,
             "size": pageSize,
-            "sort": [{ date: { order: "desc" } }],
-            "query": query
+            query
         }
     });
 }
