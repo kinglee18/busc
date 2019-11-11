@@ -139,12 +139,12 @@ function multisearch(page, searchTerm, filter, organicCodes) {
             }
         }
     }
-    return sendRequest(page, requestBody, ["_score"].concat(alphabeticalOrder()), organicCodes);
+    return sendRequest(page, requestBody, ["_score"].concat(alphabeticalOrder()), organicCodes, true);
 }
 
 
-function sendRequest(page, request, sort, organicCodes) {
-    sort = organicCodes ? {} : sort;
+function sendRequest(page, request, sort, randomSorting, scoreSum = false) {
+    sort = randomSorting ? {} : sort;
     const pagination = {
         "from": page * 20,
         "size": 20,
@@ -155,15 +155,15 @@ function sendRequest(page, request, sort, organicCodes) {
                 "function_score": Object.assign(
                     {},
                     request,
-                    organicCodes ? { "random_score": {} } : {},
-                    organicCodes ? {} : {
+                    randomSorting ? { "random_score": {} } : {},
+                    (!randomSorting && scoreSum) ? {
                         "boost_mode": "sum",
                         "script_score": {
                             "script": {
                                 "source": "doc['points'].size() > 0 ? doc['points'].value: 10"
                             }
                         }
-                    }
+                    } : {}
                 )
             },
             sort
@@ -172,6 +172,7 @@ function sendRequest(page, request, sort, organicCodes) {
         searchType: 'dfs_query_then_fetch',
         "track_total_hits": true
     };
+    //console.log(JSON.stringify(requestBody));
     return client.getClient().search(requestBody);
 }
 
