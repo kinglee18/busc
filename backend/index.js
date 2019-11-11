@@ -1,5 +1,5 @@
-const express = require('express')();
-const http = require('http').Server(express);
+const app = require('express')();
+const http = require('http').Server(app);
 const bodyParser = require('body-parser');
 const config = require('./config');
 const cors = require("cors");
@@ -7,9 +7,9 @@ const websiteRoutes = require('./routes');
 const cron = require('node-cron');
 const articlesJob = require('./blogCron');
 
-express.use(cors());
-express.use(bodyParser.json());
-express.use(websiteRoutes.routes)
+app.use(cors());
+app.use(bodyParser.json());
+app.use(websiteRoutes.routes)
 
 
 /**
@@ -28,3 +28,5 @@ cron.schedule('0 3 * * *', () => {
     articlesJob.blogCron();
     console.log('Ejecutando sincronizacion de ariculos en blog');
 });
+
+module.exports = {app}

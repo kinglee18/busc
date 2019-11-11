@@ -75,7 +75,6 @@ function searchBusiness(page = 0, searchTerm, organicCodes, hrs, paymentTypes, a
                     }
                 }
             }
-            console.log('query2 ');
             return sendRequest(page, requestBody, SCORE_AND_POINTS_SORTING, organicCodes).then(response => {
                 if (response.hits.hits === 0) {
                     return multisearch(page, searchTerm, filter, organicCodes);
@@ -140,13 +139,12 @@ function multisearch(page, searchTerm, filter, organicCodes) {
             }
         }
     }
-    console.log('multisearch ');
-    return sendRequest(page, requestBody, ["_score"].concat(alphabeticalOrder()), organicCodes);
+    return sendRequest(page, requestBody, ["_score"].concat(alphabeticalOrder()), organicCodes, true);
 }
 
 
-function sendRequest(page, request, sort, organicCodes) {
-    sort = organicCodes ? {} : sort;
+function sendRequest(page, request, sort, randomSorting, scoreSum = false) {
+    sort = randomSorting ? {} : sort;
     const pagination = {
         "from": page * 20,
         "size": 20,
@@ -157,15 +155,15 @@ function sendRequest(page, request, sort, organicCodes) {
                 "function_score": Object.assign(
                     {},
                     request,
-                    organicCodes ? { "random_score": {} } : {},
-                    organicCodes ? {} : {
+                    randomSorting ? { "random_score": {} } : {},
+                    (!randomSorting && scoreSum) ? {
                         "boost_mode": "sum",
                         "script_score": {
                             "script": {
                                 "source": "doc['points'].size() > 0 ? doc['points'].value: 10"
                             }
                         }
-                    }
+                    } : {}
                 )
             },
             sort
@@ -174,7 +172,7 @@ function sendRequest(page, request, sort, organicCodes) {
         searchType: 'dfs_query_then_fetch',
         "track_total_hits": true
     };
-    console.log(JSON.stringify(requestBody));
+    //console.log(JSON.stringify(requestBody));
     return client.getClient().search(requestBody);
 }
 
@@ -281,7 +279,6 @@ function getRelatedCategories(searchTerm) {
             ]
         }
     }
-    console.log('mexobjectsdefinition ', JSON.stringify(body));
     return client.getClient().search(body);
 }
 
@@ -484,144 +481,6 @@ function businessByID(id) {
     return client.getClient().search(body);
 }
 
-function claro_shop(page = 0, marcas, ctg, bn, price, tx) {
-    let promesa = new Promise((resolve, reject) => {
-
-        let busq = [];
-        let filtro = [];
-
-        if (marcas.length > 0) {
-            let arr1 = [];
-            let arr2 = [];
-            for (let op of marcas) {
-                arr1.push({
-                    "match_phrase": {
-                        "brand": op
-                    }
-                })
-            }
-
-            let nv = '';
-            for (let i in marcas) {
-                if (i == 0) {
-                    nv += '(' + marcas[i] + ')';
-                }
-                else {
-                    nv += ' OR (' + marcas[i] + ')';
-                }
-            }
-
-            arr2.push({
-                "query_string": {
-                    "default_field": 'brand',
-                    "query": nv
-                }
-            })
-
-            busq = busq.concat(arr1);
-            filtro = filtro.concat(arr2);
-        }
-
-
-
-        if (ctg.length > 0) {
-            let arr = [];
-            for (let op of ctg) {
-                arr.push({
-                    "match_phrase": {
-                        'google_product_category': op
-                    }
-                })
-            }
-            busq = busq.concat(arr);
-        }
-
-        if (bn.length > 0) {
-            let arr = [];
-            for (let op of bn) {
-                arr.push({
-                    "match": {
-                        'title': op
-                    }
-                })
-                arr.push({
-                    "match": {
-                        "description": tx
-                    }
-                })
-            }
-            busq = busq.concat(arr)
-        }
-        else {
-            let arr = [];
-            arr.push({
-                "match": {
-                    'title': tx
-                }
-            })
-            arr.push({
-                "match": {
-                    "description": tx
-                }
-            })
-            busq = busq.concat(arr)
-        }
-
-        if (price) {
-            filtro.push({
-                "range": {
-                    "price": {
-                        "gte": price.min,
-                        "lte": price.max
-                    }
-                }
-            })
-        }
-
-
-
-        let content = {}
-        if (marcas.length > 0 || ctg.length > 0 || bn.length > 0) {
-
-            content = {
-                "bool": {
-                    "should": busq,
-                    "filter": filtro
-                }
-
-            }
-
-            client.getClient().search({
-                "index": process.env.claro_shop,
-                "body": {
-                    "from": 10 * page,
-                    "size": 10,
-                    "query": content
-                }
-            }).then((resp) => {
-                let arr = [];
-                if (resp.hits.total > 0) {
-                    for (let op of resp.hits.hits) {
-                        arr.push(op._source);
-                    }
-                }
-
-                resolve({
-                    info: arr,
-                    total: resp.hits.total
-                });
-            })
-        }
-        else resolve({
-            info: [],
-            total: 0
-        });
-    });
-
-    return promesa;
-}
-
-
 function asigDay(days, hora) {
     let arr = [];
     for (let op of days) {
@@ -799,4 +658,4 @@ function asigDaySn(days) {
     return arr;
 }
 
-module.exports = { getAddressFilter, searchBusiness, businessByBrand, businessByID, claro_shop }
+module.exports = { getAddressFilter, searchBusiness, businessByBrand, businessByID }
