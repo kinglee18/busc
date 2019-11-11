@@ -43,6 +43,7 @@ function parseAddress(location) {
 
     }
     address.city = cleanStateName(address.city);
+    address.statename = address.state;
     address.state = getAbrevWhere(address.state);
     return address;
 }

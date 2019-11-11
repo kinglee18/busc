@@ -35,10 +35,19 @@ routes.get('/node', (req, res) => {
                 json.location || address,
                 coordinates
             ).then((response) => {
-                res.status(200).send({
+                let responseObj = {
                     total: response.hits.total.value,
                     info: parseElasticElements(response.hits.hits)
-                });
+                };
+                if(json.location){
+
+                    responseObj.location =  {
+                        colony: json.location.colony,
+                        physicalcity: json.location.city,
+                        physicalstate: json.location.statename
+                    }
+                }
+                res.status(200).send(responseObj);
             }).catch(error => {
                 console.error(error);
                 res.status(500).send(error);
