@@ -10,7 +10,7 @@ exports.search = async function (texto) {
     let url = `https://maps.googleapis.com/maps/api/geocode/json?address=${busq}&&components=country:MX&key=AIzaSyBJ30F-VdmTxvItBP3uqIEso1RfD_6-Z3M`;
     let resp = await axios.get(url);
     if (resp.data.status == 'OK') {
-        return parseAddress(resp.data.results[0].address_components)
+        return parseAddress(resp.data.results[0])
 
     }
     console.error("Fallo al buscar ubicacion");
@@ -19,18 +19,18 @@ exports.search = async function (texto) {
 function parseAddress(location) {
     let address = {}
 
-    for (let desc of location) {
+    for (let desc of location.address_components) {
         let name = cls.clearTexto(desc.long_name);
-
-        if (desc.types.includes("street_number") || desc.types.includes("route") || desc.types.includes('neighborhood')) {
+        if (desc.types.includes("postal_code")) {
+            address.postalCode = name;
+        }
+        if ((desc.types.includes("street_number") || desc.types.includes("route") || desc.types.includes('neighborhood')) && !address.postalCode) {
             return;
         }
         if (desc.types.includes("sublocality") || desc.types.includes("sublocality_level_1")) {
             address.colony = name;
         }
-        else if (desc.types.includes("postal_code")) {
-            address.postalCode = name;
-        }
+
         else if (desc.types.includes('administrative_area_level_3') || (desc.types.includes('locality'))) {
             if (name === 'mexico city' || name === 'ciudad de mexico')
                 address.state = 'mexico city';

@@ -41,7 +41,8 @@ routes.get('/node', (req, res) => {
                     filters: {
                         physicalcity: elasticResponse.aggregations.physicalcity.buckets.map(e => e.key),
                         colony: elasticResponse.aggregations.colony.buckets.map(e => e.key),
-                        category: elasticResponse.aggregations.category.buckets.map(e => e.key)
+                        category: elasticResponse.aggregations.category.buckets.map(e => e.key),
+                        state: elasticResponse.aggregations.state.buckets.map(e => e.key)
                     }
                 };
                 if(json.location){

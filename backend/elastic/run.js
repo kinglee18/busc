@@ -172,13 +172,16 @@ function sendRequest(page, request, sort, randomSorting, scoreSum = false) {
             {
                 "aggs": {
                     "physicalcity": {
-                        "terms": { "field": "physicalcity.keyword", "size": 10000, "order" : { "_key" : "asc" } }
+                        "terms": { "field": "physicalcity.keyword", "size": 10000, "order": { "_key": "asc" } }
                     },
                     "colony": {
-                        "terms": { "field": "colony.keyword", "size": 10000, "order" : { "_key" : "asc" } }
+                        "terms": { "field": "colony.keyword", "size": 10000, "order": { "_key": "asc" } }
                     },
                     "category": {
-                        "terms": { "field": "categoryname_full_text", "size": 10000, "order" : { "_key" : "asc" } }
+                        "terms": { "field": "categoryname_full_text", "size": 10000, "order": { "_key": "asc" } }
+                    },
+                    "state": {
+                        "terms": { "field": "statename.keyword", "size": 10000, "order": { "_key": "asc" } }
                     }
                 }
             }
