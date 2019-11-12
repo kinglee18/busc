@@ -167,7 +167,22 @@ function sendRequest(page, request, sort, randomSorting, scoreSum = false) {
                 )
             },
             sort
-        }, pagination),
+        },
+            pagination,
+            {
+                "aggs": {
+                    "physicalcity": {
+                        "terms": { "field": "physicalcity.keyword", "size": 10000, "order" : { "_key" : "asc" } }
+                    },
+                    "colony": {
+                        "terms": { "field": "colony.keyword", "size": 10000, "order" : { "_key" : "asc" } }
+                    },
+                    "category": {
+                        "terms": { "field": "categoryname_full_text", "size": 10000, "order" : { "_key" : "asc" } }
+                    }
+                }
+            }
+        ),
         index: process.env.negocios,
         searchType: 'dfs_query_then_fetch',
         "track_total_hits": true
