@@ -28,6 +28,9 @@ function parseAddress(location) {
         if (desc.types.includes("sublocality") || desc.types.includes("sublocality_level_1")) {
             address.colony = name;
         }
+        else if (desc.types.includes("postal_code")) {
+            address.postalCode = name;
+        }
         else if (desc.types.includes('administrative_area_level_3') || (desc.types.includes('locality'))) {
             if (name === 'mexico city' || name === 'ciudad de mexico')
                 address.state = 'mexico city';
