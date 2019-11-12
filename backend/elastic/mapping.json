@@ -616,7 +616,8 @@
       },
       "categoryname_full_text": {
         "type": "text",
-        "analyzer": "keyword_analyzer_dos"
+        "analyzer": "keyword_analyzer_dos",
+        "fielddata": true
       },
       "city": {
         "type": "text",
@@ -912,24 +913,6 @@
       "mondayOpen": {
         "type": "date",
         "format": "HH:mm:ss"
-      },
-      "phisicalcity": {
-        "type": "text",
-        "fields": {
-          "keyword": {
-            "type": "keyword",
-            "ignore_above": 256
-          }
-        }
-      },
-      "phisicalstate": {
-        "type": "text",
-        "fields": {
-          "keyword": {
-            "type": "keyword",
-            "ignore_above": 256
-          }
-        }
       },
       "phones": {
         "type": "nested",

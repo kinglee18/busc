@@ -34,13 +34,17 @@ routes.get('/node', (req, res) => {
                 json.payments,
                 json.location || address,
                 coordinates
-            ).then((response) => {
+            ).then((elasticResponse) => {
                 let responseObj = {
-                    total: response.hits.total.value,
-                    info: parseElasticElements(response.hits.hits)
+                    total: elasticResponse.hits.total.value,
+                    info: parseElasticElements(elasticResponse.hits.hits),
+                    filters: {
+                        physicalcity: elasticResponse.aggregations.physicalcity.buckets.map(e => e.key),
+                        colony: elasticResponse.aggregations.colony.buckets.map(e => e.key),
+                        category: elasticResponse.aggregations.category.buckets.map(e => e.key)
+                    }
                 };
                 if(json.location){
-
                     responseObj.location =  {
                         colony: json.location.colony,
                         physicalcity: json.location.city,

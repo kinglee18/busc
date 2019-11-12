@@ -1,4 +1,4 @@
-exports.data = [
+const data = [
     {
         simb: 'ags',
         valor: 'aguascalientes'
@@ -144,3 +144,13 @@ exports.data = [
         valor: 'mexico city'
     }
 ]
+
+const SAStatenames = [    {
+    simb: 'mexico',
+    valor: 'state of mexico'
+},
+{
+    simb: 'distrifo federal',
+    valor: 'mexico city'
+},];
+module.exports = {data, SAStatenames}

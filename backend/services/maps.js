@@ -43,7 +43,7 @@ function parseAddress(location) {
 
     }
     address.city = cleanStateName(address.city);
-    address.statename = address.state;
+    address.statename = getSAStatename(address.state);
     address.state = getAbrevWhere(address.state);
     return address;
 }
@@ -74,4 +74,14 @@ function getAbrevWhere(state) {
         }
     }
     return null;
+}
+
+
+function getSAStatename(state) {
+    for (let op of syn.SAStatenames) {
+        if (op.valor == state) {
+            return op.simb;
+        }
+    }
+    return state;
 }
