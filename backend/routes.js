@@ -41,14 +41,17 @@ routes.get('/node', (req, res) => {
                     filters: {
                         physicalcity: elasticResponse.aggregations.physicalcity.buckets.map(e => e.key),
                         colony: elasticResponse.aggregations.colony.buckets.map(e => e.key),
-                        category: elasticResponse.aggregations.category.buckets.map(e => e.key)
+                        category: elasticResponse.aggregations.category.buckets.map(e => e.key),
+                        state: elasticResponse.aggregations.state.buckets.map(e => e.key)
                     }
                 };
                 if(json.location){
                     responseObj.location =  {
                         colony: json.location.colony,
                         physicalcity: json.location.city,
-                        physicalstate: json.location.statename
+                        physicalstate: json.location.statename,
+                        postal_code: json.location.postalCode,
+                        search_term: json.newSearchTerm
                     }
                 }
                 res.status(200).send(responseObj);
