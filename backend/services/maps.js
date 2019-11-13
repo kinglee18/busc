@@ -4,14 +4,16 @@ const syn = require('../info/syn_where');
 const CITIES_TO_EXCLUDE = require('../info/cities');
 
 
-exports.search = async function (texto) {
-    let palabras = texto.split(' ');
-    let busq = palabras.join('+');
-    let url = `https://maps.googleapis.com/maps/api/geocode/json?address=${busq}&&components=country:MX&key=AIzaSyBJ30F-VdmTxvItBP3uqIEso1RfD_6-Z3M`;
-    let resp = await axios.get(url);
+exports.search = async function (address) {
+    let resp = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', url, {
+        params: {
+            address,
+            components: 'country:MX',
+            key: 'AIzaSyBJ30F-VdmTxvItBP3uqIEso1RfD_6-Z3M'
+        }
+    });
     if (resp.data.status == 'OK') {
         return parseAddress(resp.data.results[0])
-
     }
     console.error("Fallo al buscar ubicacion");
 }
