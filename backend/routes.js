@@ -1,10 +1,8 @@
 const express = require('express');
 const routes = express.Router();
 const http = require('http').Server(express);
-const io = require('socket.io')(http);
 const proceso = require('./app');
 const elastic = require('./elastic/run');
-const auto = require('./services/autocomplete');
 const blog = require('./elastic/blog');
 const products = require('./elastic/products');
 
@@ -45,8 +43,8 @@ routes.get('/node', (req, res) => {
                         state: elasticResponse.aggregations.state.buckets.map(e => e.key)
                     }
                 };
-                if(json.location){
-                    responseObj.location =  {
+                if (json.location) {
+                    responseObj.location = {
                         colony: json.location.colony,
                         physicalcity: json.location.city,
                         physicalstate: json.location.statename,
@@ -154,13 +152,13 @@ routes.get('/node/claroshop', (req, res) => {
     });
 });
 
-io.on('connection', function (socket) {
-    socket.on('autocomplete', (data) => {
-        auto.autocomplete(data.texto).then((resp) => {
-            socket.emit('autocomplete-resp', {
-                info: resp
-            })
-        });
+routes.get('/node/suggest', function (req, res) {
+    const searchTerm = req.query.search_term;
+    const place = searchTerm.match(/.+\s+en\s+.+/) !== null ? searchTerm.match(/.+\s+en\s+.+/)[1] : undefined;
+    elastic.getSuggestion(req.query.search_term, place).then((resp) => {
+        res.status(200).send(resp.suggest.autocomplete[0].options.map(el => el.text));
+    }).catch(err => {
+        console.error(err);
     });
 })
 

@@ -676,4 +676,28 @@ function asigDaySn(days) {
     return arr;
 }
 
-module.exports = { getAddressFilter, searchBusiness, businessByBrand, businessByID }
+
+function getSuggestion(term, place) {
+    let request  = {
+        "index": process.env.negocios,
+        body: {
+            "_source": "",
+            "suggest": {
+                "autocomplete": {
+                    "prefix": term,
+                    "completion": {
+                        "field": "Appearances.Appearance.categoryname.suggest",
+                        "skip_duplicates": true,
+                        "fuzzy" : {
+                            "fuzziness" : 1
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return client.getClient().search(request);
+}
+
+
+module.exports = { getAddressFilter, searchBusiness, businessByBrand, businessByID, getSuggestion }
