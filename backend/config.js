@@ -1,7 +1,6 @@
 module.exports = {
     prod: {
         ip: '172.18.1.96:9200',
-        taxonomias: 'taxonomias_globales',
         negocios: 'negocios_secam',
         claro_shop: 'claro_shop',
         blog: 'blog_secam'

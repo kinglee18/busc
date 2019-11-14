@@ -1,10 +1,6 @@
 {
   "mappings": {
     "properties": {
-      "AMUpdate": {
-        "type": "text",
-        "index": false
-      },
       "Appearances": {
         "properties": {
           "Appearance": {
@@ -62,6 +58,9 @@
                   "spanish": {
                     "type": "text",
                     "analyzer": "spanish_analyzer"
+                  },
+                  "suggest": {
+                    "type": "completion"
                   }
                 }
               },
@@ -172,9 +171,8 @@
                     "type": "text",
                     "analyzer": "spanish_analyzer"
                   },
-                  "synonyms": {
-                    "type": "text",
-                    "analyzer": "spanish_analyzer"
+                  "suggest": {
+                    "type": "completion"
                   }
                 },
                 "analyzer": "spanish_analyzer"
@@ -190,9 +188,8 @@
                     "type": "text",
                     "analyzer": "spanish_analyzer"
                   },
-                  "synonyms": {
-                    "type": "text",
-                    "analyzer": "spanish_analyzer"
+                  "suggest": {
+                    "type": "completion"
                   }
                 },
                 "analyzer": "spanish_analyzer"
@@ -223,52 +220,6 @@
           }
         }
       },
-      "DestinationNetwork": {
-        "type": "text",
-        "index": false
-      },
-      "Synonyms": {
-        "properties": {
-          "SynonymRelation": {
-            "properties": {
-              "Matched": {
-                "type": "text",
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
-              },
-              "Searched": {
-                "type": "text",
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "aMUpdate": {
-        "type": "text",
-        "fields": {
-          "keyword": {
-            "type": "keyword",
-            "ignore_above": 256
-          }
-        }
-      },
-      "autocomplete_field": {
-        "type": "completion",
-        "analyzer": "autocomplete_analyzer",
-        "preserve_separators": true,
-        "preserve_position_increments": true,
-        "max_input_length": 50
-      },
       "bn": {
         "type": "text",
         "fields": {
@@ -289,22 +240,7 @@
             "analyzer": "spanish_analyzer"
           }
         },
-        "copy_to": [
-          "bn_autocomplete",
-          "bn_full_text"
-        ],
         "analyzer": "spanish_analyzer"
-      },
-      "bn_autocomplete": {
-        "type": "completion",
-        "analyzer": "simple",
-        "preserve_separators": true,
-        "preserve_position_increments": true,
-        "max_input_length": 100
-      },
-      "bn_full_text": {
-        "type": "text",
-        "analyzer": "keyword_analyzer_dos"
       },
       "branches": {
         "properties": {
