@@ -11,6 +11,7 @@ const products = require('./elastic/products');
  * @param {string} req.query.searchTerm -business, category or location or  product
  * @param {string} req.query.lat - browser detected latitude
  * @param {string} req.query.lng - browser detected longitude
+ * @returns {object} responseObj - f
  * 
  */
 routes.get('/node', (req, res) => {
@@ -24,23 +25,29 @@ routes.get('/node', (req, res) => {
     const organicCodes = ['BRO', 'BRP', 'DIA', 'ORO', 'PIP', 'PLA', 'SPN'];
     if (validation.valid) {
         proceso.analisys(req.query.searchTerm).then((json) => {
-            elastic.searchBusiness(
-                req.query.page,
-                json.newSearchTerm,
-                req.query.organic ? organicCodes : undefined,
-                json.schedule,
-                json.payments,
-                json.location || address,
-                coordinates
-            ).then((elasticResponse) => {
+            Promise.all([
+                elastic.searchBusiness(
+                    req.query.page,
+                    json.newSearchTerm,
+                    req.query.organic ? organicCodes : undefined,
+                    json.schedule,
+                    json.payments,
+                    json.location || address,
+                    coordinates
+                ),
+                elastic.getSuggestion(json.newSearchTerm)]
+            ).then((response) => {
+                const businessInfo = response[0];
+                const textSuggest = response[1];
+
                 let responseObj = {
-                    total: elasticResponse.hits.total.value,
-                    info: parseElasticElements(elasticResponse.hits.hits),
+                    total: businessInfo.hits.total.value,
+                    info: parseElasticElements(businessInfo.hits.hits),
                     filters: {
-                        physicalcity: elasticResponse.aggregations.physicalcity.buckets.map(e => e.key),
-                        colony: elasticResponse.aggregations.colony.buckets.map(e => e.key),
-                        category: elasticResponse.aggregations.category.buckets.map(e => e.key),
-                        state: elasticResponse.aggregations.state.buckets.map(e => e.key)
+                        physicalcity: businessInfo.aggregations.physicalcity.buckets.map(e => e.key),
+                        colony: businessInfo.aggregations.colony.buckets.map(e => e.key),
+                        category: businessInfo.aggregations.category.buckets.map(e => e.key),
+                        state: businessInfo.aggregations.state.buckets.map(e => e.key)
                     }
                 };
                 if (json.location) {
@@ -51,6 +58,10 @@ routes.get('/node', (req, res) => {
                         postal_code: json.location.postalCode,
                         search_term: json.newSearchTerm
                     }
+                }
+                if (textSuggest.suggest.services[0].options.length) {
+                    responseObj.suggest = textSuggest.suggest.services[0].options[0].text;
+
                 }
                 res.status(200).send(responseObj);
             }).catch(error => {
@@ -152,14 +163,18 @@ routes.get('/node/claroshop', (req, res) => {
     });
 });
 
+/**
+ * @desc Endpoint for autocomplete in webpage, based in business categories in the business index
+ * @param {string} search_term - word to search in categories 
+ */
 routes.get('/node/suggest', function (req, res) {
     const searchTerm = req.query.search_term;
     const place = searchTerm.match(/.+\s+en\s+.+/) !== null ? searchTerm.match(/.+\s+en\s+.+/)[1] : undefined;
-    elastic.getSuggestion(req.query.search_term, place).then((resp) => {
+    elastic.getAutocompleteSuggestion(req.query.search_term, place).then((resp) => {
         res.status(200).send(resp.suggest.autocomplete[0].options.map(el => el.text));
     }).catch(err => {
         console.error(err);
     });
-})
+});
 
 module.exports = { routes, validParams };

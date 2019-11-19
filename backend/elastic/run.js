@@ -676,8 +676,12 @@ function asigDaySn(days) {
     return arr;
 }
 
-
-function getSuggestion(term, place) {
+/**
+ * 
+ * @param {string} term - name of the category to search
+ * @param {string} place - name of the place to seach in cities and states (optional)
+ */
+function getAutocompleteSuggestion(term, place) {
     let request  = {
         "index": process.env.negocios,
         body: {
@@ -699,5 +703,27 @@ function getSuggestion(term, place) {
     return client.getClient().search(request);
 }
 
+/**
+ * 
+ * @param {string} term - search term to search in categories, products and services
+ */
+function getSuggestion (term) {
+    const request  = {
+        "index": process.env.negocios,
+        body: {
+            "_source": "",
+            "suggest": {
+                "services" : {
+                  "text" : term,
+                  "term" : {
+                    "field" : "productservices.prdserv.keyword",
+                    "max_edits":2
+                  }
+                }
+              }
+        }
+    }
+    return client.getClient().search(request);
+}
 
-module.exports = { getAddressFilter, searchBusiness, businessByBrand, businessByID, getSuggestion }
+module.exports = { getAddressFilter, searchBusiness, businessByBrand, businessByID, getSuggestion, getAutocompleteSuggestion }

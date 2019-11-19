@@ -5,7 +5,7 @@ const CITIES_TO_EXCLUDE = require('../info/cities');
 
 
 exports.search = async function (address) {
-    let resp = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', url, {
+    let resp = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
         params: {
             address,
             components: 'country:MX',
