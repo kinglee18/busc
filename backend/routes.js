@@ -39,8 +39,7 @@ routes.get('/node', (req, res) => {
             ).then((response) => {
                 const businessInfo = response[0];
                 const textSuggest = response[1];
-                console.log(JSON.stringify(textSuggest));
-                
+
                 let responseObj = {
                     total: businessInfo.hits.total.value,
                     info: parseElasticElements(businessInfo.hits.hits),
@@ -59,6 +58,10 @@ routes.get('/node', (req, res) => {
                         postal_code: json.location.postalCode,
                         search_term: json.newSearchTerm
                     }
+                }
+                if (textSuggest.suggest.services[0].options.length) {
+                    responseObj.suggest = textSuggest.suggest.services[0].options[0].text;
+
                 }
                 res.status(200).send(responseObj);
             }).catch(error => {
