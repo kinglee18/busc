@@ -15,6 +15,7 @@ const products = require('./elastic/products');
  * 
  */
 routes.get('/node', (req, res) => {
+    const showBusiness = req.query.show_business == 'false' ? false : true;
     const validation = validParams(req.query);
     const address = req.query.physicalstate || req.query.physicalcity || req.query.colony ? {
         physicalstate: req.query.physicalstate,
@@ -26,7 +27,7 @@ routes.get('/node', (req, res) => {
     if (validation.valid) {
         proceso.analisys(req.query.searchTerm).then((json) => {
             Promise.all([
-                elastic.searchBusiness(
+                showBusiness ? elastic.searchBusiness(
                     req.query.page,
                     json.newSearchTerm,
                     req.query.organic ? organicCodes : undefined,
@@ -34,22 +35,25 @@ routes.get('/node', (req, res) => {
                     json.payments,
                     json.location || address,
                     coordinates
-                ),
-                elastic.getSuggestion(json.newSearchTerm)]
+                ) : null,
+                elastic.getSuggestion(req.query.searchTerm)]
             ).then((response) => {
                 const businessInfo = response[0];
                 const textSuggest = response[1];
+                let responseObj = {};
+                if (showBusiness) {
+                    responseObj = {
+                        total: businessInfo.hits.total.value,
+                        info: parseElasticElements(businessInfo.hits.hits),
+                        filters: {
+                            physicalcity: businessInfo.aggregations.physicalcity.buckets.map(e => e.key),
+                            colony: businessInfo.aggregations.colony.buckets.map(e => e.key),
+                            category: businessInfo.aggregations.category.buckets.map(e => e.key),
+                            state: businessInfo.aggregations.state.buckets.map(e => e.key)
+                        }
+                    };
+                }
 
-                let responseObj = {
-                    total: businessInfo.hits.total.value,
-                    info: parseElasticElements(businessInfo.hits.hits),
-                    filters: {
-                        physicalcity: businessInfo.aggregations.physicalcity.buckets.map(e => e.key),
-                        colony: businessInfo.aggregations.colony.buckets.map(e => e.key),
-                        category: businessInfo.aggregations.category.buckets.map(e => e.key),
-                        state: businessInfo.aggregations.state.buckets.map(e => e.key)
-                    }
-                };
                 if (json.location) {
                     responseObj.location = {
                         colony: json.location.colony,
@@ -58,7 +62,12 @@ routes.get('/node', (req, res) => {
                         postal_code: json.location.postalCode,
                         search_term: json.newSearchTerm
                     }
+                } else {
+                    responseObj.location = {
+                        search_term: json.newSearchTerm
+                    }
                 }
+
                 if (textSuggest.suggest.services[0].options.length) {
                     responseObj.suggest = textSuggest.suggest.services[0].options[0].text;
 
