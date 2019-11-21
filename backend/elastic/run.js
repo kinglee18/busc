@@ -104,7 +104,7 @@ function multisearch(page, searchTerm, filter, organicCodes) {
                             },
                             {
                                 "match": {
-                                    "bn.spanish": { "query": searchTerm, "_name": "match_phrase_bn", "boost": 2 }
+                                    "bn.spanish": { "query": searchTerm, "_name": "match_phrase_bn", "boost": 2, "operator": "and" }
                                 }
                             },
                             {
