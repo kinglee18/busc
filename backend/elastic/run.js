@@ -111,6 +111,7 @@ function multisearch(page, searchTerm, filter, organicCodes) {
                                 "match": {
                                     "Appearances.Appearance.categoryname.spanish": {
                                         "query": searchTerm,
+                                        "operator": "and",
                                         "_name": "match_phrase_cat",
                                         "boost": 4
                                     }
@@ -120,6 +121,7 @@ function multisearch(page, searchTerm, filter, organicCodes) {
                                 "match": {
                                     "productservices.prdserv.spanish": {
                                         "query": searchTerm,
+                                        "operator": "and",
                                         "_name": "match_phrase_prdserv", "boost": 2
                                     }
                                 }
@@ -130,6 +132,14 @@ function multisearch(page, searchTerm, filter, organicCodes) {
                                         "query": searchTerm,
                                         "_name": "match_phrase_prdserv", "boost": 5
                                     }
+                                }
+                            },
+                            {
+                                "multi_match": {
+                                    "query": searchTerm,
+                                    "type": "cross_fields",
+                                    "fields": ["productservices.prdserv.spanish", "Appearances.Appearance.categoryname.spanish" ],
+                                    "operator": "and"
                                 }
                             }
                         ]
@@ -682,7 +692,7 @@ function asigDaySn(days) {
  * @param {string} place - name of the place to seach in cities and states (optional)
  */
 function getAutocompleteSuggestion(term, place) {
-    let request  = {
+    let request = {
         "index": process.env.negocios,
         body: {
             "_source": "",
@@ -692,8 +702,8 @@ function getAutocompleteSuggestion(term, place) {
                     "completion": {
                         "field": "Appearances.Appearance.categoryname.suggest",
                         "skip_duplicates": true,
-                        "fuzzy" : {
-                            "fuzziness" : 1
+                        "fuzzy": {
+                            "fuzziness": 1
                         }
                     }
                 }
@@ -707,20 +717,20 @@ function getAutocompleteSuggestion(term, place) {
  * 
  * @param {string} term - search term to search in categories, products and services
  */
-function getSuggestion (term) {
-    const request  = {
+function getSuggestion(term) {
+    const request = {
         "index": process.env.negocios,
         body: {
             "_source": "",
             "suggest": {
-                "services" : {
-                  "text" : term,
-                  "term" : {
-                    "field" : "productservices.prdserv.keyword",
-                    "max_edits":2
-                  }
+                "services": {
+                    "text": term,
+                    "term": {
+                        "field": "productservices.prdserv.keyword",
+                        "max_edits": 2
+                    }
                 }
-              }
+            }
         }
     }
     return client.getClient().search(request);
