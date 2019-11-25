@@ -178,9 +178,14 @@ routes.get('/node/claroshop', (req, res) => {
  */
 routes.get('/node/suggest', function (req, res) {
     const searchTerm = req.query.search_term;
-    const place = searchTerm.match(/.+\s+en\s+.+/) !== null ? searchTerm.match(/.+\s+en\s+.+/)[1] : undefined;
+    const place = searchTerm.match(/.+\s+en\s+(.+)/) !== null ? searchTerm.match(/(.+\s+en\s+)(.+)/)[2] : undefined;
     elastic.getAutocompleteSuggestion(req.query.search_term, place).then((resp) => {
-        res.status(200).send(resp.suggest.autocomplete[0].options.map(el => el.text));
+        const ele = [];
+        for(let obj in resp.suggest) {
+            ele.concat(resp.suggest[obj][0].options.map(el => el.text));
+        }
+        res.status(200).send(ele);
+
     }).catch(err => {
         console.error(err);
     });

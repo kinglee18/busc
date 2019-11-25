@@ -114,7 +114,7 @@ function multisearch(page, searchTerm, filter, organicCodes) {
                                         "operator": "and",
                                         "_name": "match_phrase_cat",
                                         "boost": 4,
-                                        "fuzziness":"1"
+                                        "fuzziness": "1"
                                     }
                                 }
                             },
@@ -139,7 +139,7 @@ function multisearch(page, searchTerm, filter, organicCodes) {
                                 "multi_match": {
                                     "query": searchTerm,
                                     "type": "cross_fields",
-                                    "fields": ["productservices.prdserv.spanish", "Appearances.Appearance.categoryname.spanish" ],
+                                    "fields": ["productservices.prdserv.spanish", "Appearances.Appearance.categoryname.spanish"],
                                     "operator": "and"
                                 }
                             }
@@ -697,8 +697,8 @@ function getAutocompleteSuggestion(term, place) {
         "index": process.env.negocios,
         body: {
             "_source": "",
-            "suggest": {
-                "autocomplete": {
+            "suggest": Object.assign(!place ?{
+                "categorie": {
                     "prefix": term,
                     "completion": {
                         "field": "Appearances.Appearance.categoryname.suggest",
@@ -708,7 +708,28 @@ function getAutocompleteSuggestion(term, place) {
                         }
                     }
                 }
-            }
+            }: { 
+                "city": {
+                    "prefix": term,
+                    "completion": {
+                        "field": "Appearances.Appearance.categoryname.suggest",
+                        "skip_duplicates": true,
+                        "fuzzy": {
+                            "fuzziness": 1
+                        }
+                    }
+                },
+                "state": {
+                    "prefix": term,
+                    "completion": {
+                        "field": "Appearances.Appearance.categoryname.suggest",
+                        "skip_duplicates": true,
+                        "fuzzy": {
+                            "fuzziness": 1
+                        }
+                    }
+                }
+            })
         }
     }
     return client.getClient().search(request);
