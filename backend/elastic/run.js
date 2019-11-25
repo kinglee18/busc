@@ -99,7 +99,7 @@ function multisearch(page, searchTerm, filter, organicCodes) {
                         should: [
                             {
                                 "match_phrase": {
-                                    "bn.spanish": { "query": searchTerm, "_name": "match_phrase_bn", "boost": 5 }
+                                    "bn.keyword": { "query": searchTerm, "_name": "match_phrase_bn", "boost": 5 }
                                 }
                             },
                             {
@@ -113,7 +113,8 @@ function multisearch(page, searchTerm, filter, organicCodes) {
                                         "query": searchTerm,
                                         "operator": "and",
                                         "_name": "match_phrase_cat",
-                                        "boost": 4
+                                        "boost": 4,
+                                        "fuzziness":"1"
                                     }
                                 }
                             },
