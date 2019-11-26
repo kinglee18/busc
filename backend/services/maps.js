@@ -33,7 +33,7 @@ function parseAddress(location) {
             address.colony = name;
         }
 
-        else if (desc.types.includes('administrative_area_level_3') || (desc.types.includes('locality'))) {
+        else if (desc.types.includes('administrative_area_level_2') || desc.types.includes('administrative_area_level_3') || (desc.types.includes('locality'))) {
             if (name === 'mexico city' || name === 'ciudad de mexico')
                 address.state = 'mexico city';
             else
