@@ -177,12 +177,27 @@ routes.get('/node/claroshop', (req, res) => {
  * @param {string} search_term - word to search in categories 
  */
 routes.get('/node/suggest', function (req, res) {
-    const searchTerm = req.query.search_term;
-    const place = searchTerm.match(/.+\s+en\s+(.+)/) !== null ? searchTerm.match(/(.+\s+en\s+)(.+)/)[2] : undefined;
+    let searchTerm = req.query.search_term;
+    let place = undefined;
+    if (searchTerm.match(/(.+)\s+en\s+(.+)/) !== null) {
+
+        [, searchTerm, place] = searchTerm.match(/(.+)\s+en\s+(.+)/);
+    }
+
     elastic.getAutocompleteSuggestion(req.query.search_term, place).then((resp) => {
         const ele = [];
-        for(let obj in resp.suggest) {
-            ele.concat(resp.suggest[obj][0].options.map(el => el.text));
+        for (let type in resp.suggest) {
+            resp.suggest[type][0].options.forEach(element => {
+                if (place) {
+                    if (element._source.state) {
+                        ele.push(`${searchTerm} en ${element.text}, ${element._source.state}`.toUpperCase())
+                    } else {
+                        ele.push(`${searchTerm} en ${element.text}`.toUpperCase())
+                    }
+                } else {
+                    ele.push(element.text.toUpperCase())
+                }
+            });
         }
         res.status(200).send(ele);
 

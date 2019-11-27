@@ -692,44 +692,25 @@ function asigDaySn(days) {
  * @param {string} term - name of the category to search
  * @param {string} place - name of the place to seach in cities and states (optional)
  */
-function getAutocompleteSuggestion(term, place) {
+function getAutocompleteSuggestion(prefix, place) {
     let request = {
-        "index": process.env.negocios,
+        "index": process.env.autocomplete,
         body: {
-            "_source": "",
-            "suggest": Object.assign(!place ?{
-                "categorie": {
-                    "prefix": term,
+            "suggest": {
+                "category": {
+                    "prefix": place || prefix,
                     "completion": {
-                        "field": "Appearances.Appearance.categoryname.suggest",
+                        "field": "term",
                         "skip_duplicates": true,
                         "fuzzy": {
                             "fuzziness": 1
+                        },
+                        "contexts": {
+                            "type": [place ? 'location' : 'category']
                         }
                     }
                 }
-            }: { 
-                "city": {
-                    "prefix": term,
-                    "completion": {
-                        "field": "Appearances.Appearance.categoryname.suggest",
-                        "skip_duplicates": true,
-                        "fuzzy": {
-                            "fuzziness": 1
-                        }
-                    }
-                },
-                "state": {
-                    "prefix": term,
-                    "completion": {
-                        "field": "Appearances.Appearance.categoryname.suggest",
-                        "skip_duplicates": true,
-                        "fuzzy": {
-                            "fuzziness": 1
-                        }
-                    }
-                }
-            })
+            }
         }
     }
     return client.getClient().search(request);
@@ -746,10 +727,13 @@ function getSuggestion(term) {
             "_source": "",
             "suggest": {
                 "services": {
-                    "text": term,
-                    "term": {
-                        "field": "productservices.prdserv.keyword",
-                        "max_edits": 2
+                    "prefix": place,
+                    "completion": {
+                        "field": "term.suggest",
+                        "skip_duplicates": true,
+                        "fuzzy": {
+                            "fuzziness": 1
+                        }
                     }
                 }
             }
