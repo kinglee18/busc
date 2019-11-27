@@ -10,6 +10,7 @@ module.exports = {
         ip: 'https://10.34.180.131:9200',
         negocios: 'businesslistingsacom',
         products: 'products',
-        blog: 'blog_rep'
+        blog: 'blog_rep',
+        autocomplete: 'autocomplete'
     }
 }

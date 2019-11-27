@@ -58,9 +58,6 @@
                   "spanish": {
                     "type": "text",
                     "analyzer": "spanish_analyzer"
-                  },
-                  "suggest": {
-                    "type": "completion"
                   }
                 }
               },
@@ -508,9 +505,6 @@
           "spanish": {
             "type": "text",
             "analyzer": "spanish_analyzer"
-          },
-          "suggest": {
-            "type": "completion"
           }
         },
         "analyzer": "spanish_analyzer"
@@ -620,8 +614,10 @@
       "statename": {
         "type": "text",
         "fields": {
-          "suggest": {
-            "type": "completion"
+          "keyword": {
+            "type": "text",
+            "analyzer": "keyword_analyzer",
+            "fielddata": true
           }
         }
       },

@@ -1,0 +1,23 @@
+{
+    "mappings": {
+        "properties": {
+            "term": {
+                "type": "text",
+                "fields": {
+                    "suggest": {
+                        "type": "completion"
+                    }
+                }
+            },
+            "type": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                }
+            }
+        }
+    }
+}
