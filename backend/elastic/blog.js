@@ -5,9 +5,9 @@ const client = require('./client');
  * 
  */
 exports.searchRelatedArticles = function (searchTerm, page = 0, pageSize = 10, category) {
-    let filter = [];
+    let must = [];
     if (category) {
-        filter = filter.concat([{
+        must = must.concat([{
             "nested": {
                 "path": "categories",
                 "query": {
@@ -22,7 +22,7 @@ exports.searchRelatedArticles = function (searchTerm, page = 0, pageSize = 10, c
         "function_score": {
             "query": {
                 "bool": {
-                    filter,
+                    must,
                     "should": searchTerm ? [
                         {
                             "multi_match": {
@@ -43,7 +43,11 @@ exports.searchRelatedArticles = function (searchTerm, page = 0, pageSize = 10, c
                     ] : []
                 }
             },
-            "random_score": {}
+            "functions": [
+                {
+                  "random_score": {}
+                }
+              ]
         }
     };
     console.log(JSON.stringify(query));
