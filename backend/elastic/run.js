@@ -727,13 +727,10 @@ function getSuggestion(term) {
             "_source": "",
             "suggest": {
                 "services": {
-                    "prefix": place,
-                    "completion": {
-                        "field": "term.suggest",
-                        "skip_duplicates": true,
-                        "fuzzy": {
-                            "fuzziness": 1
-                        }
+                    "text": term,
+                    "term": {
+                        "field": "productservices.prdserv.keyword",
+                        "max_edits": 2
                     }
                 }
             }
