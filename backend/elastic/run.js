@@ -99,7 +99,7 @@ function multisearch(page, searchTerm, filter, organicCodes) {
                         should: [
                             {
                                 "match_phrase": {
-                                    "bn.spanish": { "query": searchTerm, "_name": "match_phrase_bn", "boost": 5 }
+                                    "bn.keyword": { "query": searchTerm, "_name": "match_phrase_bn", "boost": 5 }
                                 }
                             },
                             {
@@ -113,7 +113,8 @@ function multisearch(page, searchTerm, filter, organicCodes) {
                                         "query": searchTerm,
                                         "operator": "and",
                                         "_name": "match_phrase_cat",
-                                        "boost": 4
+                                        "boost": 4,
+                                        "fuzziness": "1"
                                     }
                                 }
                             },
@@ -138,7 +139,7 @@ function multisearch(page, searchTerm, filter, organicCodes) {
                                 "multi_match": {
                                     "query": searchTerm,
                                     "type": "cross_fields",
-                                    "fields": ["productservices.prdserv.spanish", "Appearances.Appearance.categoryname.spanish" ],
+                                    "fields": ["productservices.prdserv.spanish", "Appearances.Appearance.categoryname.spanish"],
                                     "operator": "and"
                                 }
                             }
@@ -691,19 +692,21 @@ function asigDaySn(days) {
  * @param {string} term - name of the category to search
  * @param {string} place - name of the place to seach in cities and states (optional)
  */
-function getAutocompleteSuggestion(term, place) {
+function getAutocompleteSuggestion(prefix, place) {
     let request = {
-        "index": process.env.negocios,
+        "index": process.env.autocomplete,
         body: {
-            "_source": "",
             "suggest": {
-                "autocomplete": {
-                    "prefix": term,
+                "category": {
+                    "prefix": place || prefix,
                     "completion": {
-                        "field": "Appearances.Appearance.categoryname.suggest",
+                        "field": "term",
                         "skip_duplicates": true,
                         "fuzzy": {
                             "fuzziness": 1
+                        },
+                        "contexts": {
+                            "type": [place ? 'location' : 'category']
                         }
                     }
                 }

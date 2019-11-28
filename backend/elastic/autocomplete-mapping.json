@@ -1,0 +1,15 @@
+{
+    "mappings": {
+        "properties" : {
+            "term" : {
+                "type" : "completion",
+                "contexts": [
+                    { 
+                        "name": "type",
+                        "type": "category"
+                    }
+                ]
+            }
+        }
+    }
+}
