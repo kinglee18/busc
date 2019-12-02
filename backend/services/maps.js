@@ -13,7 +13,9 @@ exports.search = async function (address) {
         }
     });
     if (resp.data.status == 'OK') {
-        return parseAddress(resp.data.results[0])
+        if (resp.data.results[1])
+            return parseAddress(resp.data.results[1]);
+        return parseAddress(resp.data.results[0]);
     }
     console.error("Fallo al buscar ubicacion");
 }
@@ -35,21 +37,20 @@ function parseAddress(location) {
 
         else if (desc.types.includes('administrative_area_level_2') || desc.types.includes('administrative_area_level_3') || (desc.types.includes('locality'))) {
             if (name === 'mexico city' || name === 'ciudad de mexico')
-                address.state = 'mexico city';
+                address.physicalstate = name;
             else
-                address.city = name;
+                address.physicalcity = name;
         }
-        else if (desc.types.includes('country') && !address.state) {
-            address.state = 'mexico city';
+        else if (desc.types.includes('country') && !address.physicalstate) {
+            address.physicalstate = 'mexico';
         }
         else if (desc.types.includes('administrative_area_level_1')) {
-            address.state = name;
+            address.physicalstate = name;
         }
 
     }
-    address.city = cleanStateName(address.city);
-    address.statename = getSAStatename(address.state);
-    address.state = getAbrevWhere(address.state);
+    address.physicalcity = cleanStateName(address.physicalcity);
+    address.physicalstate = getSAStatename(address.physicalstate);
     return address;
 }
 
@@ -64,23 +65,6 @@ function cleanStateName(city) {
     }
     return city;
 }
-
-/**
- * 
- * @param {string} state - name of the state to be abbreviated 
- * @returns {string} - abbreviaated statename used for elasticsearch queries
- * @description transforms the name of the state provided by google maps
- *  into state name abbreviaated for bussiness statename field
- */
-function getAbrevWhere(state) {
-    for (let op of syn.data) {
-        if (op.valor == state) {
-            return op.simb;
-        }
-    }
-    return null;
-}
-
 
 function getSAStatename(state) {
     for (let op of syn.SAStatenames) {

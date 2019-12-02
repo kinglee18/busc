@@ -36,6 +36,52 @@ describe('Business services tests', () => {
             });
     });
 
+    it('should return physicalstate and physicalcity atributes in location object', (done) => {
+        request(app)
+            .get('/node')
+            .query({ searchTerm: 'dentista en 64000' })
+            .set('Content-Type', 'application/json')
+            .expect('Content-Type', /charset=utf-8/)
+            .expect(200, function (err, res) {
+                if (err) { return done(err); }
+                assert.typeOf(res.body.total, 'number');
+                assert.deepEqual(res.body.location, {
+                    "colony": "centro",
+                    "physicalcity": "monterrey",
+                    "physicalstate": "nuevo leon",
+                    "postal_code": "64000",
+                    "search_term": "dentista"
+                });
+                done();
+            });
+    });
 
+    it('search result witch searchTerm should be the same as the response using filters ', (done) => {
+        request(app)
+            .get('/node')
+            .query({ searchTerm: 'dentista en cdmx' })
+            .set('Content-Type', 'application/json')
+            .expect('Content-Type', /charset=utf-8/)
+            .expect(200, function (err, res) {
+                if (err) { return done(err); }
+                const total = res.body.total;
 
+                request(app)
+                    .get('/node')
+                    .query({ 
+                        searchTerm: res.body.location.search_term,
+                        physicalcity: res.body.location.physicalcity,
+                        physicalstate: res.body.location.physicalstate
+                     })
+                    .set('Content-Type', 'application/json')
+                    .expect('Content-Type', /charset=utf-8/)
+                    .expect(200, function (err, res) {
+                        if (err) { return done(err); }
+                        console.log(res.body.location);
+                        
+                        assert.equal(total, res.body.total);
+                        done();
+                    });
+            });
+    });
 });

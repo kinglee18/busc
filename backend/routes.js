@@ -57,8 +57,8 @@ routes.get('/node', (req, res) => {
                 if (json.location) {
                     responseObj.location = {
                         colony: json.location.colony,
-                        physicalcity: json.location.city,
-                        physicalstate: json.location.statename,
+                        physicalcity: json.location.physicalcity,
+                        physicalstate: json.location.physicalstate,
                         postal_code: json.location.postalCode,
                         search_term: json.newSearchTerm
                     }
