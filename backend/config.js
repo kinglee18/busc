@@ -9,7 +9,7 @@ module.exports = {
     test: {
         ip: 'https://10.34.180.131:9200',
         negocios: 'businesslistingsacom',
-        products: 'products',
+        products: 'claro_shop_rep',
         blog: 'blog_rep',
         autocomplete: 'autocomplete'
     }

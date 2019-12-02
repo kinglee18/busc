@@ -162,13 +162,14 @@ routes.get('/node/blog', (req, res) => {
  * @param {string} req.query.search_term - business, category or location or  product
  */
 routes.get('/node/claroshop', (req, res) => {
-    proceso.analisys(req.query.search_term).then((analisys) => {
-        products.searchRelatedProducts(req.query.page, claro.marcas, claro.ctg, claro.bn, analisys.price, claro.tx).then((resp) => {
-            res.status(200).send(resp);
-        }).catch(error => {
-            console.error(error);
-            res.status(500).send(error);
+    products.searchRelatedProducts(req.query.search_term, req.query.page).then((resp) => {
+        res.status(200).send({
+            total: resp.hits.total.value,
+            products: parseElasticElements(resp.hits.hits)
         });
+    }).catch(error => {
+        console.error(error);
+        res.status(500).send(error);
     });
 });
 
