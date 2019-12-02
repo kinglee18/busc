@@ -427,7 +427,7 @@ function getAddressFilter(location, coordinates) {
         if (location.physicalcity) {
             address.push({
                 "match": {
-                    "physicalcity.keyword": {
+                    "physicalcity.spanish": {
                         "query": location.physicalcity
                     }
                 }
@@ -436,7 +436,7 @@ function getAddressFilter(location, coordinates) {
         if (location.physicalstate) {
             address.push({
                 "match_phrase": {
-                    "physicalstate.keyword": {
+                    "physicalstate": {
                         "query": location.physicalstate,
                         analyzer: "states_analyzer"
                     }

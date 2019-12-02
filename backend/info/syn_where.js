@@ -2,7 +2,7 @@
 const SAStatenames = [
     {
         simb: 'mexico',
-        valor: 'estado de mexico'
+        valor: 'state of mexico'
     },
     {
         simb: 'distrifo federal',

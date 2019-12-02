@@ -36,6 +36,47 @@ describe('Business services tests', () => {
             });
     });
 
+    it('should return physicalstate and physicalcity atributes in location object', (done) => {
+        request(app)
+            .get('/node')
+            .query({ searchTerm: 'dentista en 64000' })
+            .set('Content-Type', 'application/json')
+            .expect('Content-Type', /charset=utf-8/)
+            .expect(200, function (err, res) {
+                if (err) { return done(err); }
+                assert.typeOf(res.body.total, 'number');
+                assert.deepEqual(res.body.location, {
+                    "colony": "centro",
+                    "physicalcity": "monterrey",
+                    "physicalstate": "nuevo leon",
+                    "postal_code": "64000",
+                    "search_term": "dentista"
+                });
+                done();
+            });
+    });
+
+    it('search result witch searchTerm should be the same as the response using filters ', (done) => {
+        request(app)
+            .get('/node')
+            .query({ searchTerm: 'dentista en 64000' })
+            .set('Content-Type', 'application/json')
+            .expect('Content-Type', /charset=utf-8/)
+            .expect(200, function (err, res) {
+                if (err) { return done(err); }
+                request(app)
+                    .get('/node')
+                    .query({ searchTerm: res.body.location.search_term })
+                    .set('Content-Type', 'application/json')
+                    .expect('Content-Type', /charset=utf-8/)
+                    .expect(200, function (err, res) {
+                        if (err) { return done(err); }
 
 
+
+                        done();
+
+                    });
+            });
+    });
 });

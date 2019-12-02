@@ -40,7 +40,7 @@ function parseAddress(location) {
                 address.physicalcity = name;
         }
         else if (desc.types.includes('country') && !address.physicalstate) {
-            address.physicalstate = 'mexico city';
+            address.physicalstate = 'mexico';
         }
         else if (desc.types.includes('administrative_area_level_1')) {
             address.physicalstate = name;
