@@ -13,7 +13,9 @@ exports.search = async function (address) {
         }
     });
     if (resp.data.status == 'OK') {
-        return parseAddress(resp.data.results[0])
+        if (resp.data.results[1])
+            return parseAddress(resp.data.results[1]);
+        return parseAddress(resp.data.results[0]);
     }
     console.error("Fallo al buscar ubicacion");
 }
