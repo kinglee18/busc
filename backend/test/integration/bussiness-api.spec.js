@@ -59,23 +59,28 @@ describe('Business services tests', () => {
     it('search result witch searchTerm should be the same as the response using filters ', (done) => {
         request(app)
             .get('/node')
-            .query({ searchTerm: 'dentista en 64000' })
+            .query({ searchTerm: 'dentista en cdmx' })
             .set('Content-Type', 'application/json')
             .expect('Content-Type', /charset=utf-8/)
             .expect(200, function (err, res) {
                 if (err) { return done(err); }
+                const total = res.body.total;
+
                 request(app)
                     .get('/node')
-                    .query({ searchTerm: res.body.location.search_term })
+                    .query({ 
+                        searchTerm: res.body.location.search_term,
+                        physicalcity: res.body.location.physicalcity,
+                        physicalstate: res.body.location.physicalstate
+                     })
                     .set('Content-Type', 'application/json')
                     .expect('Content-Type', /charset=utf-8/)
                     .expect(200, function (err, res) {
                         if (err) { return done(err); }
-
-
-
+                        console.log(res.body.location);
+                        
+                        assert.equal(total, res.body.total);
                         done();
-
                     });
             });
     });
