@@ -11,9 +11,7 @@ const client = require('./client');
  * @param {string[]} hrs.day - business schedule 
  * @param {string []} paymentTypes -  payment types of business
  * @param {object} address - business address in previous analisys
- * @param {string} address.city - 
  * @param {string} address.colony - 
- * @param {string} address.state - 
  * @param {string} address.physicalcity - 
  * @param {string} address.physicalstate - 
  * @param {object} coordinates - coordinates privided by the browser
@@ -426,24 +424,6 @@ function getAddressFilter(location, coordinates) {
                 }
             });
         }
-        if (location.city) {
-            address.push({
-                "match": {
-                    "Appearances.Appearance.city.spanish": {
-                        "query": location.city
-                    }
-                }
-            });
-        }
-        if (location.state) {
-            address.push({
-                "match_phrase": {
-                    "Appearances.Appearance.state.keyword": {
-                        "query": location.state
-                    }
-                }
-            });
-        }
         if (location.physicalcity) {
             address.push({
                 "match": {
@@ -457,7 +437,8 @@ function getAddressFilter(location, coordinates) {
             address.push({
                 "match_phrase": {
                     "physicalstate.keyword": {
-                        "query": location.physicalstate
+                        "query": location.physicalstate,
+                        analyzer: "states_analyzer"
                     }
                 }
             });
