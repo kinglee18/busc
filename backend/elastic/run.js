@@ -199,7 +199,7 @@ function sendRequest(page, request, sort, randomSorting, scoreSum = false) {
         searchType: 'dfs_query_then_fetch',
         "track_total_hits": true
     };
-    //console.log(JSON.stringify(requestBody));
+    console.log(JSON.stringify(requestBody));
     return client.getClient().search(requestBody);
 }
 
@@ -427,7 +427,7 @@ function getAddressFilter(location, coordinates) {
         if (location.physicalcity) {
             address.push({
                 "match": {
-                    "Appearances.Appearance.city.spanish": {
+                    "Appearances.Appearance.city.keyword": {
                         "query": location.physicalcity
                     }
                 }
