@@ -427,7 +427,7 @@ function getAddressFilter(location, coordinates) {
         if (location.physicalcity) {
             address.push({
                 "match": {
-                    "Appearances.Appearance.city.keyword": {
+                    "Appearances.Appearance.city.synonyms": {
                         "query": location.physicalcity
                     }
                 }
