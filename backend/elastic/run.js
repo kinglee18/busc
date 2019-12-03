@@ -435,10 +435,9 @@ function getAddressFilter(location, coordinates) {
         }
         if (location.physicalstate) {
             address.push({
-                "match_phrase": {
+                "match": {
                     "physicalstate": {
-                        "query": location.physicalstate,
-                        analyzer: "states_analyzer"
+                        "query": location.physicalstate
                     }
                 }
             });
