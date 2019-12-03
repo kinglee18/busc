@@ -49,7 +49,7 @@ function parseAddress(location) {
         }
 
     }
-    address.physicalcity = cleanStateName(address.physicalcity);
+    address.physicalcity = cleanCityName(address.physicalcity);
     address.physicalstate = getSAStatename(address.physicalstate);
     return address;
 }
@@ -59,7 +59,7 @@ function parseAddress(location) {
  * @param {string} city - name of the city to delete
  * @description - delete the name of the city which is the same as the state
  */
-function cleanStateName(city) {
+function cleanCityName(city) {
     for (let cityName of CITIES_TO_EXCLUDE.data) {
         if (city === cityName) return null;
     }
