@@ -597,6 +597,13 @@
     "index": {
       "analysis": {
         "filter": {
+          "cities_synonym": {
+            "type": "synonym",
+            "lenient": true,
+            "synonyms": [
+              "ciudad nezahualcoyotl => neza"
+            ]
+          },
           "states_synonym": {
             "type": "synonym",
             "lenient": true,
