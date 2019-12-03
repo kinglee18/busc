@@ -110,10 +110,10 @@
                   },
                   "synonyms": {
                     "type": "text",
-                    "analyzer": "spanish_analyzer"
+                    "analyzer": "states_analyzer"
                   }
                 },
-                "analyzer": "spanish_analyzer"
+                "analyzer": "states_analyzer"
               },
               "zip": {
                 "type": "keyword",
