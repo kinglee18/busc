@@ -284,73 +284,6 @@
           }
         }
       },
-      "destinationNetwork": {
-        "type": "text",
-        "fields": {
-          "keyword": {
-            "type": "keyword",
-            "ignore_above": 256
-          }
-        }
-      },
-      "features": {
-        "type": "nested",
-        "properties": {
-          "type": {
-            "properties": {
-              "feature": {
-                "properties": {
-                  "content": {
-                    "type": "text",
-                    "fields": {
-                      "keyword": {
-                        "type": "keyword",
-                        "ignore_above": 256
-                      }
-                    }
-                  },
-                  "imagen": {
-                    "type": "text",
-                    "fields": {
-                      "keyword": {
-                        "type": "keyword",
-                        "ignore_above": 256
-                      }
-                    }
-                  },
-                  "url": {
-                    "type": "text",
-                    "fields": {
-                      "keyword": {
-                        "type": "keyword",
-                        "ignore_above": 256
-                      }
-                    }
-                  },
-                  "value": {
-                    "type": "text",
-                    "fields": {
-                      "keyword": {
-                        "type": "keyword",
-                        "ignore_above": 256
-                      }
-                    }
-                  }
-                }
-              },
-              "name": {
-                "type": "text",
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
       "fridayClose": {
         "type": "date",
         "format": "HH:mm:ss"
@@ -452,10 +385,6 @@
       "listadoid": {
         "type": "long"
       },
-      "listadoversion": {
-        "type": "long",
-        "index": false
-      },
       "listingtype": {
         "type": "text"
       },
@@ -519,10 +448,10 @@
           },
           "spanish": {
             "type": "text",
-            "analyzer": "spanish_analyzer"
+            "analyzer": "states_analyzer"
           }
         },
-        "analyzer": "spanish_analyzer"
+        "analyzer": "states_analyzer"
       },
       "pin": {
         "type": "geo_point"
@@ -566,32 +495,6 @@
       "sourcelistadoid": {
         "type": "long",
         "index": false
-      },
-      "sponserKeywords": {
-        "type": "text",
-        "index": false
-      },
-      "sponserkeywords": {
-        "properties": {
-          "sponserkeyword": {
-            "type": "text",
-            "fields": {
-              "keyword": {
-                "type": "text",
-                "analyzer": "keyword_analyzer"
-              },
-              "spanish": {
-                "type": "text",
-                "analyzer": "spanish_analyzer"
-              },
-              "synonyms": {
-                "type": "text",
-                "analyzer": "spanish_analyzer"
-              }
-            },
-            "analyzer": "spanish_analyzer"
-          }
-        }
       },
       "state": {
         "type": "text",
@@ -776,7 +679,6 @@
               "saber",
               "sabes",
               "ser",
-              "sin",
               "solamente",
               "solo",
               "tener",
@@ -836,6 +738,8 @@
         "analyzer": {
           "states_analyzer": {
             "filter": [
+              "asciifolding_filter",
+              "lowercase",
               "states_synonym"
             ],
             "tokenizer": "standard"
@@ -867,14 +771,6 @@
               "custom_stems",
               "spanish_stemmer",
               "unique_filter"
-            ],
-            "tokenizer": "standard"
-          },
-          "autocomplete_analyzer": {
-            "filter": [
-              "asciifolding_filter",
-              "lowercase",
-              "autocomplete_filter"
             ],
             "tokenizer": "standard"
           }
