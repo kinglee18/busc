@@ -74,7 +74,7 @@
                   },
                   "synonyms": {
                     "type": "text",
-                    "analyzer": "spanish_analyzer"
+                    "analyzer": "cities_analyzer"
                   }
                 },
                 "analyzer": "spanish_analyzer"
@@ -743,6 +743,14 @@
           }
         },
         "analyzer": {
+          "cities_analyzer": {
+            "filter": [
+              "asciifolding_filter",
+              "lowercase",
+              "cities_synonym"
+            ],
+            "tokenizer": "standard"
+          },
           "states_analyzer": {
             "filter": [
               "asciifolding_filter",

@@ -14,6 +14,7 @@ const client = require('./client');
  * @param {string} address.colony - 
  * @param {string} address.physicalcity - 
  * @param {string} address.physicalstate - 
+ * @param {string} address.initials - 
  * @param {object} coordinates - coordinates privided by the browser
  * @param {string} coordinates.lat - latitude
  * @param {string} coordinates.lng - longitude
@@ -199,7 +200,7 @@ function sendRequest(page, request, sort, randomSorting, scoreSum = false) {
         searchType: 'dfs_query_then_fetch',
         "track_total_hits": true
     };
-    console.log(JSON.stringify(requestBody));
+    //console.log(JSON.stringify(requestBody));
     return client.getClient().search(requestBody);
 }
 
@@ -437,7 +438,7 @@ function getAddressFilter(location, coordinates) {
             address.push({
                 "match": {
                     "Appearances.Appearance.state": {
-                        "query": location.physicalstate, 
+                        "query": location.initials || location.physicalstate, 
                         analyzer: "states_analyzer"
                     }
                 }

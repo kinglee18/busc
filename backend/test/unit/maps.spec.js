@@ -7,11 +7,13 @@ describe('Google maps functionality', function () {
 
     it('should return physicalstate name depending on physicalcity in object', function (done) {
         const addresses = [
-            { input: 'coyoacan', physicalstate: 'distrito federal', physicalcity: 'coyoacan' },
-            { input: 'gam', physicalstate: 'distrito federal', physicalcity: 'gustavo a. madero' },
-            { input: 'neza', physicalstate: 'mexico', physicalcity: 'ciudad nezahualcoyotl' },
-            { input: 'oaxtepec', physicalstate: 'morelos', physicalcity: 'oaxtepec' },
-            { input: 'cuernavaca', physicalstate: 'morelos', physicalcity: 'cuernavaca' }
+            { input: 'coyoacan', physicalstate: 'DISTRITO FEDERAL', physicalcity: 'COYOACAN' },
+            { input: 'GUSTAVO A MADERO', physicalstate: 'DISTRITO FEDERAL', physicalcity: 'GUSTAVO A MADERO' },
+            { input: 'nezahualcoyotl', physicalstate: 'MEXICO', physicalcity: 'NEZAHUALCOYOTL' },
+            { input: 'oaxtepec', physicalstate: 'MORELOS', physicalcity: 'OAXTEPEC' },
+            { input: 'cuernavaca', physicalstate: 'MORELOS', physicalcity: 'CUERNAVACA' },
+            { input: '04400', physicalstate: 'DISTRITO FEDERAL', physicalcity: 'COYOACAN' }
+
 
         ];
         for (let address of addresses) {

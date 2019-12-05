@@ -46,9 +46,8 @@ describe('Business services tests', () => {
                 if (err) { return done(err); }
                 assert.typeOf(res.body.total, 'number');
                 assert.deepEqual(res.body.location, {
-                    "colony": "centro",
-                    "physicalcity": "monterrey",
-                    "physicalstate": "nuevo leon",
+                    "physicalcity": "MONTERREY",
+                    "physicalstate": "NUEVO LEON",
                     "postal_code": "64000",
                     "search_term": "dentista"
                 });

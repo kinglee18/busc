@@ -11,6 +11,8 @@ module.exports = {
         negocios: 'businesslistingsacom',
         products: 'claro_shop_rep',
         blog: 'blog_rep',
-        autocomplete: 'autocomplete'
+        autocomplete: 'autocomplete',
+        mexobjectsdefinition: "mexobjectsdefinition",
+        locations: "locations"
     }
 }

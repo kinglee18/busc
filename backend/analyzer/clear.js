@@ -1,11 +1,9 @@
 const accents = require('remove-accents');
-const syn_where = require('../info/syn_where');
 const sw = require('stopword')
 
 exports.cls = function(tx) {
     let promesa = new Promise((resolve,reject) => {
         tx = letters(tx);
-        tx = synonyms_where(tx);
         resolve(tx)
     })
 
@@ -36,21 +34,6 @@ function letters(texto) {
     return palabras.join(' ');
 }
 
-function synonyms_where(tx) {
-    let palabras = tx.split(' ');
-    for(let syn of syn_where.data) {
-        let reg = new RegExp("\\b"+syn.simb+"\\b");
-        let pos = tx.match(reg);
-        if(pos) {
-            for(let p in palabras) {
-                if(palabras[p] == syn.simb) palabras[p] = syn.valor;
-            }
-        }
-
-    }
-
-    return palabras.join(' ');
-}
 
 
 exports.clearTexto = function(tx) {
