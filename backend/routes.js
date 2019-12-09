@@ -31,6 +31,7 @@ routes.get('/node', (req, res) => {
                     req.query.page,
                     json.newSearchTerm,
                     req.query.organic ? organicCodes : undefined,
+                    req.query.category,
                     json.schedule,
                     json.payments,
                     json.location || address,

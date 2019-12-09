@@ -22,7 +22,7 @@ const client = require('./client');
  * 
  * @return {Promise<>}.
  */
-function searchBusiness(page = 0, searchTerm, organicCodes, hrs, paymentTypes, address, coordinates) {
+function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, paymentTypes, address, coordinates) {
 
     const SCORE_AND_POINTS_SORTING = ["_score", { "points": { "order": "desc" } }].concat(alphabeticalOrder());
     let should = [], filter = [];
@@ -31,7 +31,8 @@ function searchBusiness(page = 0, searchTerm, organicCodes, hrs, paymentTypes, a
             const scheduleQuery = getScheduleQuery(hrs); */
     filter = filter.concat(
         getAddressFilter(address, coordinates),
-        organicCodes ? [{ match: { listingtype: organicCodes.join(' ') } }] : []
+        organicCodes ? [{ match: { listingtype: organicCodes.join(' ') } }] : [],        
+        category ? [{ match: { "categoryname_full_text": category} }] : [],        
     );
     searchTerm = stopPhrases(searchTerm);
 
@@ -48,26 +49,7 @@ function searchBusiness(page = 0, searchTerm, organicCodes, hrs, paymentTypes, a
                     "bool": {
                         "must": {
                             "bool": {
-                                should: should.concat([
-                                    {
-                                        "match": {
-                                            "bn.spanish": {
-                                                "query": searchTerm,
-                                                "_name": "match_bn",
-                                                "boost": 0
-                                            }
-                                        }
-                                    },
-                                    {
-                                        "match_phrase": {
-                                            "productservices.prdserv.spanish": {
-                                                "query": searchTerm,
-                                                "_name": "match_phrase_prdserv_key",
-                                                "boost": 0
-                                            }
-                                        }
-                                    }
-                                ])
+                                should
                             }
                         },
                         filter
