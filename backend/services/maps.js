@@ -14,8 +14,8 @@ exports.search = async function (address) {
                                 "query": address,
                                 "fields": [
                                     "state.spanish^8",
-                                    "city",
-                                    "colony",
+                                    "city.spanish",
+                                    "colony.spanish",
                                     "zc",
                                     "statename.keyword"
                                 ],
