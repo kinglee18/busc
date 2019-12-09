@@ -304,7 +304,8 @@ function getRelatedCategories(searchTerm) {
                         "order": "desc"
                     }
                 }
-            ]
+            ],
+            size: 20
         }
     }
     return client.getClient().search(body);

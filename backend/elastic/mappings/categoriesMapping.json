@@ -54,6 +54,21 @@
           "asciifolding_filter": {
             "type": "asciifolding",
             "preserve_original": "true"
+          },
+          "custom_stems" : {
+            "type" : "stemmer_override",
+            "rules" : [
+              "salas => sala",
+              "sala => sala",
+              "tacos => taco",
+              "taco => taco",
+              "billares => billar",
+              "billar => billar",
+              "gas => gas",
+              "gasas => gasa",
+              "gasa => gasa",
+              "taxis => taxi"
+            ]
           }
         },
         "analyzer": {
@@ -63,6 +78,7 @@
               "asciifolding_filter",
               "lowercase",
               "spanish_stop_filter",
+              "custom_stems",
               "spanish_stemmer"
             ],
             "tokenizer": "standard"
@@ -72,6 +88,7 @@
               "apostrophe",
               "asciifolding_filter",
               "lowercase",
+              "custom_stems",
               "spanish_stemmer"
             ],
             "tokenizer": "keyword"
