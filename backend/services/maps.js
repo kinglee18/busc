@@ -7,24 +7,35 @@ exports.search = async function (address) {
         body: {
             "size": 1,
             "query": {
-                "bool": {
-                    "should": [
+                "boosting": {
+                  "negative_boost": 0.2,
+                  "negative": {
+                    "exists": {
+                      "field": "colony"
+                    }
+                  },
+                  "positive": {
+                    "bool": {
+                      "should": [
                         {
-                            "multi_match": {
-                                "query": address,
-                                "fields": [
-                                    "state.spanish^8",
-                                    "city.spanish",
-                                    "colony.spanish",
-                                    "zc",
-                                    "statename.keyword"
-                                ],
-                                "type": "cross_fields"
-                            }
+                          "multi_match": {
+                            "query": address,
+                            "fields": [
+                              "state.spanish^8",
+                              "city.spanish",
+                              "colony.spanish",
+                              "colony",
+                              "zc",
+                              "statename.keyword"
+                            ],
+                            "type": "cross_fields"
+                          }
                         }
-                    ]
+                      ]
+                    }
+                  }
                 }
-            }
+              }
         }
     };
     const request = await client.getClient().search(requestBody);
