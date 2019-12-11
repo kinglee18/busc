@@ -31,7 +31,7 @@ routes.get('/node', (req, res) => {
                     req.query.page,
                     json.newSearchTerm,
                     req.query.organic ? organicCodes : undefined,
-                    req.query.category,
+                    req.query.category_id,
                     json.schedule,
                     json.payments,
                     json.location || address,
@@ -49,7 +49,10 @@ routes.get('/node', (req, res) => {
                         filters: {
                             physicalcity: businessInfo.aggregations.physicalcity.buckets.map(e => e.key),
                             colony: businessInfo.aggregations.colony.buckets.map(e => e.key),
-                            category: businessInfo.aggregations.category.buckets.map(e => e.key),
+                            categories: businessInfo.aggregations.categoryIds.buckets.map((e, index) => { return {
+                                 "id": e.key,
+                                 "name": e.categoryNames.buckets[0].key
+                            } }),
                             state: businessInfo.aggregations.state.buckets.map(e => e.key)
                         }
                     };

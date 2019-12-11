@@ -46,8 +46,7 @@
                 "analyzer": "spanish_analyzer"
               },
               "categoryid": {
-                "type": "long",
-                "index": false
+                "type": "long"
               },
               "categoryname": {
                 "type": "text",
