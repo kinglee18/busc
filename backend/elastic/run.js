@@ -187,7 +187,7 @@ function sendRequest(page, request, sort, randomSorting, scoreSum = false) {
         searchType: 'dfs_query_then_fetch',
         "track_total_hits": true
     };
-    //console.log(JSON.stringify(requestBody));
+    console.log(JSON.stringify(requestBody));
     return client.getClient().search(requestBody);
 }
 
@@ -218,7 +218,6 @@ function categoryQuery(categories, matchType) {
     var boost = categories.length + 1;
     return categories.map(category => {
         boost--;
-        if (category.score) {
             return JSON.parse(`{
                 "constant_score":{
                     "filter": {
@@ -226,14 +225,9 @@ function categoryQuery(categories, matchType) {
                             "categoryname_full_text": { "query": "${category.category}", "_name": "match_${category.category}" }
                         }
                     },
-                        "boost": "${category.score}"
+                        "boost": "${category.score || boost}"
             }}`);
-        }
-        return JSON.parse(`{
-            "${matchType}": {
-                "categoryname_full_text": { "query": "${category.category}", "_name": "match_${category.category}", "boost":"${boost}" }
-            }
-        }`);
+        
     });
 }
 
