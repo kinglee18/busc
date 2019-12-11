@@ -32,7 +32,7 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
     filter = filter.concat(
         getAddressFilter(address, coordinates),
         organicCodes ? [{ match: { listingtype: organicCodes.join(' ') } }] : [],        
-        category ? [{ match: { "categoryname_full_text": category} }] : [],        
+        category ? [{ match: { "Appearances.Appearance.categoryid": category} }] : [],        
     );
     searchTerm = stopPhrases(searchTerm);
 
@@ -169,8 +169,13 @@ function sendRequest(page, request, sort, randomSorting, scoreSum = false) {
                     "colony": {
                         "terms": { "field": "colony.keyword", "size": 10000, "order": { "_key": "asc" } }
                     },
-                    "category": {
-                        "terms": { "field": "categoryname_full_text", "size": 10000, "order": { "_key": "asc" } }
+                    "categoryIds": {
+                        "terms": { "field": "Appearances.Appearance.categoryid", "size": 10000, "order": { "_key": "asc" } },
+                        "aggs": {
+                            "categoryNames": {
+                                "terms": { "field": "categoryname_full_text", "size": 10000, "order": { "_key": "asc" } }
+                            }
+                        }
                     },
                     "state": {
                         "terms": { "field": "statename.keyword", "size": 10000, "order": { "_key": "asc" } }
