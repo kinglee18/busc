@@ -98,13 +98,25 @@
               "zacatecas  => zac",
               "distrito federal,ciudad de mexico,mexico city, cdmx  => df"
             ]
+          },
+          "stop_words_filter" : {
+            "type" : "stop",
+            "stopwords" : [
+             "el",
+             "la",
+             "los",
+             "las",
+             "de",
+             "en"
+            ]
           }
         },
         "analyzer": {
           "spanish_analyzer": {
             "filter": [
               "asciifolding_filter",
-              "lowercase"
+              "lowercase",
+              "stop_words_filter"
             ],
             "tokenizer": "whitespace"
           },

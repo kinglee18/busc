@@ -28,30 +28,16 @@ exports.search = async function (address) {
                   "multi_match": {
                     "query": address,
                     "fields": [
-                      "state.spanish^8",
+                      "city^2",
                       "city.spanish",
                       "colony.spanish",
                       "colony",
                       "zc",
+                      "state.spanish^8",
+                      "statename^3",
                       "statename.keyword"
                     ],
-                    "type": "phrase"
-                  }
-                },
-                {
-                  "multi_match": {
-                    "query": address,
-                    "fields": [
-                      "city^2",
-                      "statename^3"
-                    ],
-                    "type": "phrase"
-                  }
-                },
-                {
-                  "multi_match": {
-                    query: address,
-                    "fields": ["colony", "colony.spanish"]
+                    "operator": "and"
                   }
                 }
               ]
