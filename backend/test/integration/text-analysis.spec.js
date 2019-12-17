@@ -32,11 +32,27 @@ describe('--------------', () => {
             }
         },
         {
+            input: "hotel en tlalpan centro", output: {
+                search_term: "hotel",
+                physicalstate: 'DISTRITO FEDERAL',
+                "physicalcity": "TLALPAN",
+                colony: "TLALPAN CENTRO", "postal_code": "14000"
+            }
+        },
+        {
             input: "hotel en peña pobre", output: {
                 search_term: "hotel",
                 physicalstate: 'DISTRITO FEDERAL',
                 "physicalcity": "TLALPAN",
                 colony: "PEÑA POBRE", "postal_code": "14060"
+            }
+        },
+        {
+            input: "hotel en 04400", output: {
+                search_term: "hotel",
+                physicalstate: 'DISTRITO FEDERAL',
+                "physicalcity": "COYOACAN",
+                "postal_code": "04400"
             }
         }
     ];
