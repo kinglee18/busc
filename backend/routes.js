@@ -37,7 +37,7 @@ routes.get('/node', (req, res) => {
                     json.location || address,
                     coordinates
                 ) : null,
-                elastic.getSuggestion(req.query.searchTerm)]
+                elastic.getSuggestion(json.newSearchTerm)]
             ).then((response) => {
                 const businessInfo = response[0];
                 const textSuggest = response[1];

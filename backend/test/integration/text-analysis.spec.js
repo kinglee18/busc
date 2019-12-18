@@ -54,7 +54,14 @@ describe('--------------', () => {
                 "physicalcity": "COYOACAN",
                 "postal_code": "04400"
             }
-        }
+        },
+        { input: "hotel DF", output: { search_term: "hotel", physicalstate: 'DISTRITO FEDERAL' } },
+        { input: "hotel morelos", output: { search_term: "hotel", physicalstate: 'MORELOS' } },
+        { input: "hotel oaxaca", output: { search_term: "hotel", physicalstate: 'OAXACA' } },
+        { input: "hotel mexico", output: { search_term: "hotel", physicalstate: 'MEXICO' } },
+        { input: "hotel san luis potosi", output: { search_term: "hotel", physicalstate: 'SAN LUIS POTOSI' } },
+        { input: "hotel jalisco", output: { search_term: "hotel", physicalstate: 'GUADALAJARA', physicalstate: "JALISCO" } }
+
     ];
     for (var i of tests) {
         makeTest(i);

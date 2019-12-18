@@ -2,26 +2,36 @@ const maps = require('../services/maps');
 const cls = require('./clear');
 const gram = require('../info/gramatica');
 
-
-exports.where = function (initText) {
+/**
+ * @param {string} searchTerm 
+ */
+exports.where = function (searchTerm) {
 
     return new Promise((resolve, reject) => {
-        let nv = findPrepLug(initText);
-        if (nv.lug) {
-            maps.search(nv.lug).then((address) => {
-                resolve({
-                    address,
-                    newSearchTerm: address ? nv.texto : initText
-                })
-            })
-        }
-        else {
-            resolve({
-                newSearchTerm: initText
-            });
-        }
-
+        let nv = findPrepLug(searchTerm);
+        maps.search(nv.place,  searchTerm).then((address) => {
+            if (!nv.place){
+                resolve({ address, newSearchTerm: extractPlace(address, searchTerm) })
+            }
+            resolve({ address, newSearchTerm: address ? nv.texto : searchTerm })
+        });
     });
+}
+/**
+ * 
+ * @param {object} place 
+ * @param {string} searchTerm 
+ */
+function extractPlace(place, searchTerm){
+    for( let term in place)
+    {   
+        if(place[term])
+        {
+            searchTerm = searchTerm.toLowerCase().replace(place[term].toLowerCase(), " ");
+
+        }
+    }
+    return searchTerm = searchTerm.replace(/\s+/g, " ").trim();
 }
 
 function sust(a, b) {
@@ -57,6 +67,6 @@ function findPrepLug(tx) {
 
     return {
         texto: texto,
-        lug: lug
+        place: lug
     };
 }
