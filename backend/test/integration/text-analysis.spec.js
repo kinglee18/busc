@@ -10,7 +10,7 @@ describe('--------------', () => {
     });
 
     const tests = [
-        { input: "hotel en DF", output: { search_term: "hotel", physicalstate: 'DISTRITO FEDERAL' } },
+        { input: "hotel EN DF", output: { search_term: "hotel", physicalstate: 'DISTRITO FEDERAL' } },
         { input: "hotel en morelos", output: { search_term: "hotel", physicalstate: 'MORELOS' } },
         { input: "hotel en oaxaca", output: { search_term: "hotel", physicalstate: 'OAXACA' } },
         { input: "hotel en mexico", output: { search_term: "hotel", physicalstate: 'MEXICO' } },
