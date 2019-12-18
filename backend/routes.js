@@ -25,7 +25,7 @@ routes.get('/node', (req, res) => {
     const coordinates = req.query.lat && req.query.lng ? { lat: parseFloat(req.query.lat), lng: parseFloat(req.query.lng) } : undefined;
     const organicCodes = ['BRO', 'BRP', 'DIA', 'ORO', 'PIP', 'PLA', 'SPN'];
     if (validation.valid) {
-        proceso.analisys(req.query.searchTerm).then((json) => {
+        proceso.analisys(req.query.searchTerm.toLowerCase()).then((json) => {
             Promise.all([
                 showBusiness ? elastic.searchBusiness(
                     req.query.page,
@@ -37,7 +37,7 @@ routes.get('/node', (req, res) => {
                     json.location || address,
                     coordinates
                 ) : null,
-                elastic.getSuggestion(req.query.searchTerm)]
+                elastic.getSuggestion(json.newSearchTerm)]
             ).then((response) => {
                 const businessInfo = response[0];
                 const textSuggest = response[1];
