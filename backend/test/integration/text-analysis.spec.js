@@ -60,7 +60,9 @@ describe('--------------', () => {
         { input: "hotel oaxaca", output: { search_term: "hotel", physicalstate: 'OAXACA' } },
         { input: "hotel mexico", output: { search_term: "hotel", physicalstate: 'MEXICO' } },
         { input: "hotel san luis potosi", output: { search_term: "hotel", physicalstate: 'SAN LUIS POTOSI' } },
-        { input: "hotel jalisco", output: { search_term: "hotel", physicalstate: 'GUADALAJARA', physicalstate: "JALISCO" } }
+        { input: "hotel jalisco", output: { search_term: "hotel", physicalstate: 'GUADALAJARA', physicalstate: "JALISCO" } },
+        { input: "hotel en cuautla morelos", output:  { "physicalstate": "MORELOS", "physicalcity": "CUAUTLA", "search_term": "hotel" } },
+        { input: "hotel cuautla morelos", output:  { "physicalstate": "MORELOS", "physicalcity": "CUAUTLA", "search_term": "hotel" } }
 
     ];
     for (var i of tests) {
@@ -78,7 +80,8 @@ describe('--------------', () => {
                 })
                 .then(response => {
                     assert.deepEqual(response.body.location, opc.output);
-                })
+ 
+                });
         });
     }
 });
