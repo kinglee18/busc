@@ -54,11 +54,8 @@ exports.search = async function (address, text) {
               "multi_match": {
                 "query": text,
                 "fields": [
-                  "city^2",
                   "city.spanish",
                   "zc",
-                  "colony.spanish",
-                  "colony",
                   "state.spanish^8",
                   "statename^3",
                   "statename.keyword"
