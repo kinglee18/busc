@@ -25,10 +25,8 @@ exports.where = function (searchTerm) {
 function extractPlace(place, searchTerm){
     for( let term in place)
     {   
-        if(place[term])
-        {
+        if(place[term]){
             searchTerm = searchTerm.toLowerCase().replace(place[term].toLowerCase(), " ");
-
         }
     }
     return searchTerm = searchTerm.replace(/\s+/g, " ").trim();

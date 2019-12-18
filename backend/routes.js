@@ -25,7 +25,7 @@ routes.get('/node', (req, res) => {
     const coordinates = req.query.lat && req.query.lng ? { lat: parseFloat(req.query.lat), lng: parseFloat(req.query.lng) } : undefined;
     const organicCodes = ['BRO', 'BRP', 'DIA', 'ORO', 'PIP', 'PLA', 'SPN'];
     if (validation.valid) {
-        proceso.analisys(req.query.searchTerm).then((json) => {
+        proceso.analisys(req.query.searchTerm.toLowerCase()).then((json) => {
             Promise.all([
                 showBusiness ? elastic.searchBusiness(
                     req.query.page,
