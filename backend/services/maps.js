@@ -3,12 +3,12 @@ const client = require('../elastic/client');
 
 exports.search = async function (address, text) {
   let body = {};
-  if (address){ 
+  if (address) {
     body = {
       "size": 1,
       "query": {
         "boosting": {
-          "negative_boost": 0.4,
+          "negative_boost": 0.5,
           "negative": {
             "bool": {
               "should": [
@@ -37,6 +37,18 @@ exports.search = async function (address, text) {
                     ],
                     "operator": "and"
                   }
+                },
+                {
+                  "multi_match": {
+                    "query": address,
+                    "fields": [
+                      "statename",
+                      "city",
+                      "city.spanish"
+                    ],
+                    "type": "cross_fields",
+                    "operator": "and"
+                  }
                 }
               ]
             }
@@ -59,8 +71,21 @@ exports.search = async function (address, text) {
                   "state.spanish^8",
                   "statename^3",
                   "statename.keyword"
-                ], 
+                ],
                 "minimum_should_match": "90%"
+              }
+            },
+            {
+              "multi_match": {
+                "query": text,
+                "fields": [
+                  "statename^2",
+                  "city",
+                  "city.spanish"
+                ],
+                "type": "cross_fields",
+                "minimum_should_match": "90%"
+
               }
             }
           ]
@@ -68,7 +93,7 @@ exports.search = async function (address, text) {
       }
     }
   }
-  
+
   const requestBody = {
     index: process.env.locations,
     body
