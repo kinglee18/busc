@@ -62,8 +62,9 @@ describe('--------------', () => {
         { input: "hotel san luis potosi", output: { search_term: "hotel", physicalstate: 'SAN LUIS POTOSI' } },
         { input: "hotel jalisco", output: { search_term: "hotel", physicalstate: 'GUADALAJARA', physicalstate: "JALISCO" } },
         { input: "hotel en cuautla morelos", output:  { "physicalstate": "MORELOS", "physicalcity": "CUAUTLA", "search_term": "hotel" } },
-        { input: "hotel cuautla morelos", output:  { "physicalstate": "MORELOS", "physicalcity": "CUAUTLA", "search_term": "hotel" } }
-
+        { input: "hotel cuautla morelos", output:  { "physicalstate": "MORELOS", "physicalcity": "CUAUTLA", "search_term": "hotel" } },
+        { input: "universidad simon bolivar", output:  { "search_term": "universidad simon bolivar" } },
+        { input: "farmacias guadalajara", output:  { "search_term": "farmacias guadalajara" } }
     ];
     for (var i of tests) {
         makeTest(i);

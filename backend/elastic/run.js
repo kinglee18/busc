@@ -462,6 +462,26 @@ function businessByBrand(brandname) {
 
 
 /**
+ * @param {string} term - name of the business
+ * @description Returns -------
+ */
+function getMeaningfulTerm(term) {
+    const body = {
+        "index": process.env.meaningfulTerms,
+        "size": 0,
+        "body": {
+            "query": {
+                "match": {
+                    "term.keyword": term
+                }
+            }
+        }
+    }
+    return client.getClient().search(body);
+}
+
+
+/**
  * @param {string} id - if of the business
  * @description Returns a business related by id
  */
@@ -708,4 +728,4 @@ function getSuggestion(term) {
     return client.getClient().search(request);
 }
 
-module.exports = { getAddressFilter, searchBusiness, businessByBrand, businessByID, getSuggestion, getAutocompleteSuggestion }
+module.exports = { getAddressFilter, searchBusiness, businessByBrand, businessByID, getSuggestion, getAutocompleteSuggestion , getMeaningfulTerm}

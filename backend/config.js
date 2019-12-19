@@ -14,6 +14,7 @@ module.exports = {
         autocomplete: 'autocomplete',
         mexobjectsdefinition: "mexobjectsdefinition",
         locations: "locations",
+        meaningfulTerms: "meaningful_terms",
         elasticAuth: "dev_user:q_bMlQtT"
     }
 }
