@@ -1,6 +1,7 @@
 const maps = require('../services/maps');
 const cls = require('./clear');
 const gram = require('../info/gramatica');
+const businessApi = require('../elastic/run.js')
 
 /**
  * @param {string} searchTerm 
@@ -9,12 +10,28 @@ exports.where = function (searchTerm) {
 
     return new Promise((resolve, reject) => {
         let nv = findPrepLug(searchTerm);
-        maps.search(nv.place,  searchTerm).then((address) => {
-            if (!nv.place){
-                resolve({ address, newSearchTerm: extractPlace(address, searchTerm) })
-            }
-            resolve({ address, newSearchTerm: address ? nv.texto : searchTerm })
-        });
+        if (!nv.place) {
+
+
+            businessApi.getMeaningfulTerm(searchTerm).then(response => {
+                if (response.hits.total.value >= 1) {
+                    resolve({ address: undefined, newSearchTerm: searchTerm })
+                } else {
+                    maps.search(nv.place, searchTerm).then((address) => {
+
+                        resolve({ address, newSearchTerm: extractPlace(address, searchTerm) })
+                    });
+
+                }
+            });
+
+
+
+        } else {
+            maps.search(nv.place, searchTerm).then((address) => {
+                resolve({ address, newSearchTerm: address ? nv.texto : searchTerm })
+            });
+        }
     });
 }
 /**
@@ -22,10 +39,9 @@ exports.where = function (searchTerm) {
  * @param {object} place 
  * @param {string} searchTerm 
  */
-function extractPlace(place, searchTerm){
-    for( let term in place)
-    {   
-        if(place[term]){
+function extractPlace(place, searchTerm) {
+    for (let term in place) {
+        if (place[term]) {
             searchTerm = searchTerm.toLowerCase().replace(place[term].toLowerCase(), " ");
         }
     }
