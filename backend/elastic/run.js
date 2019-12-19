@@ -94,7 +94,6 @@ function multisearch(page, searchTerm, filter, organicCodes) {
                                         "query": searchTerm,
                                         "operator": "and",
                                         "_name": "match_phrase_cat",
-                                        "boost": 4,
                                         "fuzziness": "1"
                                     }
                                 }
@@ -104,23 +103,29 @@ function multisearch(page, searchTerm, filter, organicCodes) {
                                     "productservices.prdserv.spanish": {
                                         "query": searchTerm,
                                         "operator": "and",
-                                        "_name": "match_phrase_prdserv", "boost": 2
-                                    }
-                                }
-                            },
-                            {
-                                "match": {
-                                    "productservices.prdserv.keyword": {
-                                        "query": searchTerm,
-                                        "_name": "match_phrase_prdserv", "boost": 5
+                                        "_name": "match_phrase_prdserv"
                                     }
                                 }
                             },
                             {
                                 "multi_match": {
                                     "query": searchTerm,
+                                    "fields": [
+                                        "productservices.prdserv.keyword",
+                                        "brands.brandname.keyword"
+                                    ]
+                                }
+                            },
+                            {
+                                "multi_match": {
+                                    "query": searchTerm,
                                     "type": "cross_fields",
-                                    "fields": ["productservices.prdserv.spanish", "Appearances.Appearance.categoryname.spanish"],
+                                    "fields": [
+                                        "productservices.prdserv.spanish",
+                                        "Appearances.Appearance.categoryname.spanish",
+                                        "bn",
+                                        "bn.spanish"
+                                    ],
                                     "operator": "and"
                                 }
                             }
