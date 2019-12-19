@@ -13,6 +13,7 @@ module.exports = {
         blog: 'blog_rep',
         autocomplete: 'autocomplete',
         mexobjectsdefinition: "mexobjectsdefinition",
-        locations: "locations"
+        locations: "locations",
+        elasticAuth: "dev_user:q_bMlQtT"
     }
 }
