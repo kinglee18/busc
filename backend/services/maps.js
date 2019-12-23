@@ -66,7 +66,6 @@ exports.search = async function (address, text) {
               "multi_match": {
                 "query": text,
                 "fields": [
-                  "city.spanish",
                   "zc",
                   "state.spanish^8",
                   "statename^3",
@@ -84,8 +83,7 @@ exports.search = async function (address, text) {
                   "city.spanish"
                 ],
                 "type": "cross_fields",
-                "minimum_should_match": "90%"
-
+                "minimum_should_match": 2
               }
             }
           ]
