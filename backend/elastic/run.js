@@ -31,8 +31,8 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
             const scheduleQuery = getScheduleQuery(hrs); */
     filter = filter.concat(
         getAddressFilter(address, coordinates),
-        organicCodes ? [{ match: { listingtype: organicCodes.join(' ') } }] : [],        
-        category ? [{ match: { "Appearances.Appearance.categoryid": category} }] : [],        
+        organicCodes ? [{ match: { listingtype: organicCodes.join(' ') } }] : [],
+        category ? [{ match: { "Appearances.Appearance.categoryid": category } }] : [],
     );
     searchTerm = stopPhrases(searchTerm);
 
@@ -223,7 +223,7 @@ function categoryQuery(categories, matchType) {
     var boost = categories.length + 1;
     return categories.map(category => {
         boost--;
-            return JSON.parse(`{
+        return JSON.parse(`{
                 "constant_score":{
                     "filter": {
                         "match": {
@@ -232,7 +232,7 @@ function categoryQuery(categories, matchType) {
                     },
                         "boost": "${category.score || boost}"
             }}`);
-        
+
     });
 }
 
@@ -318,17 +318,18 @@ function alphabeticalOrder() {
             "order": "asc"
         }
     }, {
-        "physicalstate.keyword": {
+        "Appearances.Appearance.state.keyword": {
             "order": "asc"
         },
     }, {
+        "Appearances.Appearance.city.keyword": {
+            "order": "asc"
+        }
+    },
+    {
         "colony.keyword": {
             "order": "asc"
         },
-    }, {
-        "physicalcity.keyword": {
-            "order": "asc"
-        }
     }];
 }
 
@@ -414,7 +415,7 @@ function getAddressFilter(location, coordinates) {
         }
         if (location.physicalcity) {
             address.push({
-                "match": {
+                "match_phrase": {
                     "Appearances.Appearance.city.synonyms": {
                         "query": location.physicalcity
                     }
@@ -425,7 +426,7 @@ function getAddressFilter(location, coordinates) {
             address.push({
                 "match": {
                     "Appearances.Appearance.state": {
-                        "query": location.initials || location.physicalstate, 
+                        "query": location.initials || location.physicalstate,
                         analyzer: "states_analyzer"
                     }
                 }
@@ -728,4 +729,4 @@ function getSuggestion(term) {
     return client.getClient().search(request);
 }
 
-module.exports = { getAddressFilter, searchBusiness, businessByBrand, businessByID, getSuggestion, getAutocompleteSuggestion , getMeaningfulTerm}
+module.exports = { getAddressFilter, searchBusiness, businessByBrand, businessByID, getSuggestion, getAutocompleteSuggestion, getMeaningfulTerm }

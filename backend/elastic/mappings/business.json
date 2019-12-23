@@ -102,7 +102,8 @@
                 "fields": {
                   "keyword": {
                     "type": "text",
-                    "analyzer": "keyword_analyzer"
+                    "analyzer": "keyword_analyzer",
+                    "fielddata": true
                   },
                   "spanish": {
                     "type": "text",
