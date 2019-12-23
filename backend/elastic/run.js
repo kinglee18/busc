@@ -414,7 +414,7 @@ function getAddressFilter(location, coordinates) {
         }
         if (location.physicalcity) {
             address.push({
-                "match": {
+                "match_phrase": {
                     "Appearances.Appearance.city.synonyms": {
                         "query": location.physicalcity
                     }
