@@ -22,6 +22,14 @@ exports.searchRelatedArticles = function (searchTerm, page = 0, pageSize = 10, c
         "function_score": {
             "query": {
                 "bool": {
+                    filter: category ? [{
+                        "range": {
+                          "date": {
+                            "gt": "now-3M/M",
+                            "lte": "now/M"
+                          }
+                        }
+                      }] : [],
                     must,
                     "should": searchTerm ? [
                         {
@@ -45,9 +53,9 @@ exports.searchRelatedArticles = function (searchTerm, page = 0, pageSize = 10, c
             },
             "functions": [
                 {
-                  "random_score": {}
+                    "random_score": {}
                 }
-              ]
+            ]
         }
     };
     console.log(JSON.stringify(query));
