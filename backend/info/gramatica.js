@@ -15,7 +15,6 @@ exports.prep_lug = [
     'entre',
     'frente a',
     'fuera de',
-    'lejos de ',
     'junto a',
     'sobre',
     'entre'
