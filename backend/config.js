@@ -1,5 +1,5 @@
 module.exports = {
-    local: {
+    dev: {
         ip: 'https://10.34.180.131:9200',
         negocios: 'businesslistingsacom',
         products: 'claro_shop_rep',

@@ -75,15 +75,44 @@ exports.search = async function (address, text) {
               }
             },
             {
-              "multi_match": {
-                "query": text,
-                "fields": [
-                  "statename^2",
-                  "city",
-                  "city.spanish"
+              "bool": {
+                "must": [
+                  {
+                    "match": {
+                      "statename": text
+                    }
+                  },
+                  {
+                    "match": {
+                      "city": text
+                    }
+                  }
                 ],
-                "type": "cross_fields",
-                "minimum_should_match": 2
+                "filter": [
+                  {
+                    "script": {
+                      "script": {
+                        "source": "if (doc['city.keyword'].size() > 0 ){doc['city.keyword'].value !=  doc['statename.keyword'].value}"
+                      }
+                    }
+                  },
+                  {
+                    bool: {
+                      "must_not": [
+                        {
+                          "exists": {
+                            "field": "postal_code"
+                          }
+                        },
+                        {
+                          "exists": {
+                            "field": "zc"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
               }
             }
           ]
@@ -91,7 +120,6 @@ exports.search = async function (address, text) {
       }
     }
   }
-
   const requestBody = {
     index: process.env.locations,
     body
