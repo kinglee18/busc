@@ -45,6 +45,9 @@ function extractPlace(place, searchTerm) {
             searchTerm = searchTerm.toLowerCase().replace(place[term].toLowerCase(), " ");
         }
     }
+    ["cdmx", "ciudad de mexico"].map( word => {
+        searchTerm = searchTerm.replace(word, " ").trim();
+    });
     return searchTerm = searchTerm.replace(/\s+/g, " ").trim();
 }
 

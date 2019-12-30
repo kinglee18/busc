@@ -43,11 +43,51 @@ exports.search = async function (address, text) {
                     "query": address,
                     "fields": [
                       "statename",
-                      "city",
                       "city.spanish"
                     ],
                     "type": "cross_fields",
                     "operator": "and"
+                  }
+                },
+                {
+                  "bool": {
+                    "must": [
+                      {
+                        "match": {
+                          "statename": address
+                        }
+                      },
+                      {
+                        "match": {
+                          "city": address
+                        }
+                      }
+                    ],
+                    "filter": [
+                      {
+                        "script": {
+                          "script": {
+                            "source": "if (doc['city.keyword'].size() > 0 ){doc['city.keyword'].value !=  doc['statename.keyword'].value}"
+                          }
+                        }
+                      },
+                      {
+                        bool: {
+                          "must_not": [
+                            {
+                              "exists": {
+                                "field": "postal_code"
+                              }
+                            },
+                            {
+                              "exists": {
+                                "field": "zc"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
                   }
                 }
               ]
