@@ -11,22 +11,15 @@ exports.where = function (searchTerm) {
     return new Promise((resolve, reject) => {
         let nv = findPrepLug(searchTerm);
         if (!nv.place) {
-
-
             businessApi.getMeaningfulTerm(searchTerm).then(response => {
                 if (response.hits.total.value >= 1) {
                     resolve({ address: undefined, newSearchTerm: searchTerm })
                 } else {
                     maps.search(nv.place, searchTerm).then((address) => {
-
                         resolve({ address, newSearchTerm: extractPlace(address, searchTerm) })
                     });
-
                 }
             });
-
-
-
         } else {
             maps.search(nv.place, searchTerm).then((address) => {
                 resolve({ address, newSearchTerm: address ? nv.texto : searchTerm })
@@ -45,42 +38,22 @@ function extractPlace(place, searchTerm) {
             searchTerm = searchTerm.toLowerCase().replace(place[term].toLowerCase(), " ");
         }
     }
+    ["cdmx", "ciudad de mexico"].map(word => {
+        searchTerm = searchTerm.replace(word, " ").trim();
+    });
     return searchTerm = searchTerm.replace(/\s+/g, " ").trim();
 }
 
-function sust(a, b) {
-    a = a.replace(b, '');
-    a.trim();
-    return a;
-}
-
 function findPrepLug(tx) {
-    let texto = null;
-    let lug = null;
     for (let op of gram.prep_lug) {
-        if (op.length <= tx.length) {
-            let reg = new RegExp("\\b" + op + "\\b");
-            let matches = tx.match(reg);
-            if (matches) {
-                let nv = matches[0];
-                let palabras = nv.split(' ');
-                let pos = palabras[0];
-                let palabrasTexto = tx.split(' ');
-                let index = palabrasTexto.findIndex((ele) => {
-                    return ele == pos;
-                })
-                let arrTxt = palabrasTexto.splice(index);
-                lug = arrTxt.join(' ');
-                texto = sust(tx, lug).trim();
-                texto = cls.clearStopWord(texto);
-                lug = sust(lug, nv).trim();
-                break;
-            }
+        let reg = new RegExp(`(?<what>.+)\\s${op}\\s(?<where>.+)`);
+        let groups = reg.exec(tx);
+        if (groups) {
+            return {
+                texto: cls.clearStopWord(groups.groups.what),
+                place: cls.clearStopWord(groups.groups.where)
+            };
         }
     }
-
-    return {
-        texto: texto,
-        place: lug
-    };
+    return {};
 }
