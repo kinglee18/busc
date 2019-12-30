@@ -119,7 +119,7 @@
               "lowercase",
               "stop_words_filter"
             ],
-            "tokenizer": "whitespace"
+            "tokenizer": "standard"
           },
           "states_analyzer": {
             "filter": [
