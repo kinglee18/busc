@@ -26,7 +26,6 @@ http.listen(port = 3008, function () {
  */
 cron.schedule('0 3 * * *', () => {
     articlesJob.blogCron();
-    console.log('Ejecutando sincronizacion de ariculos en blog');
 });
 
 module.exports = {app}

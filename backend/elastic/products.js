@@ -18,8 +18,6 @@ exports.searchRelatedProducts = function (searchTerm, page = 0, pageSize = 10) {
             ]
         }
     };
-    console.log(JSON.stringify(query));
-    
     return client.getClient().search({
         "index": process.env.products,
         "body": {

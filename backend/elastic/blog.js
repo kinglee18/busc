@@ -58,8 +58,6 @@ exports.searchRelatedArticles = function (searchTerm, page = 0, pageSize = 10, c
             ]
         }
     };
-    console.log(JSON.stringify(query));
-
     return client.getClient().search({
         "index": process.env.blog,
         "body": {

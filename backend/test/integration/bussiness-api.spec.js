@@ -76,8 +76,6 @@ describe('Business services tests', () => {
                     .expect('Content-Type', /charset=utf-8/)
                     .expect(200, function (err, res) {
                         if (err) { return done(err); }
-                        console.log(res.body.location);
-                        
                         assert.equal(total, res.body.total);
                         done();
                     });

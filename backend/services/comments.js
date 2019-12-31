@@ -16,9 +16,7 @@ exports.allComments = async function(arreglo) {
 function getComment(id) {
     let promesa = new Promise((resolve,reject) => {
         let url = `http://o2.agendize.com/w1/web/templates/adsa/gcomments.jsp?virtual=true&mapping=sa&type=xml&author=adsa&id=${id}&scope=reviewSummary,reviewDetails`
-        //console.log(id);
         axios.get(url).then((resp) => {
-            //console.log(JSON.stringify(resp,undefined,2));
             
             const result = convert.xml2json(resp.data, {compact: true});
             let info = JSON.parse(result);
@@ -38,11 +36,9 @@ function getData(json) {
     let rating = 0;
     let total = 0;
     if(json.hasOwnProperty('agendize') && json.agendize.hasOwnProperty('entry') && json.agendize.entry.length > 0) {
-        //console.log(json.agendize.entry)
         msj = json.agendize.entry
         for(let op of json.agendize.entry) {
             for(let op2 of op['entry-value']) {
-                //console.log('Entro')
                 if(op2._attributes.name == 'rating') {
                     total++;
                     sum = sum + parseInt(op2._attributes.value);
