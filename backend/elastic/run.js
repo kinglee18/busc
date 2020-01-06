@@ -125,6 +125,18 @@ function multisearch(page, searchTerm, filter, organicCodes) {
                                     ],
                                     "operator": "and"
                                 }
+                            },
+                            {
+                                "nested": {
+                                    "path": "phones",
+                                    "query": {
+                                        "match_phrase": {
+                                            "phones.phone.number": {
+                                                "query": searchTerm
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         ]
                     }

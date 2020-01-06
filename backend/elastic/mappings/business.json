@@ -332,6 +332,7 @@
             "properties": {
               "number": {
                 "type": "text",
+                "analyzer": "phones",
                 "fields": {
                   "keyword": {
                     "type": "keyword",
@@ -672,6 +673,12 @@
           }
         },
         "analyzer": {
+          "phones": {
+            "char_filter": [
+              "only_numbers"
+            ],
+            "tokenizer": "standard"
+          },
           "cities_analyzer": {
             "filter": [
               "asciifolding_filter",
@@ -724,6 +731,11 @@
             "pattern": " +",
             "type": "pattern_replace",
             "replacement": " "
+          },
+          "only_numbers": {
+            "pattern": "(\\D)",
+            "type": "pattern_replace",
+            "replacement": ""
           }
         }
       }
