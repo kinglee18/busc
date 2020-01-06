@@ -81,18 +81,14 @@ function multisearch(page, searchTerm, filter, organicCodes) {
                                 }
                             },
                             {
-                                "match": {
-                                    "bn.spanish": { "query": searchTerm, "_name": "match_phrase_bn", "boost": 2, "operator": "and" }
-                                }
-                            },
-                            {
-                                "match": {
-                                    "Appearances.Appearance.categoryname.spanish": {
-                                        "query": searchTerm,
-                                        "operator": "and",
-                                        "_name": "match_phrase_cat",
-                                        "fuzziness": "1"
-                                    }
+                                "multi_match": {
+                                    "query": searchTerm,
+                                    "operator": "and",
+                                    "fuzziness": "1",
+                                    "fields": [
+                                        "bn.keyword^2",
+                                        "Appearances.Appearance.categoryname.spanish"
+                                    ]
                                 }
                             },
                             {
