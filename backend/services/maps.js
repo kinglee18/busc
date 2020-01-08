@@ -8,7 +8,7 @@ exports.search = async function (address, text) {
       "size": 1,
       "query": {
         "boosting": {
-          "negative_boost": 0.5,
+          "negative_boost": 0.3,
           "negative": {
             "bool": {
               "should": [
@@ -25,16 +25,60 @@ exports.search = async function (address, text) {
             "bool": {
               "should": [
                 {
+                  "bool": {
+                    "should": [
+                      {
+                        "match": {
+                             "statename": "DISTRITO FEDERAL"
+                        }
+                      }
+                    ], 
+                    "must": [
+                      {
+                        "match": {
+                          "colony.spanish": address
+                        }
+                      }
+                    ],
+                    "filter": [
+                      {
+                        "bool": {
+                          "should": [
+                            {
+                              "match": {
+                                "statename": "DISTRITO FEDERAL"
+                              }
+                            },
+                            {
+                              "match": {
+                                "city": "MONTERREY"
+                              }
+                            },
+                            {
+                              "match": {
+                                "city": "GUADALAJARA"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
                   "multi_match": {
                     "query": address,
                     "fields": [
                       "city.spanish",
-                      "colony.spanish",
                       "zc",
                       "state.spanish^8",
                       "statename^3",
-                      "statename.keyword"
+                      "statename.keyword",
+                      "statename.spanish"
                     ],
+                    "_name": "eee",
+
+                    "type": "phrase",
                     "operator": "and"
                   }
                 },
@@ -43,51 +87,13 @@ exports.search = async function (address, text) {
                     "query": address,
                     "fields": [
                       "statename",
-                      "city.spanish"
+                      "state.spanish",
+                      "city",
+                      "statename.spanish"
                     ],
+                    "analyzer": "spanish_analyzer",
                     "type": "cross_fields",
                     "operator": "and"
-                  }
-                },
-                {
-                  "bool": {
-                    "must": [
-                      {
-                        "match": {
-                          "statename": address
-                        }
-                      },
-                      {
-                        "match": {
-                          "city": address
-                        }
-                      }
-                    ],
-                    "filter": [
-                      {
-                        "script": {
-                          "script": {
-                            "source": "if (doc['city.keyword'].size() > 0 ){doc['city.keyword'].value !=  doc['statename.keyword'].value}"
-                          }
-                        }
-                      },
-                      {
-                        bool: {
-                          "must_not": [
-                            {
-                              "exists": {
-                                "field": "postal_code"
-                              }
-                            },
-                            {
-                              "exists": {
-                                "field": "zc"
-                              }
-                            }
-                          ]
-                        }
-                      }
-                    ]
                   }
                 }
               ]
@@ -164,6 +170,8 @@ exports.search = async function (address, text) {
     index: process.env.locations,
     body
   };
+  //console.log(JSON.stringify(requestBody));
+  
   const request = await client.getClient().search(requestBody);
   if (request.hits.hits.length) {
     return {

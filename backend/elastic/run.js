@@ -77,22 +77,18 @@ function multisearch(page, searchTerm, filter, organicCodes) {
                         should: [
                             {
                                 "match_phrase": {
-                                    "bn.keyword": { "query": searchTerm, "_name": "match_phrase_bn", "boost": 5 }
+                                    "bn.keyword": { "query": searchTerm, "_name": "match_phrase_bn", "boost": 7 }
                                 }
                             },
                             {
-                                "match": {
-                                    "bn.spanish": { "query": searchTerm, "_name": "match_phrase_bn", "boost": 2, "operator": "and" }
-                                }
-                            },
-                            {
-                                "match": {
-                                    "Appearances.Appearance.categoryname.spanish": {
-                                        "query": searchTerm,
-                                        "operator": "and",
-                                        "_name": "match_phrase_cat",
-                                        "fuzziness": "1"
-                                    }
+                                "multi_match": {
+                                    "query": searchTerm,
+                                    "operator": "and",
+                                    "fuzziness": "1",
+                                    "fields": [
+                                        "bn.keyword^2",
+                                        "Appearances.Appearance.categoryname.spanish"
+                                    ]
                                 }
                             },
                             {
@@ -124,6 +120,18 @@ function multisearch(page, searchTerm, filter, organicCodes) {
                                         "bn.spanish"
                                     ],
                                     "operator": "and"
+                                }
+                            },
+                            {
+                                "nested": {
+                                    "path": "phones",
+                                    "query": {
+                                        "match_phrase": {
+                                            "phones.phone.number": {
+                                                "query": searchTerm
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         ]
@@ -189,7 +197,6 @@ function sendRequest(page, request, sort, randomSorting, scoreSum = false) {
         searchType: 'dfs_query_then_fetch',
         "track_total_hits": true
     };
-    //console.log(JSON.stringify(requestBody));
     return client.getClient().search(requestBody);
 }
 
