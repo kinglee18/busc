@@ -521,57 +521,15 @@
         "filter": {
           "cities_synonym": {
             "type": "synonym",
-            "lenient": true,
-            "synonyms": [
-              "ciudad nezahualcoyotl, neza => neza"
-            ]
+            "synonyms_path": "cities.txt"
           },
           "colonies_synonym": {
             "type": "synonym",
-            "lenient": true,
-            "synonyms": [
-              "PORTALES ORIENTE, PORTALES SUR, PORTALES NORTE, PORTALES => PORTALES ORIENTE, PORTALES SUR, PORTALES NORTE, PORTALES"
-            ]
+            "synonyms_path": "colonies.txt"
           },
           "states_synonym": {
             "type": "synonym",
-            "lenient": true,
-            "synonyms": [
-              "nuevo leon => nl",
-              "aguascalientes  => ags ",
-              "baja california  => bc ",
-              "baja california sur  => bcs ",
-              "campeche  => camp ",
-              "chiapas  => chis ",
-              "coahuila  => coah ",
-              "colima  => col ",
-              "chihuahua  => chih ",
-              "durango  => dgo ",
-              "guanajuato  => gto ",
-              "guerrero  => gro ",
-              "hidalgo  => hgo ",
-              "jalisco  => jal ",
-              "mexico  => mex ",
-              "estado de mexico, state of mexico , mexico => mex ",
-              "michoacan  => mich ",
-              "morelos  => mor ",
-              "nayarit  => nay ",
-              "nuevo leon  => nl ",
-              "oaxaca  => oax ",
-              "puebla  => pue ",
-              "queretaro  => qro ",
-              "quintana roo  => qr ",
-              "san luis potosi  => slp ",
-              "sinaloa  => sin ",
-              "sonora  => son ",
-              "tabasco  => tab ",
-              "tamaulipas  => tams ",
-              "tlaxcala  => tlax ",
-              "veracruz  => ver ",
-              "yucatan  => yuc ",
-              "zacatecas  => zac ",
-              "distrito federal,ciudad de mexico,mexico city, cdmx  => df "
-            ]
+            "synonyms_path": "states.txt"
           },
           "spanish_stop_filter": {
             "type": "stop",
@@ -663,12 +621,7 @@
           },
           "custom_stems": {
             "type": "stemmer_override",
-            "rules": [
-              "salas => sala",
-              "sala => sala",
-              "tacos => taco",
-              "taco => taco"
-            ]
+            "rules_path" : "stemmer_override.txt"
           }
         },
         "analyzer": {

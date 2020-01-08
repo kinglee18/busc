@@ -1,0 +1,10 @@
+salas => sala
+sala => sala
+tacos => taco
+taco => taco
+billares => billar
+billar => billar
+gas => gas
+gasas => gasa
+gasa => gasa
+taxis => taxi
