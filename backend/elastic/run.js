@@ -77,7 +77,7 @@ function multisearch(page, searchTerm, filter, organicCodes) {
                         should: [
                             {
                                 "match_phrase": {
-                                    "bn.keyword": { "query": searchTerm, "_name": "match_phrase_bn", "boost": 5 }
+                                    "bn.keyword": { "query": searchTerm, "_name": "match_phrase_bn", "boost": 7 }
                                 }
                             },
                             {

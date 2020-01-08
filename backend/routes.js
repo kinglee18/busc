@@ -34,7 +34,7 @@ routes.get('/node', (req, res) => {
                     req.query.category_id,
                     json.schedule,
                     json.payments,
-                    json.location || address,
+                    address || json.location,
                     coordinates
                 ) : null,
                 elastic.getSuggestion(json.newSearchTerm)]
