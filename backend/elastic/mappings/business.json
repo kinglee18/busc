@@ -88,11 +88,7 @@
                   },
                   "spanish": {
                     "type": "text",
-                    "analyzer": "spanish_analyzer"
-                  },
-                  "synonyms": {
-                    "type": "text",
-                    "analyzer": "spanish_analyzer"
+                    "analyzer": "colonies_analyzer"
                   }
                 },
                 "analyzer": "spanish_analyzer"
@@ -202,11 +198,7 @@
           },
           "spanish": {
             "type": "text",
-            "analyzer": "spanish_analyzer"
-          },
-          "synonyms": {
-            "type": "text",
-            "analyzer": "spanish_analyzer"
+            "analyzer": "colonies_analyzer"
           }
         },
         "analyzer": "spanish_analyzer"
@@ -531,7 +523,14 @@
             "type": "synonym",
             "lenient": true,
             "synonyms": [
-              "ciudad nezahualcoyotl => neza"
+              "ciudad nezahualcoyotl, neza => neza"
+            ]
+          },
+          "colonies_synonym": {
+            "type": "synonym",
+            "lenient": true,
+            "synonyms": [
+              "PORTALES ORIENTE, PORTALES SUR, PORTALES NORTE, PORTALES => PORTALES ORIENTE, PORTALES SUR, PORTALES NORTE, PORTALES"
             ]
           },
           "states_synonym": {
@@ -692,6 +691,14 @@
               "asciifolding_filter",
               "lowercase",
               "states_synonym"
+            ],
+            "tokenizer": "standard"
+          },
+          "colonies_analyzer": {
+            "filter": [
+              "asciifolding_filter",
+              "lowercase",
+              "colonies_synonym"
             ],
             "tokenizer": "standard"
           },

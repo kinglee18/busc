@@ -40,6 +40,19 @@
           }
         }
       },
+      "statename" : {
+        "type" : "text",
+        "fields" : {
+          "keyword" : {
+            "type" : "keyword",
+            "ignore_above" : 256
+          },
+          "spanish": {
+            "type": "text",
+            "analyzer": "states_analyzer"
+          }
+        }
+      },
       "zc" : {
         "type" : "text",
         "fields" : {
@@ -127,7 +140,7 @@
               "lowercase",
               "states_synonym"
             ],
-            "tokenizer": "whitespace"
+            "tokenizer": "standard"
           }
         }
       }
