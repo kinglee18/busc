@@ -66,7 +66,15 @@ describe('--------------', () => {
         { input: "universidad simon bolivar", output:  { "search_term": "universidad simon bolivar" } },
         { input: "farmacias guadalajara", output:  { "search_term": "farmacias guadalajara" } },
         { input: "casas de campaña", output:  { "search_term": "casas de campaña" } },
-        { input: "construcciones en general", output:  { "search_term": "construcciones en general" } }
+        { input: "construcciones en general", output:  { "search_term": "construcciones en general" } },
+        {
+            input: "hotel en portales", output: {
+                search_term: "hotel",
+                physicalstate: 'DISTRITO FEDERAL',
+                "physicalcity": "BENITO JUAREZ",
+                colony: "PORTALES SUR", "postal_code": "03300"
+            }
+        }
     ];
     for (var i of tests) {
         makeTest(i);

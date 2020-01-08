@@ -8,7 +8,7 @@ exports.search = async function (address, text) {
       "size": 1,
       "query": {
         "boosting": {
-          "negative_boost": 0.5,
+          "negative_boost": 0.3,
           "negative": {
             "bool": {
               "should": [
@@ -25,11 +25,51 @@ exports.search = async function (address, text) {
             "bool": {
               "should": [
                 {
+                  "bool": {
+                    "should": [
+                      {
+                        "match": {
+                             "statename": "DISTRITO FEDERAL"
+                        }
+                      }
+                    ], 
+                    "must": [
+                      {
+                        "match": {
+                          "colony.spanish": address
+                        }
+                      }
+                    ],
+                    "filter": [
+                      {
+                        "bool": {
+                          "should": [
+                            {
+                              "match": {
+                                "statename": "DISTRITO FEDERAL"
+                              }
+                            },
+                            {
+                              "match": {
+                                "city": "MONTERREY"
+                              }
+                            },
+                            {
+                              "match": {
+                                "city": "GUADALAJARA"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
                   "multi_match": {
                     "query": address,
                     "fields": [
                       "city.spanish",
-                      "colony.spanish",
                       "zc",
                       "state.spanish^8",
                       "statename^3",
