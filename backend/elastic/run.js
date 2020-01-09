@@ -23,7 +23,6 @@ const client = require('./client');
  * @return {Promise<>}.
  */
 function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, paymentTypes, address, coordinates) {
-
     const SCORE_AND_POINTS_SORTING = ["_score", { "points": { "order": "desc" } }].concat(alphabeticalOrder());
     let should = [], filter = [];
     filter = filter.concat(
@@ -31,6 +30,10 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
         organicCodes ? [{ match: { listingtype: organicCodes.join(' ') } }] : [],
         category ? [{ match: { "Appearances.Appearance.categoryid": category } }] : [],
     );
+
+    if (!searchTerm.length) {
+        return sendRequest(page, { "query": { "bool": {filter} } }, [{ "points": { "order": "desc" } }].concat(alphabeticalOrder()), organicCodes);
+    }
     searchTerm = stopPhrases(searchTerm);
 
     return getRelatedCategories(searchTerm).then(categories => {

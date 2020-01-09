@@ -1,13 +1,25 @@
 const ub = require('./analyzer/wheres');
-let json = {}
 
+
+/**
+ * @param {string} searchTerm
+ */
 exports.analisys = function (searchTerm) {
     return new Promise((resolve, reject) => {
-        searchTerm = searchTerm.replace(/-/g, " ");
-        ub.where(searchTerm).then((resp) => {
-            json.newSearchTerm = resp.newSearchTerm;
-            json.location = resp.address;
-            resolve(json);
-        });
+        if (searchTerm && searchTerm.length > 0) {
+            searchTerm = searchTerm.replace(/-/g, " ").toLowerCase();
+            ub.where(searchTerm).then((resp) => {
+                resolve(
+                    {
+                        newSearchTerm: resp.newSearchTerm,
+                        location: resp.address
+                    }
+                );
+            });
+        } else {
+            resolve({
+                newSearchTerm: ""
+            });
+        }
     });
 }
