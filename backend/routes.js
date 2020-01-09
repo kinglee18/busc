@@ -25,7 +25,7 @@ routes.get('/node', (req, res) => {
     const coordinates = req.query.lat && req.query.lng ? { lat: parseFloat(req.query.lat), lng: parseFloat(req.query.lng) } : undefined;
     const organicCodes = ['BRO', 'BRP', 'DIA', 'ORO', 'PIP', 'PLA', 'SPN'];
     if (validation.valid) {
-        proceso.analisys(req.query.searchTerm.toLowerCase()).then((json) => {
+        proceso.analisys(req.query.searchTerm).then((json) => {
             Promise.all([
                 showBusiness ? elastic.searchBusiness(
                     req.query.page,
@@ -97,7 +97,7 @@ function validParams(params) {
     if ((params.lat && !params.lng) || (!params.lat && params.lng)) {
         return { valid: false, msg: 'malformed coordinates' };
     }
-    return params.searchTerm ? { valid: true } : { valid: false, msg: 'missing param: searchTerm' };
+    return { valid: true };
 }
 
 /**
