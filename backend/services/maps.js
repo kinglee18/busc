@@ -36,7 +36,10 @@ exports.search = async function (address, text) {
                     "must": [
                       {
                         "match": {
-                          "colony.spanish": address
+                          "colony.spanish": {
+                            "query": address,
+                            "operator": "and"
+                          }
                         }
                       }
                     ],
