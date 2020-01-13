@@ -92,6 +92,7 @@ exports.search = async function (address, text) {
                       "statename",
                       "state.spanish",
                       "city",
+                      "initials",
                       "statename.spanish"
                     ],
                     "analyzer": "spanish_analyzer",
