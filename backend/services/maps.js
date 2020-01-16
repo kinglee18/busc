@@ -190,8 +190,7 @@ exports.search = async function (address, text) {
     index: process.env.locations,
     body
   };
-  console.log(JSON.stringify(requestBody));
-  
+  //console.log(JSON.stringify(requestBody));
   const request = await client.getClient().search(requestBody);
   if (request.hits.hits.length) {
     return {
