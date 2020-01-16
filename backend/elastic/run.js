@@ -32,18 +32,13 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
     );
 
     if (!searchTerm.length) {
-        return sendRequest(page, { "query": { "bool": {filter} } }, [{ "points": { "order": "desc" } }].concat(alphabeticalOrder()), organicCodes);
+        return sendRequest(page, { "query": { "bool": { filter } } }, [{ "points": { "order": "desc" } }].concat(alphabeticalOrder()), organicCodes);
     }
     searchTerm = stopPhrases(searchTerm);
 
     return getRelatedCategories(searchTerm).then(categories => {
-
-        categories = categories.hits.hits.map(category => {
-            return category._source;
-        });
-
-        if (categories.length) {
-            should = should.concat(categoryQuery(categories, 'match'));
+        if (categories.hits.total.value) {
+            should = should.concat(categoryQuery(categories));
             var requestBody = {
                 "query": {
                     "bool": {
@@ -226,21 +221,28 @@ function stopPhrases(searchTerm) {
  * @param {Array<object>} categories - categories name to put in query 
  * @return {Array<object>}
 */
-function categoryQuery(categories, matchType) {
+function categoryQuery(categories) {
+    categories = categories.hits.hits.map(category => {
+        return category;
+    });
     var boost = categories.length + 1;
-    return categories.map(category => {
+    categories = categories.map(category => {
         boost--;
         return JSON.parse(`{
                 "constant_score":{
                     "filter": {
                         "match": {
-                            "categoryname_full_text": { "query": "${category.category}", "_name": "match_${category.category}" }
+                            "categoryname_full_text": { "query": "${category._source.category}" }
                         }
                     },
-                        "boost": "${category.score || boost}"
+                        "boost": "${category._source.score || boost}"
             }}`);
 
     });
+    return Array.from(new Set(categories.map(a =>
+        a.constant_score.filter.match.categoryname_full_text.query))).map(id => {
+            return categories.find(a => a.constant_score.filter.match.categoryname_full_text.query === id)
+        });
 }
 
 /**
@@ -301,6 +303,7 @@ function getRelatedCategories(searchTerm) {
             size: 20
         }
     }
+    //console.log(JSON.stringify(body));
     return client.getClient().search(body);
 }
 
