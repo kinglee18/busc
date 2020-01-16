@@ -15,16 +15,15 @@ describe('--------------', () => {
         { input: "hotel en oaxaca", output: { search_term: "hotel", physicalstate: 'OAXACA' } },
         { input: "hotel en mexico", output: { search_term: "hotel", physicalstate: 'MEXICO' } },
         { input: "hotel en  estado de mexico", output: { search_term: "hotel", physicalstate: 'MEXICO' } },
-
         { input: "hotel en san luis", output: { search_term: "hotel", physicalstate: 'SAN LUIS POTOSI' } },
 
-         {
+        {
             input: "hotel en guadalajara", output: {
                 "physicalcity": "GUADALAJARA",
                 "physicalstate": "JALISCO",
                 "search_term": "hotel"
             }
-        }, 
+        },
         {
             input: "hotel en centro de tlalpan", output: {
                 search_term: "hotel",
@@ -63,12 +62,12 @@ describe('--------------', () => {
         { input: "hotel mexico", output: { search_term: "hotel", physicalstate: 'MEXICO' } },
         { input: "hotel san luis potosi", output: { search_term: "hotel", physicalstate: 'SAN LUIS POTOSI' } },
         { input: "hotel jalisco", output: { search_term: "hotel", physicalstate: 'GUADALAJARA', physicalstate: "JALISCO" } },
-        { input: "hotel en cuautla morelos", output:  { "physicalstate": "MORELOS", "physicalcity": "CUAUTLA", "search_term": "hotel" } },
-        { input: "hotel cuautla morelos", output:  { "physicalstate": "MORELOS", "physicalcity": "CUAUTLA", "search_term": "hotel" } },
-        { input: "universidad simon bolivar", output:  { "search_term": "universidad simon bolivar" } },
-        { input: "farmacias guadalajara", output:  { "search_term": "farmacias guadalajara" } },
-        { input: "casas de campaña", output:  { "search_term": "casas de campaña" } },
-        { input: "construcciones en general", output:  { "search_term": "construcciones en general" } },
+        { input: "hotel en cuautla morelos", output: { "physicalstate": "MORELOS", "physicalcity": "CUAUTLA", "search_term": "hotel" } },
+        { input: "hotel cuautla morelos", output: { "physicalstate": "MORELOS", "physicalcity": "CUAUTLA", "search_term": "hotel" } },
+        { input: "universidad simon bolivar", output: { "search_term": "universidad simon bolivar" } },
+        { input: "farmacias guadalajara", output: { "search_term": "farmacias guadalajara" } },
+        { input: "casas de campaña", output: { "search_term": "casas de campaña" } },
+        { input: "construcciones en general", output: { "search_term": "construcciones en general" } },
         {
             input: "hotel en portales", output: {
                 search_term: "hotel",
@@ -76,7 +75,14 @@ describe('--------------', () => {
                 "physicalcity": "BENITO JUAREZ",
                 colony: "PORTALES SUR", "postal_code": "03300"
             }
-        }
+        },
+        {
+            input: "plomeros guadalajara", output: {
+                "physicalcity": "GUADALAJARA",
+                "physicalstate": "JALISCO",
+                "search_term": "plomeros"
+            }
+        },
     ];
     for (var i of tests) {
         makeTest(i);
@@ -93,7 +99,7 @@ describe('--------------', () => {
                 })
                 .then(response => {
                     assert.deepEqual(response.body.location, opc.output);
- 
+
                 });
         });
     }
