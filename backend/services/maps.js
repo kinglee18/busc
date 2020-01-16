@@ -5,6 +5,15 @@ exports.search = async function (address, text) {
   let body = {};
   if (address) {
     body = {
+      "sort": [
+
+        "_score",
+        {
+          "relevance": {
+            "order": "desc"
+          }
+        }
+      ],
       "size": 1,
       "query": {
         "boosting": {
@@ -80,7 +89,6 @@ exports.search = async function (address, text) {
                       "statename.spanish"
                     ],
                     "_name": "eee",
-
                     "type": "phrase",
                     "operator": "and"
                   }
@@ -90,10 +98,10 @@ exports.search = async function (address, text) {
                     "query": address,
                     "fields": [
                       "statename",
-                      "state.spanish",
+                      "state",
                       "city",
                       "initials",
-                      "statename.spanish"
+                      "statename"
                     ],
                     "analyzer": "spanish_analyzer",
                     "type": "cross_fields",
@@ -108,6 +116,14 @@ exports.search = async function (address, text) {
     }
   } else {
     body = {
+      "sort": [
+        "_score",
+        {
+          "relevance": {
+            "order": "desc"
+          }
+        }
+      ],
       "size": 1,
       "query": {
         "bool": {
@@ -174,7 +190,7 @@ exports.search = async function (address, text) {
     index: process.env.locations,
     body
   };
-  //console.log(JSON.stringify(requestBody));
+  console.log(JSON.stringify(requestBody));
   
   const request = await client.getClient().search(requestBody);
   if (request.hits.hits.length) {
