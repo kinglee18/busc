@@ -1,5 +1,5 @@
 {
-  "mappings": {
+  "mappings" : {
     "properties" : {
       "city" : {
         "type" : "text",
@@ -8,9 +8,9 @@
             "type" : "keyword",
             "ignore_above" : 256
           },
-          "spanish": {
-            "type": "text",
-            "analyzer": "spanish_analyzer"
+          "spanish" : {
+            "type" : "text",
+            "analyzer" : "spanish_analyzer"
           }
         }
       },
@@ -21,11 +21,41 @@
             "type" : "keyword",
             "ignore_above" : 256
           },
-          "spanish": {
-            "type": "text",
-            "analyzer": "spanish_analyzer"
+          "spanish" : {
+            "type" : "text",
+            "analyzer" : "spanish_analyzer"
           }
         }
+      },
+      "id" : {
+        "type" : "text",
+        "fields" : {
+          "keyword" : {
+            "type" : "keyword",
+            "ignore_above" : 256
+          }
+        }
+      },
+      "initials" : {
+        "type" : "text",
+        "fields" : {
+          "keyword" : {
+            "type" : "keyword",
+            "ignore_above" : 256
+          }
+        }
+      },
+      "rank" : {
+        "type" : "text",
+        "fields" : {
+          "keyword" : {
+            "type" : "keyword",
+            "ignore_above" : 256
+          }
+        }
+      },
+      "relevance" : {
+        "type" : "long"
       },
       "state" : {
         "type" : "text",
@@ -34,9 +64,9 @@
             "type" : "keyword",
             "ignore_above" : 256
           },
-          "spanish": {
-            "type": "text",
-            "analyzer": "states_analyzer"
+          "spanish" : {
+            "type" : "text",
+            "analyzer" : "states_analyzer"
           }
         }
       },
@@ -47,9 +77,9 @@
             "type" : "keyword",
             "ignore_above" : 256
           },
-          "spanish": {
-            "type": "text",
-            "analyzer": "states_analyzer"
+          "spanish" : {
+            "type" : "text",
+            "analyzer" : "states_analyzer"
           }
         }
       },
@@ -61,51 +91,60 @@
             "ignore_above" : 256
           }
         }
+      },
+      "zip" : {
+        "type" : "text",
+        "fields" : {
+          "keyword" : {
+            "type" : "keyword",
+            "ignore_above" : 256
+          }
+        }
       }
     }
   },
-  "settings": {
-    "index": {
-      "analysis": {
-        "filter": {
-          "asciifolding_filter": {
-            "type": "asciifolding",
-            "preserve_original": "true"
-          },
-          "states_synonym": {
-            "type": "synonym",
-            "synonyms_path": "states.txt"
-          },
+  "settings" : {
+    "index" : {
+      "analysis" : {
+        "filter" : {
           "stop_words_filter" : {
             "type" : "stop",
             "stopwords" : [
-             "el",
-             "la",
-             "los",
-             "las",
-             "de",
-             "en",
-             "general"
+              "el",
+              "la",
+              "los",
+              "las",
+              "de",
+              "en",
+              "general"
             ]
+          },
+          "asciifolding_filter" : {
+            "type" : "asciifolding",
+            "preserve_original" : "true"
+          },
+          "states_synonym" : {
+            "type" : "synonym",
+            "synonyms_path" : "states.txt"
           }
         },
-        "analyzer": {
-          "spanish_analyzer": {
-            "filter": [
+        "analyzer" : {
+          "states_analyzer" : {
+            "filter" : [
+              "asciifolding_filter",
+              "lowercase",
+              "states_synonym"
+            ],
+            "tokenizer" : "standard"
+          },
+          "spanish_analyzer" : {
+            "filter" : [
               "asciifolding_filter",
               "lowercase",
               "states_synonym",
               "stop_words_filter"
             ],
-            "tokenizer": "standard"
-          },
-          "states_analyzer": {
-            "filter": [
-              "asciifolding_filter",
-              "lowercase",
-              "states_synonym"
-            ],
-            "tokenizer": "standard"
+            "tokenizer" : "standard"
           }
         }
       }

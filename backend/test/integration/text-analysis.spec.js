@@ -6,7 +6,7 @@ const config = require('../../config');
 
 describe('--------------', () => {
     before(() => {
-        process.env = Object.assign(process.env, config['test']);
+        process.env = Object.assign(process.env, config['dev']);
     });
 
     const tests = [
@@ -83,6 +83,13 @@ describe('--------------', () => {
                 "search_term": "plomeros"
             }
         },
+        {
+            input: "telefonos en metepec", output: {
+                "physicalcity": "METEPEC",
+                "physicalstate": "MEXICO",
+                "search_term": "telefonos"
+            }
+        }
     ];
     for (var i of tests) {
         makeTest(i);
