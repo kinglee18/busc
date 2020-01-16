@@ -44,7 +44,16 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
                     "bool": {
                         "must": {
                             "bool": {
-                                should
+                                should: should.concat([
+                                    {
+                                        "match": {
+                                            "productservices.prdserv.keyword": {
+                                                "query": searchTerm,
+                                                "boost": 0
+                                            }
+                                        }
+                                    }
+                                ])
                             }
                         },
                         filter
