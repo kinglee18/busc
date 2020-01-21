@@ -6,7 +6,7 @@ const config = require('../../config');
 
 describe('--------------', () => {
     before(() => {
-        process.env = Object.assign(process.env, config['dev']);
+        process.env = Object.assign(process.env, config['test']);
     });
 
     const tests = [

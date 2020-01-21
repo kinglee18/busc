@@ -112,8 +112,10 @@ function multisearch(page, searchTerm, filter, organicCodes) {
                                     "query": searchTerm,
                                     "fields": [
                                         "productservices.prdserv.keyword",
-                                        "brands.brandname.keyword"
-                                    ]
+                                        "brands.brandname.keyword",
+                                        "brands.brandname"
+                                    ],
+                                    "operator": "and"
                                 }
                             },
                             {
@@ -204,6 +206,7 @@ function sendRequest(page, request, sort, randomSorting, scoreSum = false) {
         searchType: 'dfs_query_then_fetch',
         "track_total_hits": true
     };
+    //console.log(JSON.stringify(requestBody));
     return client.getClient().search(requestBody);
 }
 
@@ -309,10 +312,9 @@ function getRelatedCategories(searchTerm) {
                     }
                 }
             ],
-            size: 20
+            size: 200
         }
     }
-    //console.log(JSON.stringify(body));
     return client.getClient().search(body);
 }
 
