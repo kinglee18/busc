@@ -673,14 +673,14 @@
           },
           "spanish_analyzer": {
             "filter": [
+              "custom_stems",
+              "spanish_stemmer",
               "synonym",
               "apostrophe",
               "asciifolding_filter",
               "lowercase",
               "spanish_stop_filter",
               "stop_words_filter",
-              "custom_stems",
-              "spanish_stemmer",
               "unique_filter"
             ],
             "tokenizer": "standard"

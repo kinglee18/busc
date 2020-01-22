@@ -39,6 +39,10 @@
     "index": {
       "analysis": {
         "filter": {
+          "synonym": {
+            "type": "synonym",
+            "synonyms_path": "synonym.txt"
+          },
           "spanish_stop_filter": {
             "type": "stop",
             "stopwords": "_spanish_"
@@ -56,40 +60,30 @@
             "preserve_original": "true"
           },
           "custom_stems" : {
-            "type" : "stemmer_override",
-            "rules" : [
-              "salas => sala",
-              "sala => sala",
-              "tacos => taco",
-              "taco => taco",
-              "billares => billar",
-              "billar => billar",
-              "gas => gas",
-              "gasas => gasa",
-              "gasa => gasa",
-              "taxis => taxi"
-            ]
+            "type": "stemmer_override",
+            "rules_path" : "stemmer_override.txt"
           }
         },
         "analyzer": {
           "spanish_analyzer": {
             "filter": [
+              "custom_stems",
+              "spanish_stemmer",
+              "synonym",
               "apostrophe",
               "asciifolding_filter",
               "lowercase",
-              "spanish_stop_filter",
-              "custom_stems",
-              "spanish_stemmer"
+              "spanish_stop_filter"
             ],
             "tokenizer": "standard"
           },
           "spanish_keyword": {
             "filter": [
+              "custom_stems",
+              "spanish_stemmer",
               "apostrophe",
               "asciifolding_filter",
-              "lowercase",
-              "custom_stems",
-              "spanish_stemmer"
+              "lowercase"
             ],
             "tokenizer": "keyword"
           }

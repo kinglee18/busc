@@ -76,13 +76,13 @@ describe('--------------', () => {
                 colony: "PORTALES SUR", "postal_code": "03300"
             }
         },
-        {
+     /*    {
             input: "plomeros guadalajara", output: {
                 "physicalcity": "GUADALAJARA",
                 "physicalstate": "JALISCO",
                 "search_term": "plomeros"
             }
-        },
+        }, */
         {
             input: "telefonos en metepec", output: {
                 "physicalcity": "METEPEC",
