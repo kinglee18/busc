@@ -1,0 +1,134 @@
+abarrotes,abarrotera 
+abastecimiento,abasto, aprovisionamiento ,avituallamiento ,provision ,suministro 
+academia, academias ,colegio ,escuela ,facultad ,institucion ,instituto 
+camping, acampada, acampamiento, alpinismo, campamento, campismo, montana, montanismo 
+acarpia,aforia ,esterilidad ,infecundidad ,infertilidad 
+acidez, agruras ,gastro ,gastroenterologo 
+actor, artista ,autor ,ejecutante ,histrion ,representante 
+aderezo, adobo, alino, condimento 
+adiestramiento, aleccionamiento ,amaestramiento ,entrenamiento ,instruccion 
+aficionado, amateur ,fan ,forofo ,hincha ,seguidor ,supporter 
+agave, maguey ,mezcal ,tequila
+agencia de viajes, agencias de viajes , oficina de viajes , oficinas de viajes 
+agenda ,almanaque ,calendario 
+agricultor, campesino ,cultivador ,labrador 
+agujetas,cordones 
+aji,chile ,guindilla ,pimiento 
+ajonjoli, sesamo 
+alberca, estanque , pileta , piscina 
+cuarto, alcoba, apartamento, apartamiento, aposento, departamento, dormitorio, estancia, habitacion, vivienda 
+alcol, alcohol , alcoholismo ,alcoolismo 
+aldea, ciudad , lugar , poblacion , pueblo , villa 
+alimento, comida, fast food
+almorranas, hemmorroides 
+alojamiento , hospedaje  , hotel  , ospedaje  , otel 
+alpinista, montanero 
+alquiler, renta 
+altigrafo, barografo 
+alubia, faba , frijol , habichuela , judia 
+anafre, brasero 
+anillo, aro ,joya ,sortija 
+anticonceptivo, condones , contraceptivo , preservativo , profilactico 
+anuncio, propaganda , publicidad 
+apagador, interruptor , escaparate , vidriera , vitrina 
+aprovisionamiento, abasto , avituallamiento , provision , suministro 
+archivador, archivero 
+aroma, fragancia  perfume 
+arveja, chicharo , guisante 
+auto, automovil , carro , coche , vehiculo 
+balompie, futbol 
+balon, bola , esferico , pelota 
+baloncesto, basketball ,basquet 
+balonvolea, voleibol 
+banana, platano 
+banca, banco 
+bañera, baño  , pila , tina , baño
+baños termales, caldas ,termas 
+barografo, altigrafo 
+baseball, beis , beisball , besibol 
+basurero, derramadero, escombrera, muladar, vertedero 
+beis, baseball, beisball, besibol 
+bienes raices, finca , inmobiliario , inmueble 
+bistec, filete , solomillo 
+bizcocho, galleta 
+block, blockera , bloque , bloquera 
+boda, casamiento, enlace, matrimonio, nupcias 
+boiler, termotanque
+bolera, boliche , bowling 
+botica, drogueria , Farmacia 
+brújula, compas 
+bragas, calzoncillos, calzones, pantaletas, panti, ropa interior, tangas, trusas 
+bucal, oral 
+bufet, bufete , buffet 
+cabalgadura, caballeria , montura 
+cabello, pelo 
+cacahuate, mani 
+calabozo, carcel, celda, gayola, prision, reclusorio 
+calamar, chipiron 
+camion, camioneta, combi, guagua, pecero, troca, truck, van 
+camisa, camiseria 
+camper, casa movil, casas moviles 
+cancerigeno, canceroso 
+cancerologia, oncologia 
+cancerologico, oncologico 
+cancha, pista 
+carnes frias, chorizo, chorizos, jamon, jamons 
+carreola, carriola 
+caucho, goma elastica , hule 
+cedazo, coladera , criba 
+cenaduria, restaurant, restaurante, restoran 
+cerdo, chancho, cochino, cuino, gocho, gorrino, marrano, puerco, tocino
+cerillo, fosforo 
+cerradura, chapa 
+cesped, gallon, pasto, tepe 
+cesta, canasta 
+chancla, sandalias 
+cigarrera, pitillera, tabaquera 
+cigarrillo, cigarro, pitillo, puro, tabaco 
+clinicas, hospital, hospitales, osocomio, sanatorios 
+cloch, cluch, clutch, embrague 
+closet, ropero 
+cobertor, colcha, cubrecama, edredon, frazada, manta, sobrecama, telliza 
+comediante, comico, comediante 
+compresoras, compresores 
+computacion, computacion ,informatica 
+computador, computadora, computadores, lap top, ordenador, pc, pcs 
+confiteria, dulceria ,dulces
+contenedor, container 
+criminalista, penalista 
+custodia, guarda, proteccion, salvaguardia, seguridad 
+dactilar, digital 
+delantal, filipina, mandil 
+descorchador, sacacorchos , sacatapon , tirabuzon 
+descremado, desnatado 
+deshuesadero, yonke 
+desponchadora, vulcanizadora 
+disfonia, afonia , carraspera , enronquecimiento , ronquera 
+doctor, doctora, facultativo, galeno, médico, matasanos, medicastro, medico, mediquin 
+dvds, video digital 
+educador, maestro, pedagogo 
+elevador, ascensor, asensor 
+embarazo, gestacion, gravidez, prenado, prenez 
+empleo, ocupacion, oficio, profesion
+escaparate, aparador 
+etiqueta, marbete 
+extinguidores, extintores 
+imprenta, tipografia 
+jardin de ninos, kynder.kinder,  pre primaria,  preprimaria,  pre-primaria 
+lonche, loncheria, torta, torteria 
+mariot, mariott, marriot, marriott
+marmol, marmoleria, marmoles
+moto, motocicleta 
+palmera, palma 
+remedio, medicamento, medicina 
+ropa, ropaje, traje, vestido, vestidura 
+soda, refresco 
+sumador, sumadora 
+tazon, bol 
+tele, television, televisor, tv 
+timbre, sello 
+tonner, toner 
+umbrela, paraguas, parasol, quitasol, sombrilla 
+universidad intercontinental, uic 
+x box, videojuego, xbox 
+xbox, videojuego 

@@ -237,9 +237,7 @@ function categoryQuery(categories) {
     categories = categories.hits.hits.map(category => {
         return category;
     });
-    var boost = categories.length + 1;
     categories = categories.map(category => {
-        boost--;
         return JSON.parse(`{
                 "constant_score":{
                     "filter": {
@@ -247,7 +245,7 @@ function categoryQuery(categories) {
                             "categoryname_full_text": { "query": "${category._source.category}" }
                         }
                     },
-                        "boost": "${category._source.score || boost}"
+                        "boost": "${category._source.score || 0 }"
             }}`);
 
     });
