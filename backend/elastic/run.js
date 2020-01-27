@@ -206,7 +206,7 @@ function sendRequest(page, request, sort, randomSorting, scoreSum = false) {
         searchType: 'dfs_query_then_fetch',
         "track_total_hits": true
     };
-    //console.log(JSON.stringify(requestBody));
+    console.log(JSON.stringify(requestBody));
     return client.getClient().search(requestBody);
 }
 
@@ -245,7 +245,7 @@ function categoryQuery(categories) {
                             "categoryname_full_text": { "query": "${category._source.category}" }
                         }
                     },
-                        "boost": "${category._source.score || 0 }"
+                        "boost": "${category._source.score || 1 }"
             }}`);
 
     });
