@@ -67,23 +67,23 @@
         "analyzer": {
           "spanish_analyzer": {
             "filter": [
-              "custom_stems",
-              "spanish_stemmer",
-              "synonym",
               "apostrophe",
               "asciifolding_filter",
               "lowercase",
+              "custom_stems",
+              "spanish_stemmer",
+              "synonym",
               "spanish_stop_filter"
             ],
             "tokenizer": "standard"
           },
           "spanish_keyword": {
             "filter": [
-              "custom_stems",
-              "spanish_stemmer",
               "apostrophe",
               "asciifolding_filter",
-              "lowercase"
+              "lowercase",
+              "custom_stems",
+              "spanish_stemmer"
             ],
             "tokenizer": "keyword"
           }
