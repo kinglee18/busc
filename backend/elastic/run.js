@@ -126,7 +126,8 @@ function multisearch(page, searchTerm, filter, organicCodes) {
                                         "productservices.prdserv.spanish",
                                         "Appearances.Appearance.categoryname.spanish",
                                         "bn",
-                                        "bn.spanish"
+                                        "bn.spanish",
+                                        "brands.brandname"
                                     ],
                                     "operator": "and"
                                 }
