@@ -662,7 +662,8 @@
           "keyword_analyzer": {
             "filter": [
               "asciifolding_filter",
-              "lowercase"
+              "lowercase",
+              "trim"
             ],
             "ignore_above": "256",
             "tokenizer": "keyword"
