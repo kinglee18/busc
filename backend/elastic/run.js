@@ -91,7 +91,7 @@ function multisearch(page, searchTerm, filter, organicCodes) {
                                 "multi_match": {
                                     "query": searchTerm,
                                     "operator": "and",
-                                    "fuzziness": "1",
+                                    "fuzziness": "2",
                                     "fields": [
                                         "bn.keyword^2",
                                         "Appearances.Appearance.categoryname.keyword"
