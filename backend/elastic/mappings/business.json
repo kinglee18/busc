@@ -662,9 +662,11 @@
           "keyword_analyzer": {
             "filter": [
               "asciifolding_filter",
-              "lowercase"
+              "lowercase",
+              "trim"
             ],
             "ignore_above": "256",
+            "char_filter": ["alphanumeric"],
             "tokenizer": "keyword"
           },
           "keyword_analyzer_dos": {
@@ -697,6 +699,11 @@
           },
           "only_numbers": {
             "pattern": "(\\D)",
+            "type": "pattern_replace",
+            "replacement": ""
+          },
+          "alphanumeric": {
+            "pattern": "[^a-zA-Z0-9\\s]",
             "type": "pattern_replace",
             "replacement": ""
           }

@@ -246,7 +246,7 @@ function categoryQuery(categories) {
                             "categoryname_full_text": { "query": "${category._source.category}" }
                         }
                     },
-                        "boost": "${category._source.score || 1 }"
+                        "boost": "${category.matched_queries.indexOf('by_text_exact') > -1 ? (category._source.score || 1) : 1}"
             }}`);
 
     });
@@ -280,7 +280,7 @@ function getRelatedCategories(searchTerm) {
                             "match_phrase": {
                                 "text": {
                                     "query": searchTerm,
-                                    "_name": "match_phrase_text_full_text"
+                                    "_name": "by_text_exact"
                                     , "boost": 10
                                 }
                             }
