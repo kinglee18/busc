@@ -57,6 +57,10 @@
                   "spanish": {
                     "type": "text",
                     "analyzer": "spanish_analyzer"
+                  },
+                  "keyword": {
+                    "type": "text",
+                    "analyzer": "keyword_analyzer"
                   }
                 }
               },
