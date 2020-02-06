@@ -1,1 +1,2 @@
 ciudad nezahualcoyotl, neza => neza
+gdl, guadalajara
