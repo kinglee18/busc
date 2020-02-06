@@ -94,6 +94,7 @@ function multisearch(page, searchTerm, filter, organicCodes) {
                                     "fuzziness": "1",
                                     "fields": [
                                         "bn.keyword^2",
+                                        "bn.spanish",
                                         "Appearances.Appearance.categoryname.keyword"
                                     ]
                                 }
