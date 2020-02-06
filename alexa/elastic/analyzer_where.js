@@ -207,3 +207,82 @@ exports.getPakmailByState = function (state) {
         }
     ));
 }
+
+
+
+// ***** Gocha *****
+exports.getGocha = function () {
+    return client.search(gochaStructure({
+        "match_all": {}
+    }));
+}
+function gochaStructure(query, sort) {
+    return {
+        "index": "sucursales_gocha",
+        "type": "default",
+        "body": {
+            "size": 150,
+            "from": 0,
+            query, sort
+        }
+    };
+}
+
+exports.getGochaCoordinates = function (lon, lat) {
+    return client.search(gochaStructure({
+        "bool": {
+            "should": [
+                {
+                    "match_all": {}
+                }
+            ],
+            "filter": {
+                "geo_distance": {
+                    "distance": "5km",
+                    "coordinates": [lon, lat]
+                }
+            }
+        },
+
+    },
+        [
+            {
+                "_geo_distance": {
+                    "coordinates": [lon, lat],
+                    "order": "asc",
+                    "unit": "km",
+                    "distance_type": "plane"
+                }
+            }
+        ]
+    ));
+}
+
+exports.getGochaByText = function (text) {
+    return client.search(gochaStructure({
+        "bool": {
+            "should": [
+                {
+                    "match": {
+                        "name": {
+                            "_name": "name",
+                            "query": text,
+                            "boost": 2
+                      }
+                    }
+                },
+                { "match": { "address": text } }
+            ]
+        }
+    }));
+}
+
+exports.getGochaByState = function (state) {
+    return client.search(gochaStructure(
+        {
+            "match_phrase": {
+                "state": state
+            }
+        }
+    ));
+}

@@ -191,3 +191,55 @@ app.listen(3002, () => {
     console.log('Servidor Corriendo');
 })
 
+
+// *****************
+// ***** Gocha *****
+// *****************
+app.get('/sucursalesGocha', (req, res) => {
+    home.getGocha().then(data => {
+        data.hits.hits = data.hits.hits.map(item => {
+            return item._source;
+        });
+        res.send(data.hits.hits)
+    }).catch(error => {
+        res.status(500);
+        console.error(error);
+    });
+})
+
+app.post('/sucursalGocha', (req, res) => {
+    home.getGochaByText(req.body.busqueda).then(data => {
+        data.hits.hits = data.hits.hits.map(item => {
+            return item._source;
+        });
+        res.send(data.hits.hits)
+    }).catch(error => {
+        res.status(500);
+        console.error(error);
+    });
+});
+
+app.post('/stateGocha', (req, res) => {
+    home.getGochaByState(req.body.state).then(data => {
+        data.hits.hits = data.hits.hits.map(item => {
+            return item._source;
+        });
+        res.send(data.hits.hits)
+    }).catch(error => {
+        res.status(500);
+        console.error(error);
+    });
+});
+
+app.post('/sucursalesGochaCoordinates', (req, res) => {
+    home.getGochaCoordinates(req.body.lon, req.body.lat).then(data => {
+        data.hits.hits = data.hits.hits.map(item => {
+            item._source.distance = item.sort[0];
+            return item._source;
+        });
+        res.send(data.hits.hits)
+    }).catch(error => {
+        res.status(500);
+        console.error(error);
+    });
+});
