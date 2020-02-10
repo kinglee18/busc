@@ -10,7 +10,7 @@
           },
           "spanish" : {
             "type" : "text",
-            "analyzer" : "spanish_analyzer"
+            "analyzer" : "cities_analyzer"
           }
         }
       },
@@ -23,7 +23,7 @@
           },
           "spanish" : {
             "type" : "text",
-            "analyzer" : "spanish_analyzer"
+            "analyzer" : "colonies_analyzer"
           }
         }
       },
@@ -126,6 +126,14 @@
           "states_synonym" : {
             "type" : "synonym",
             "synonyms_path" : "states.txt"
+          },
+          "cities_synonym" : {
+            "type" : "synonym",
+            "synonyms_path" : "cities.txt"
+          },
+          "colonies_synonym" : {
+            "type" : "synonym",
+            "synonyms_path" : "colonies.txt"
           }
         },
         "analyzer" : {
@@ -142,6 +150,26 @@
               "asciifolding_filter",
               "lowercase",
               "states_synonym",
+              "stop_words_filter"
+            ],
+            "tokenizer" : "standard"
+          },
+          "cities_analyzer" : {
+            "filter" : [
+              "asciifolding_filter",
+              "lowercase",
+              "states_synonym",
+              "cities_synonym",
+              "stop_words_filter"
+            ],
+            "tokenizer" : "standard"
+          },
+          "colonies_analyzer" : {
+            "filter" : [
+              "asciifolding_filter",
+              "lowercase",
+              "states_synonym",
+              "colonies_synonym",
               "stop_words_filter"
             ],
             "tokenizer" : "standard"
