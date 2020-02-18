@@ -1,7 +1,14 @@
 const client = require('../elastic/client');
 
-
-exports.search = async function (address, text) {
+/** 
+* This function search the address or searchterm in elasticsearch.
+* if address is provided it will perform a phrase search into state, city or zipcode fields, 
+* a cross field search into state and city and a search into colony field including certain cities
+* if searchTerm is provided it will perform a 
+* @param {string} address - placename previously extracted from search
+* @param {string} searchTerm - complete searchTerm
+*/
+exports.search = async function (address, searchTerm) {
   let body = {};
   if (address) {
     body = {
@@ -130,7 +137,7 @@ exports.search = async function (address, text) {
           "should": [
             {
               "multi_match": {
-                "query": text,
+                "query": searchTerm,
                 "fields": [
                   "zc",
                   "state.spanish^8",
@@ -145,12 +152,12 @@ exports.search = async function (address, text) {
                 "must": [
                   {
                     "match": {
-                      "statename": text
+                      "statename": searchTerm
                     }
                   },
                   {
                     "match": {
-                      "city": text
+                      "city": searchTerm
                     }
                   }
                 ],

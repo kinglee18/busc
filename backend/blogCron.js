@@ -51,7 +51,7 @@ function savePostInElastic(posts) {
         index: 'blog_rep',
         body
     }).then(data => {
-        console.log("Se ingresaron nuevos articulos:", posts.length);
+        console.info("Se ingresaron nuevos articulos:", posts.length);
     }).catch(err => {
         console.error(err);
     })

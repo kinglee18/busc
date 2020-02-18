@@ -2,6 +2,7 @@
 const client = require('./client');
 
 /**
+ * @async
  * @param {number} page - Page number to search in elastic db 
  * @param {string} searchTerm - searchTerm
  * @param {string[]} organicCodes - list of organic package codes to filter 
@@ -208,7 +209,7 @@ function sendRequest(page, request, sort, randomSorting, scoreSum = false) {
         searchType: 'dfs_query_then_fetch',
         "track_total_hits": true
     };
-    console.log(JSON.stringify(requestBody));
+    //console.log(JSON.stringify(requestBody));
     return client.getClient().search(requestBody);
 }
 
@@ -492,8 +493,9 @@ function getAutocompleteSuggestion(prefix, place) {
 }
 
 /**
- * 
+ * @description  contains suggestion based in products and services of the business in db
  * @param {string} term - search term to search in categories, products and services
+ * @returns {Promise<object>} - elasticsearch result  
  */
 function getSuggestion(term) {
     const request = {
