@@ -1,5 +1,5 @@
 {
-  "name": "bkv6",
+  "name": "searchEngine",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,7 +8,6 @@
     "integration-tests": "mocha 'test/integration/*.spec.js' --timeout 15000",
     "unit-tests": "mocha 'test/unit/*.spec.js' --timeout 15000"
   },
-  "author": "eduardo.hernandez@seccionamarilla.com",
   "license": "ISC",
   "dependencies": {
     "@google/maps": "^0.5.5",
@@ -17,6 +16,9 @@
     "clear": "^0.1.0",
     "cors": "^2.8.5",
     "elasticsearch": "16.5.0",
+    "esdoc": "^1.1.0",
+    "esdoc-node": "^1.0.5",
+    "esdoc-standard-plugin": "^1.0.0",
     "express": "^4.16.3",
     "iconv-lite": "^0.4.23",
     "node-cron": "^2.0.3",

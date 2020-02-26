@@ -14,11 +14,13 @@ app.use(websiteRoutes.routes)
 
 /**
  * @param {port} 
+ * @description Runs the server in port 3008 by default it takes the
+ * parameters from config.json file
  */
 http.listen(port = 3008, function () {
     const envName = process.argv.slice(2)[0] || 'prod';
     process.env = Object.assign(process.env, config[envName])
-    console.log("servidor corriendo en ambiente ", envName);
+    console.info("servidor corriendo en ambiente ", envName);
 });
 
 /**
@@ -28,4 +30,4 @@ cron.schedule('0 3 * * *', () => {
     articlesJob.blogCron();
 });
 
-module.exports = {app}
+module.exports = { app }

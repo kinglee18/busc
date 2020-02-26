@@ -7,10 +7,17 @@ const blog = require('./elastic/blog');
 const products = require('./elastic/products');
 
 /**
- * @desc Retrieves all business related by name, category, products and services
- * @param {string} req.query.searchTerm -business, category or location or  product
+ * @desc Retrieves all business related by name, category, products and services from elasticsearch
+ * @param {string} req.query.searchTerm - businessname, category or location or  product
  * @param {string} req.query.lat - browser detected latitude
  * @param {string} req.query.lng - browser detected longitude
+ * @param {string} req.query.organic - a flag that determines if the query will contain business with certain packages
+ * @param {string} req.query.physicalstate -filter query by state
+ * @param {string} req.query.physicalcity -filter query by city
+ * @param {string} req.query.colony -filter query by colony
+ * @param {number} req.query.category_id - filter by category using their own id 
+ * @param {string} req.query.show_business - if boolean is false , the server 
+ * will just return the analyzed search term and address in diferent fields 
  * @returns {object} responseObj - f
  * 
  */
@@ -41,42 +48,7 @@ routes.get('/node', (req, res) => {
             ).then((response) => {
                 const businessInfo = response[0];
                 const textSuggest = response[1];
-                let responseObj = {};
-                if (showBusiness) {
-                    responseObj = {
-                        total: businessInfo.hits.total.value,
-                        info: parseElasticElements(businessInfo.hits.hits),
-                        filters: {
-                            physicalcity: businessInfo.aggregations.physicalcity.buckets.map(e => e.key),
-                            colony: businessInfo.aggregations.colony.buckets.map(e => e.key),
-                            categories: businessInfo.aggregations.categoryIds.buckets.map((e, index) => { return {
-                                 "id": e.key,
-                                 "name": e.categoryNames.buckets[0].key
-                            } }),
-                            state: businessInfo.aggregations.state.buckets.map(e => e.key)
-                        }
-                    };
-                }
-
-                if (json.location) {
-                    responseObj.location = {
-                        colony: json.location.colony,
-                        physicalcity: json.location.physicalcity,
-                        physicalstate: json.location.physicalstate,
-                        postal_code: json.location.postalCode,
-                        search_term: json.newSearchTerm
-                    }
-                } else {
-                    responseObj.location = {
-                        search_term: json.newSearchTerm
-                    }
-                }
-
-                if (textSuggest.suggest.services[0].options.length) {
-                    responseObj.suggest = textSuggest.suggest.services[0].options[0].text;
-
-                }
-                res.status(200).send(responseObj);
+                res.status(200).send(createResponseBody(businessInfo, textSuggest, showBusiness, json));
             }).catch(error => {
                 console.error(error);
                 res.status(500).send(error);
@@ -87,12 +59,66 @@ routes.get('/node', (req, res) => {
     }
 });
 
+
+/**
+ * 
+ * @param {object} businessInfo - elasticsearch response that contains query results and aggregations
+ * @param {object} textSuggest - text suggestion related with the search term
+ * @param {boolean} showBusiness - flag that indicates if it is just and a text analysis or complete query
+ * @param {object} analysis - address obtained in the analysis process provided by elasticsearch 
+ */
+function createResponseBody(businessInfo, textSuggest, showBusiness, analysis) {
+    let responseObj = {};
+    if (showBusiness) {
+        responseObj = {
+            total: businessInfo.hits.total.value,
+            info: parseElasticElements(businessInfo.hits.hits),
+            filters: {
+                physicalcity: businessInfo.aggregations.physicalcity.buckets.map(e => e.key),
+                colony: businessInfo.aggregations.colony.buckets.map(e => e.key),
+                categories: businessInfo.aggregations.categoryIds.buckets.map((e, index) => {
+                    return {
+                        "id": e.key,
+                        "name": e.categoryNames.buckets[0].key
+                    }
+                }),
+                state: businessInfo.aggregations.state.buckets.map(e => e.key)
+            }
+        };
+    }
+
+    if (analysis.location) {
+        responseObj.location = {
+            colony: analysis.location.colony,
+            physicalcity: analysis.location.physicalcity,
+            physicalstate: analysis.location.physicalstate,
+            postal_code: analysis.location.postalCode,
+            search_term: analysis.newSearchTerm
+        }
+    } else {
+        responseObj.location = {
+            search_term: analysis.newSearchTerm
+        }
+    }
+
+    if (textSuggest.suggest.services[0].options.length) {
+        responseObj.suggest = textSuggest.suggest.services[0].options[0].text;
+    }
+    return responseObj;
+}
+
 function parseElasticElements(elements) {
     return elements.map(obj => {
         return obj._source;
     });
 }
 
+/**
+ * 
+ * @param {object} params - paremeters from query params
+ * @param {number} params.lat - latitude provided by browser navigator
+ * @param {number} params.lng - longitude provided by browser navigator
+ */
 function validParams(params) {
     if ((params.lat && !params.lng) || (!params.lat && params.lng)) {
         return { valid: false, msg: 'malformed coordinates' };
@@ -207,6 +233,7 @@ routes.get('/node/suggest', function (req, res) {
         res.status(200).send(ele);
 
     }).catch(err => {
+        res.status(500).send(err);
         console.error(err);
     });
 });
