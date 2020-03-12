@@ -158,7 +158,6 @@
             "filter" : [
               "asciifolding_filter",
               "lowercase",
-              "states_synonym",
               "cities_synonym",
               "stop_words_filter"
             ],

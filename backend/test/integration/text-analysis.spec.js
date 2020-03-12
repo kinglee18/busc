@@ -89,6 +89,12 @@ describe('--------------', () => {
                 "physicalstate": "MEXICO",
                 "search_term": "telefonos"
             }
+        },
+        {
+            input: "telefonos en mty", output: {
+                "physicalstate": "NUEVO LEON",
+                "search_term": "telefonos"
+            }
         }
     ];
     for (var i of tests) {
