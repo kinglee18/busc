@@ -4,7 +4,8 @@ const config = require('../config');
 
 const elasticsearch = require('elasticsearch');
 const client = new elasticsearch.Client({
-    host: config.ip
+    host: config.ip,
+    httpAuth: config.elasticAuth
 });
 
 

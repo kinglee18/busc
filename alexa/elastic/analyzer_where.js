@@ -2,7 +2,8 @@
 const config = require('../config');
 const elasticsearch = require('elasticsearch');
 const client = new elasticsearch.Client({
-    host: config.ip
+    host: config.ip,
+    httpAuth: config.elasticAuth
 });
 
 
@@ -134,7 +135,6 @@ exports.query_wheres_colony = function (tx, estado) {
 function pakmailStructure(query, sort) {
     return {
         "index": "sucursales_pakmail",
-        "type": "default",
         "body": {
             "size": 150,
             "from": 0,
@@ -219,7 +219,6 @@ exports.getGocha = function () {
 function gochaStructure(query, sort) {
     return {
         "index": "sucursales_gocha",
-        "type": "default",
         "body": {
             "size": 150,
             "from": 0,
