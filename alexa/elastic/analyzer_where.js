@@ -146,6 +146,10 @@ function pakmailStructure(query, sort) {
 exports.getPakmail = function () {
     return client.search(pakmailStructure({
         "match_all": {}
+    }, {
+        "name.raw": {
+            "order": "asc"
+          }
     }));
 }
 
