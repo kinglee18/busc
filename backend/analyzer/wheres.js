@@ -19,7 +19,9 @@ exports.where = function (searchTerm) {
                         resolve({ address, newSearchTerm: extractPlace(address, searchTerm) })
                     });
                 }
-            });
+            }).catch(err=> {
+                console.error(err);
+            })
         } else {
             maps.search(nv.place, searchTerm).then((address) => {
                 resolve({ address, newSearchTerm: address ? nv.texto : searchTerm })

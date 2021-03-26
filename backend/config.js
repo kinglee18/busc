@@ -1,6 +1,6 @@
 module.exports = {
     dev: {
-        ip: 'https://10.34.180.131:9200',
+        ip: 'https://10.34.180.15:9200',
         negocios: 'businesslistingsacom',
         products: 'claro_shop_rep',
         blog: 'blog_rep',

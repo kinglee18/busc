@@ -209,7 +209,7 @@ function sendRequest(page, request, sort, randomSorting, scoreSum = false) {
         searchType: 'dfs_query_then_fetch',
         "track_total_hits": true
     };
-    //console.log(JSON.stringify(requestBody));
+    console.log(JSON.stringify(requestBody));
     return client.getClient().search(requestBody);
 }
 
@@ -248,7 +248,7 @@ function categoryQuery(categories) {
                             "categoryname_full_text": { "query": "${category._source.category}" }
                         }
                     },
-                        "boost": "${category.matched_queries.indexOf('by_text_exact') > -1 ? (category._source.score || 1) : 1}"
+                        "boost": "${category.matched_queries.indexOf('by_text_exact') > -1 ? (category._source.score || 2) : 1}"
             }}`);
 
     });
@@ -280,7 +280,7 @@ function getRelatedCategories(searchTerm) {
                         },
                         {
                             "match_phrase": {
-                                "text": {
+                                "category.keyword": {
                                     "query": searchTerm,
                                     "_name": "by_text_exact"
                                     , "boost": 10
@@ -316,6 +316,7 @@ function getRelatedCategories(searchTerm) {
             size: 200
         }
     }
+    console.log(body);
     return client.getClient().search(body);
 }
 
