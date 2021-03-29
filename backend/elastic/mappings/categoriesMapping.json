@@ -38,6 +38,13 @@
   "settings": {
     "index": {
       "analysis": {
+        "char_filter": {
+          "my_char_filter": {
+            "type": "pattern_replace",
+            "pattern": "-",
+            "replacement": ""
+          }
+        },
         "filter": {
           "synonym": {
             "type": "synonym",
@@ -78,6 +85,9 @@
             "tokenizer": "standard"
           },
           "spanish_keyword": {
+            "char_filter": [
+              "my_char_filter"
+            ],
             "filter": [
               "apostrophe",
               "asciifolding_filter",
