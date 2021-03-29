@@ -47,8 +47,8 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
                             "bool": {
                                 should: should.concat([
                                     {
-                                        "match": {
-                                            "productservices.prdserv.keyword": {
+                                        "match_phrase": {
+                                            "productservices.prdserv.spanish": {
                                                 "query": searchTerm,
                                                 "boost": 0
                                             }
@@ -209,7 +209,7 @@ function sendRequest(page, request, sort, randomSorting, scoreSum = false) {
         searchType: 'dfs_query_then_fetch',
         "track_total_hits": true
     };
-    console.log(JSON.stringify(requestBody));
+    //console.log(JSON.stringify(requestBody));
     return client.getClient().search(requestBody);
 }
 
@@ -325,7 +325,7 @@ function getRelatedCategories(searchTerm) {
             size: 200
         }
     }
-    //console.log(JSON.stringify(body));
+    console.log(JSON.stringify(body));
     return client.getClient().search(body);
 }
 
