@@ -248,7 +248,7 @@ function categoryQuery(categories) {
                             "categoryname_full_text": { "query": "${category._source.category}" }
                         }
                     },
-                        "boost": "${category.matched_queries.indexOf('by_text_exact') > -1 ? (category._source.score || 2) : 1}"
+                        "boost": "${(category.matched_queries.indexOf('by_text_exact') > -1) || category.matched_queries.indexOf('by_text_exact2') > -1 ? (category._source.score || 2) : 1}"
             }}`);
 
     });
@@ -275,6 +275,15 @@ function getRelatedCategories(searchTerm) {
                                 "category": {
                                     "query": searchTerm,
                                     "_name": "match_cat"
+                                }
+                            }
+                        },
+                        {
+                            "match_phrase": {
+                                "category.keyword": {
+                                    "query": `${searchTerm}-`,
+                                    "_name": "by_text_exact2"
+                                    , "boost": 10
                                 }
                             }
                         },
@@ -316,7 +325,7 @@ function getRelatedCategories(searchTerm) {
             size: 200
         }
     }
-    console.log(body);
+    //console.log(JSON.stringify(body));
     return client.getClient().search(body);
 }
 
