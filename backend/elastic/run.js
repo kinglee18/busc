@@ -248,7 +248,7 @@ function categoryQuery(categories) {
                             "categoryname_full_text": { "query": "${category._source.category}" }
                         }
                     },
-                        "boost": "${(category.matched_queries.indexOf('by_text_exact') > -1) || category.matched_queries.indexOf('by_text_exact2') > -1 ? (category._source.score || 2) : 1}"
+                        "boost": "${(category.matched_queries.indexOf('by_text_exact') > -1)  ? (category._source.score || 100) : 1}"
             }}`);
 
     });
@@ -281,34 +281,19 @@ function getRelatedCategories(searchTerm) {
                         {
                             "match_phrase": {
                                 "category.keyword": {
-                                    "query": `${searchTerm}-`,
-                                    "_name": "by_text_exact2"
+                                    "query": searchTerm,
+                                    "_name": "exact_cat"
                                     , "boost": 10
                                 }
                             }
                         },
                         {
                             "match_phrase": {
-                                "category.keyword": {
+                                "text": {
                                     "query": searchTerm,
                                     "_name": "by_text_exact"
                                     , "boost": 10
                                 }
-                            }
-                        },
-                        {
-                            "bool": {
-                                "must": [
-                                    {
-                                        "match_phrase": {
-                                            "category.keyword": {
-                                                "query": searchTerm,
-                                                "_name": "match_phrase_category",
-                                                "boost": 15
-                                            }
-                                        }
-                                    }
-                                ]
                             }
                         }
                     ]
@@ -325,7 +310,7 @@ function getRelatedCategories(searchTerm) {
             size: 200
         }
     }
-    console.log(JSON.stringify(body));
+    // console.log(JSON.stringify(body));
     return client.getClient().search(body);
 }
 
