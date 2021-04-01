@@ -126,14 +126,14 @@ function sendRequest(page, request, sort, randomSorting, scoreSum = false) {
                     {},
                     request,
                     randomSorting ? { "random_score": {} } : {},
-                    (!randomSorting && scoreSum) ? {
+                     {
                         "boost_mode": "sum",
                         "script_score": {
                             "script": {
                                 "source": "doc['points'].size() > 0 ? doc['points'].value: 10"
                             }
                         }
-                    } : {}
+                    } 
                 )
             },
             sort

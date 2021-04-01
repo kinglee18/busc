@@ -678,6 +678,9 @@
             "tokenizer": "keyword"
           },
           "spanish_analyzer": {
+            "char_filter": [
+              "my_char_filter"
+            ],
             "filter": [
               "apostrophe",
               "asciifolding_filter",
@@ -706,6 +709,11 @@
             "pattern": "[^a-zA-Z0-9\\s]",
             "type": "pattern_replace",
             "replacement": ""
+          },
+          "my_char_filter": {
+            "type": "pattern_replace",
+            "pattern": "-",
+            "replacement": " "
           }
         }
       }
