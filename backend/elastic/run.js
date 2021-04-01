@@ -24,7 +24,7 @@ const client = require('./client');
  * @return {Promise<>}.
  */
 function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, paymentTypes, address, coordinates) {
-    const SCORE_AND_POINTS_SORTING = [ "_score",  { "points": { "order": "desc" } }].concat(alphabeticalOrder());
+    const SCORE_AND_POINTS_SORTING = [ "_score",].concat(alphabeticalOrder());
     let should = [], filter = [];
     filter = filter.concat(
         getAddressFilter(address, coordinates),
