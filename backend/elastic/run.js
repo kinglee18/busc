@@ -204,9 +204,9 @@ function categoryQuery(categories) {
                                 "query": "${category._source.category}" ,
                             "_name": "${category._source.category}__cat"
                         }
-                        }
-                    
-            }`);
+                    },
+                        "boost": "${(category.matched_queries.indexOf('by_text_exact') > -1) || category.matched_queries.indexOf('by_text_exact2') > -1 ? (category._source.score || 2) : 1}"
+            }}`);
 
     });
 
@@ -235,19 +235,34 @@ function getRelatedCategories(searchTerm) {
                         {
                             "match_phrase": {
                                 "category.keyword": {
-                                    "query": searchTerm,
-                                    "_name": "exact_cat"
+                                    "query": `${searchTerm}-`,
+                                    "_name": "by_text_exact2"
                                     , "boost": 10
                                 }
                             }
                         },
                         {
                             "match_phrase": {
-                                "text": {
+                                "category.keyword": {
                                     "query": searchTerm,
                                     "_name": "by_text_exact"
                                     , "boost": 10
                                 }
+                            }
+                        },
+                        {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match_phrase": {
+                                            "category.keyword": {
+                                                "query": searchTerm,
+                                                "_name": "match_phrase_category",
+                                                "boost": 15
+                                            }
+                                        }
+                                    }
+                                ]
                             }
                         }
                     ]
@@ -264,7 +279,7 @@ function getRelatedCategories(searchTerm) {
             size: 200
         }
     }
-    // console.log(JSON.stringify(body));
+    console.log(JSON.stringify(body));
     return client.getClient().search(body);
 }
 
