@@ -24,7 +24,7 @@ const client = require('./client');
  * @return {Promise<>}.
  */
 function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, paymentTypes, address, coordinates) {
-    const SCORE_AND_POINTS_SORTING = [ "_score",].concat(alphabeticalOrder());
+    const SCORE_AND_POINTS_SORTING = ["_score", { "points": { "order": "desc" } }].concat(alphabeticalOrder());
     let should = [], filter = [];
     filter = filter.concat(
         getAddressFilter(address, coordinates),
@@ -40,77 +40,121 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
     return getRelatedCategories(searchTerm).then(categories => {
         if (categories.hits.total.value) {
             should = should.concat(categoryQuery(categories));
-        }
-        var requestBody = {
-            "query": {
-                "bool": {
-                    "must": {
-                        "bool": {
-                            should: [
-                                {
-                                    "match_phrase": {
-                                        "bn.keyword": { 
-                                            "query": searchTerm, 
-                                            "_name": "nombre del negocio  exacto",
-                                            "boost": 3
+            var requestBody = {
+                "query": {
+                    "bool": {
+                        "must": {
+                            "bool": {
+                                should: should.concat([
+                                    {
+                                        "match_phrase": {
+                                            "productservices.prdserv.spanish": {
+                                                "query": searchTerm,
+                                                "boost": 0
+                                            }
                                         }
                                     }
-                                },
-                                {
-                                    "match": {
-                                        "bn": {
-                                            "query": searchTerm, 
-                                            "_name": "nombre de negocio parcial",
-                                            "operator": "or"
-                                        }
-                                    }
-                                },
-                                {
-                                    "match_phrase": {
-                                        "categoryname_full_text": {
-                                            "query": searchTerm,
-                                            "_name": "categoria completa"
-                                        }
-                                    }
-                                },
-                                {
-                                    "match_phrase": {
-                                        "Appearances.Appearance.categoryname.spanish": {
-                                            "query": searchTerm,
-                                            "_name": "categoria fuzzy"
-                                        }
-                                    }
-                                },
-                                {
-                                    "match_phrase": {
-                                        "productservices.prdserv.keyword": {
-                                            "query": searchTerm,
-                                            "_name": "servicios exactos"
-                                        }
-                                    }
-                                },
-                                {
-                                    "match": {
-                                        "productservices.prdserv.spanish": {
-                                            "query": searchTerm,
-                                            "operator": "and",
-                                            "_name": "servicios con sinonimos o plurales"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    filter
+                                ])
+                            }
+                        },
+                        filter
+                    }
                 }
             }
+            return sendRequest(page, requestBody, SCORE_AND_POINTS_SORTING, organicCodes).then(response => {
+                if (response.hits.hits === 0) {
+                    return multisearch(page, searchTerm, filter, organicCodes);
+                } else {
+                    return new Promise((resolve, reject) => {
+                        resolve(response);
+                    });
+                }
+            });
+        } else {
+            return multisearch(page, searchTerm, filter, organicCodes);
         }
-        return sendRequest(page, requestBody, SCORE_AND_POINTS_SORTING, organicCodes);
-       
     });
 }
 
-
+function multisearch(page, searchTerm, filter, organicCodes) {
+    const requestBody = {
+        "query": {
+            "bool": {
+                must: {
+                    bool: {
+                        should: [
+                            {
+                                "match_phrase": {
+                                    "bn.keyword": { "query": searchTerm, "_name": "match_phrase_bn", "boost": 7 }
+                                }
+                            },
+                            {
+                                "multi_match": {
+                                    "query": searchTerm,
+                                    "operator": "and",
+                                    "fuzziness": "1",
+                                    "fields": [
+                                        "bn.keyword^2",
+                                        "bn.spanish",
+                                        "Appearances.Appearance.categoryname.keyword"
+                                    ]
+                                }
+                            },
+                            {
+                                "match": {
+                                    "productservices.prdserv.spanish": {
+                                        "query": searchTerm,
+                                        "operator": "and",
+                                        "_name": "match_phrase_prdserv"
+                                    }
+                                }
+                            },
+                            {
+                                "multi_match": {
+                                    "query": searchTerm,
+                                    "fields": [
+                                        "productservices.prdserv.keyword",
+                                        "brands.brandname.keyword",
+                                        "brands.brandname"
+                                    ],
+                                    "operator": "and"
+                                }
+                            },
+                            {
+                                "multi_match": {
+                                    "query": searchTerm,
+                                    "type": "cross_fields",
+                                    "fields": [
+                                        "productservices.prdserv.spanish",
+                                        "Appearances.Appearance.categoryname.spanish",
+                                        "bn",
+                                        "bn.spanish",
+                                        "brands.brandname"
+                                    ],
+                                    "operator": "and"
+                                }
+                            },
+                            {
+                                "nested": {
+                                    "path": "phones",
+                                    "query": {
+                                        "match_phrase": {
+                                            "phones.phone.number": {
+                                                "query": searchTerm
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                },
+                filter
+            }
+        }
+    }
+    return sendRequest(page, requestBody, ["_score"].concat(alphabeticalOrder()), organicCodes, true);
+}
 
 
 function sendRequest(page, request, sort, randomSorting, scoreSum = false) {
@@ -126,14 +170,14 @@ function sendRequest(page, request, sort, randomSorting, scoreSum = false) {
                     {},
                     request,
                     randomSorting ? { "random_score": {} } : {},
-                     {
+                    (!randomSorting && scoreSum) ? {
                         "boost_mode": "sum",
                         "script_score": {
                             "script": {
                                 "source": "doc['points'].size() > 0 ? doc['points'].value: 10"
                             }
                         }
-                    } 
+                    } : {}
                 )
             },
             sort
@@ -196,20 +240,22 @@ function categoryQuery(categories) {
     categories = categories.hits.hits.map(category => {
         return category;
     });
-    return categories = categories.map(category => {
+    categories = categories.map(category => {
         return JSON.parse(`{
-            
-                        "match_phrase": {
-                            "categoryname_full_text": { 
-                                "query": "${category._source.category}" ,
-                            "_name": "${category._source.category}__cat"
+                "constant_score":{
+                    "filter": {
+                        "match": {
+                            "categoryname_full_text": { "query": "${category._source.category}" }
                         }
                     },
                         "boost": "${(category.matched_queries.indexOf('by_text_exact') > -1) || category.matched_queries.indexOf('by_text_exact2') > -1 ? (category._source.score || 2) : 1}"
             }}`);
 
     });
-
+    return Array.from(new Set(categories.map(a =>
+        a.constant_score.filter.match.categoryname_full_text.query))).map(id => {
+            return categories.find(a => a.constant_score.filter.match.categoryname_full_text.query === id)
+        });
 }
 
 /**
