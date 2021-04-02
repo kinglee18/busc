@@ -104,7 +104,7 @@ descremado, desnatado
 deshuesadero, yonke 
 desponchadora, vulcanizadora 
 disfonia, afonia , carraspera , enronquecimiento , ronquera 
-doctor, doctora, facultativo, galeno, médico, matasanos, medicastro, medico, mediquin 
+doctor, doctora, galeno, médico, matasanos, medicastro, medico, mediquin 
 dvds, video digital 
 educador, maestro, pedagogo 
 elevador, ascensor, asensor 
