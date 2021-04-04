@@ -1,6 +1,6 @@
 abarrotes,abarrotera 
 abastecimiento,abasto, aprovisionamiento ,avituallamiento ,provision ,suministro 
-academia, academias ,colegio ,escuela ,facultad ,institucion ,instituto 
+academia, academias ,colegio ,escuela ,institucion ,instituto 
 camping, acampada, acampamiento, alpinismo, campamento, campismo, montana, montanismo 
 acarpia,aforia ,esterilidad ,infecundidad ,infertilidad 
 acidez, agruras ,gastro ,gastroenterologo 

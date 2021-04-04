@@ -36,116 +36,17 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
         return sendRequest(page, { "query": { "bool": { filter } } }, [{ "points": { "order": "desc" } }].concat(alphabeticalOrder()), organicCodes);
     }
     searchTerm = stopPhrases(searchTerm);
-
-    return getRelatedCategories(searchTerm).then(categories => {
-        if (categories.hits.total.value) {
-            should = should.concat(categoryQuery(categories));
-            var requestBody = {
-                "query": {
-                    "bool": {
-                        "must": {
-                            "bool": {
-                                should: should.concat([
-                                    {
-                                        "match_phrase": {
-                                            "productservices.prdserv.spanish": {
-                                                "query": searchTerm,
-                                                "boost": 0
-                                            }
-                                        }
-                                    }
-                                ])
-                            }
-                        },
-                        filter
-                    }
-                }
-            }
-            return sendRequest(page, requestBody, SCORE_AND_POINTS_SORTING, organicCodes).then(response => {
-                if (response.hits.hits === 0) {
-                    return multisearch(page, searchTerm, filter, organicCodes);
-                } else {
-                    return new Promise((resolve, reject) => {
-                        resolve(response);
-                    });
-                }
-            });
-        } else {
-            return multisearch(page, searchTerm, filter, organicCodes);
-        }
-    });
-}
-
-function multisearch(page, searchTerm, filter, organicCodes) {
-    const requestBody = {
+    var requestBody = {
         "query": {
             "bool": {
-                must: {
-                    bool: {
+                "must": {
+                    "bool": {
                         should: [
-                            {
-                                "match_phrase": {
-                                    "bn.keyword": { "query": searchTerm, "_name": "match_phrase_bn", "boost": 7 }
-                                }
-                            },
-                            {
-                                "multi_match": {
-                                    "query": searchTerm,
-                                    "operator": "and",
-                                    "fuzziness": "1",
-                                    "fields": [
-                                        "bn.keyword^2",
-                                        "bn.spanish",
-                                        "Appearances.Appearance.categoryname.keyword"
-                                    ]
-                                }
-                            },
-                            {
-                                "match": {
-                                    "productservices.prdserv.spanish": {
-                                        "query": searchTerm,
-                                        "operator": "and",
-                                        "_name": "match_phrase_prdserv"
-                                    }
-                                }
-                            },
-                            {
-                                "multi_match": {
-                                    "query": searchTerm,
-                                    "fields": [
-                                        "productservices.prdserv.keyword",
-                                        "brands.brandname.keyword",
-                                        "brands.brandname"
-                                    ],
-                                    "operator": "and"
-                                }
-                            },
-                            {
-                                "multi_match": {
-                                    "query": searchTerm,
-                                    "type": "cross_fields",
-                                    "fields": [
-                                        "productservices.prdserv.spanish",
-                                        "Appearances.Appearance.categoryname.spanish",
-                                        "bn",
-                                        "bn.spanish",
-                                        "brands.brandname"
-                                    ],
-                                    "operator": "and"
-                                }
-                            },
-                            {
-                                "nested": {
-                                    "path": "phones",
-                                    "query": {
-                                        "match_phrase": {
-                                            "phones.phone.number": {
-                                                "query": searchTerm
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                            constantScore('match', searchTerm, 'Appearances.Appearance.categoryname.spanish', 1),
+                            constantScore('match_phrase', searchTerm, 'Appearances.Appearance.categoryname.keyword', 1),
+                            constantScore('match_phrase', searchTerm, 'bn.keyword', 1),
+                            constantScore('match_phrase', searchTerm, 'bn.spanish', 1),
+                            constantScore('match_phrase', searchTerm, 'productservices.prdserv.keyword', 0)
                         ]
                     }
                 },
@@ -153,9 +54,10 @@ function multisearch(page, searchTerm, filter, organicCodes) {
             }
         }
     }
-    return sendRequest(page, requestBody, ["_score"].concat(alphabeticalOrder()), organicCodes, true);
-}
+    return sendRequest(page, requestBody, SCORE_AND_POINTS_SORTING, organicCodes);
 
+    
+}
 
 function sendRequest(page, request, sort, randomSorting, scoreSum = false) {
     sort = randomSorting ? {} : sort;
@@ -174,7 +76,7 @@ function sendRequest(page, request, sort, randomSorting, scoreSum = false) {
                         "boost_mode": "sum",
                         "script_score": {
                             "script": {
-                                "source": "doc['points'].size() > 0 ? doc['points'].value: 10"
+                                "source": "doc['points'].size() > 10 ? 1: 0"
                             }
                         }
                     } : {}
@@ -236,97 +138,18 @@ function stopPhrases(searchTerm) {
  * @param {Array<object>} categories - categories name to put in query 
  * @return {Array<object>}
 */
-function categoryQuery(categories) {
-    categories = categories.hits.hits.map(category => {
-        return category;
-    });
-    categories = categories.map(category => {
-        return JSON.parse(`{
-                "constant_score":{
-                    "filter": {
-                        "match": {
-                            "categoryname_full_text": { "query": "${category._source.category}" }
-                        }
-                    },
-                        "boost": "${(category.matched_queries.indexOf('by_text_exact') > -1) || category.matched_queries.indexOf('by_text_exact2') > -1 ? (category._source.score || 2) : 1}"
-            }}`);
-
-    });
-    return Array.from(new Set(categories.map(a =>
-        a.constant_score.filter.match.categoryname_full_text.query))).map(id => {
-            return categories.find(a => a.constant_score.filter.match.categoryname_full_text.query === id)
-        });
-}
-
-/**
- * 
- * @param {string} searchTerm - term to search 
- * @returns {Promise>} - Returns a elasticsearch result with the related categories from db
- */
-function getRelatedCategories(searchTerm) {
-    const body = {
-        "index": 'mexobjectsdefinition',
-        "body": {
-            "query": {
-                "bool": {
-                    "should": [
-                        {
-                            "match_phrase": {
-                                "category": {
-                                    "query": searchTerm,
-                                    "_name": "match_cat"
-                                }
-                            }
-                        },
-                        {
-                            "match_phrase": {
-                                "category.keyword": {
-                                    "query": `${searchTerm}-`,
-                                    "_name": "by_text_exact2"
-                                    , "boost": 10
-                                }
-                            }
-                        },
-                        {
-                            "match_phrase": {
-                                "category.keyword": {
-                                    "query": searchTerm,
-                                    "_name": "by_text_exact"
-                                    , "boost": 10
-                                }
-                            }
-                        },
-                        {
-                            "bool": {
-                                "must": [
-                                    {
-                                        "match_phrase": {
-                                            "category.keyword": {
-                                                "query": searchTerm,
-                                                "_name": "match_phrase_category",
-                                                "boost": 15
-                                            }
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    ]
+function constantScore(matchType, query, field, boost = 1) {
+    return JSON.parse(`{
+        "constant_score":{
+            "filter": {
+                "${matchType}": {
+                    "${field}": { "query": "${query}" }
+                   
                 }
             },
-            "sort": [
-                "_score",
-                {
-                    "score": {
-                        "order": "desc"
-                    }
-                }
-            ],
-            size: 200
-        }
-    }
-    console.log(JSON.stringify(body));
-    return client.getClient().search(body);
+            "boost": "${boost}",
+            "_name": "${matchType} ${field}"
+    }}`);
 }
 
 function alphabeticalOrder() {
