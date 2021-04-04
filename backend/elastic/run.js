@@ -46,7 +46,7 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
                             constantScore('match_phrase', searchTerm, 'Appearances.Appearance.categoryname.keyword', 1),
                             constantScore('match_phrase', searchTerm, 'bn.keyword', 1),
                             constantScore('match_phrase', searchTerm, 'bn.spanish', 1),
-                            constantScore('match_phrase', searchTerm, 'productservices.prdserv.keyword', 1) 
+                            constantScore('match_phrase', searchTerm, 'productservices.prdserv.keyword', 1),
                         ]
                     }
                 },
@@ -59,7 +59,7 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
     
 }
 
-function sendRequest(page, request, sort, randomSorting, scoreSum = false) {
+function sendRequest(page, request, sort, randomSorting) {
     sort = randomSorting ? {} : sort;
     const pagination = {
         "from": page * 20,
@@ -72,14 +72,14 @@ function sendRequest(page, request, sort, randomSorting, scoreSum = false) {
                     {},
                     request,
                     randomSorting ? { "random_score": {} } : {},
-                    (!randomSorting && scoreSum) ? {
+                    {
                         "boost_mode": "sum",
                         "script_score": {
                             "script": {
-                                "source": "doc['points'].size() > 10 ? 1: 0"
+                                "source": "doc['points'].size() === 10 ? 1: 0"
                             }
                         }
-                    } : {}
+                    }
                 )
             },
             sort
@@ -143,8 +143,10 @@ function constantScore(matchType, query, field, boost = 1) {
         "constant_score":{
             "filter": {
                 "${matchType}": {
-                    "${field}": { "query": "${query}" }
-                   
+                    "${field}": { 
+                        "query": "${query}"
+                        ${matchType === 'match' ?',"operator": "and"': ''}
+                    }
                 }
             },
             "boost": "${boost}",
