@@ -109,7 +109,7 @@ function createResponseBody(businessInfo, textSuggest, showBusiness, analysis) {
 
 function parseElasticElements(elements) {
     return elements.map(obj => {
-        return obj;
+        return obj._source;
     });
 }
 
