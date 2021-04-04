@@ -660,13 +660,17 @@
             "tokenizer": "standard"
           },
           "keyword_analyzer": {
+            "char_filter": [
+              "my_char_filter"
+            ],
             "filter": [
+              "trim",
+              "apostrophe",
               "asciifolding_filter",
               "lowercase",
-              "trim"
+              "custom_stems",
+              "spanish_stemmer"
             ],
-            "ignore_above": "256",
-            "char_filter": ["alphanumeric"],
             "tokenizer": "keyword"
           },
           "keyword_analyzer_dos": {
