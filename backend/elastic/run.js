@@ -46,7 +46,7 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
                             constantScore('match_phrase', searchTerm, 'Appearances.Appearance.categoryname.keyword', 1),
                             constantScore('match_phrase', searchTerm, 'bn.keyword', 1),
                             constantScore('match_phrase', searchTerm, 'bn.spanish', 1),
-                            constantScore('match_phrase', searchTerm, 'productservices.prdserv.keyword', 1)
+                            constantScore('match_phrase', searchTerm, 'productservices.prdserv.keyword', 1) 
                         ]
                     }
                 },
