@@ -24,8 +24,8 @@ const client = require('./client');
  * @return {Promise<>}.
  */
 function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, paymentTypes, address, coordinates) {
-    const SCORE_AND_POINTS_SORTING = ["_score", { "points": { "order": "desc" } }].concat(alphabeticalOrder());
-    let should = [], filter = [];
+    const SCORE_AND_POINTS_SORTING = [{ "points": { "order": "desc" } }, "_score",].concat(alphabeticalOrder());
+    let filter = [];
     filter = filter.concat(
         getAddressFilter(address, coordinates),
         organicCodes ? [{ match: { listingtype: organicCodes.join(' ') } }] : [],
