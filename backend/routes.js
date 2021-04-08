@@ -109,6 +109,8 @@ function createResponseBody(businessInfo, textSuggest, showBusiness, analysis) {
 
 function parseElasticElements(elements) {
     return elements.map(obj => {
+        obj._source.score = obj._score;
+        obj._source.queries = obj.matched_queries;
         return obj._source;
     });
 }

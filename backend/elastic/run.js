@@ -24,7 +24,7 @@ const client = require('./client');
  * @return {Promise<>}.
  */
 function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, paymentTypes, address, coordinates) {
-    const SCORE_AND_POINTS_SORTING = [{ "points": { "order": "desc" } }, "_score",].concat(alphabeticalOrder());
+    const SCORE_AND_POINTS_SORTING = [ "_score",{ "points": { "order": "desc" } },].concat(alphabeticalOrder());
     let filter = [];
     filter = filter.concat(
         getAddressFilter(address, coordinates),
@@ -42,11 +42,11 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
                 "must": {
                     "bool": {
                         should: [
-                            constantScore('match', searchTerm, 'Appearances.Appearance.categoryname.spanish', 1),
-                            constantScore('match_phrase', searchTerm, 'Appearances.Appearance.categoryname.keyword', 1),
-                            constantScore('match_phrase', searchTerm, 'bn.keyword', 1),
-                            constantScore('match_phrase', searchTerm, 'bn.spanish', 1),
-                            constantScore('match_phrase', searchTerm, 'productservices.prdserv.keyword', 1),
+                            constantScore('match', searchTerm, 'Appearances.Appearance.categoryname.spanish', 3, 'categoria fuzzy'),
+                            constantScore('match_phrase', searchTerm, 'Appearances.Appearance.categoryname.keyword', 4, 'categoria exacta'),
+                            constantScore('match_phrase', searchTerm, 'bn.keyword', 5, 'nombre exacto'),
+                            constantScore('match_phrase', searchTerm, 'bn.spanish', 3, 'nombre parcial'),
+                            constantScore('match_phrase', searchTerm, 'productservices.prdserv.keyword', 2, 'servicios'),
                         ]
                     }
                 },
@@ -76,7 +76,7 @@ function sendRequest(page, request, sort, randomSorting) {
                         "boost_mode": "sum",
                         "script_score": {
                             "script": {
-                                "source": "doc['points'].size() === 10 ? 0: 1"
+                                "source": "doc['points'].size() <= 20 ? 0: 5"
                             }
                         }
                     }
@@ -111,7 +111,7 @@ function sendRequest(page, request, sort, randomSorting) {
         searchType: 'dfs_query_then_fetch',
         "track_total_hits": true
     };
-    //console.log(JSON.stringify(requestBody));
+    console.log(JSON.stringify(requestBody));
     return client.getClient().search(requestBody);
 }
 
@@ -138,7 +138,7 @@ function stopPhrases(searchTerm) {
  * @param {Array<object>} categories - categories name to put in query 
  * @return {Array<object>}
 */
-function constantScore(matchType, query, field, boost = 1) {
+function constantScore(matchType, query, field, boost = 1, name) {
     return JSON.parse(`{
         "constant_score":{
             "filter": {
@@ -150,7 +150,7 @@ function constantScore(matchType, query, field, boost = 1) {
                 }
             },
             "boost": "${boost}",
-            "_name": "${matchType} ${field}"
+            "_name": "${name}"
     }}`);
 }
 
