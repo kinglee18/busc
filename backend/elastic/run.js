@@ -43,7 +43,7 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
                     "bool": {
                         should: [
                             constantScore('match', searchTerm, 'Appearances.Appearance.categoryname.spanish', 3, 'categoria fuzzy(3)'),
-                            constantScore('match_phrase', searchTerm, 'Appearances.Appearance.categoryname.keyword', 4, 'categoria exacta(4)'),
+                            constantScore('match_phrase', searchTerm, 'Appearances.Appearance.categoryname.keyword', 8, 'categoria exacta(8)'),
                             constantScore('match_phrase', searchTerm, 'bn.keyword', 5, 'nombre exacto(5)'),
                             constantScore('match_phrase', searchTerm, 'bn.spanish', 3, 'nombre parcial(3)'),
                             constantScore('match_phrase', searchTerm, 'productservices.prdserv.keyword', 2, 'servicios(2)'),
@@ -76,7 +76,7 @@ function sendRequest(page, request, sort, randomSorting) {
                         "boost_mode": "sum",
                         "script_score": {
                             "script": {
-                                "source": "(doc['points'].size() != 0  && doc['points'].value >= 20) ? 10: 0"
+                                "source": "(doc['points'].size() != 0  && doc['points'].value >= 20) ? doc['points'].value + 10: 0"
                             }
                         }
                     }
