@@ -42,11 +42,11 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
                 "must": {
                     "bool": {
                         should: [
-                            constantScore('match', searchTerm, 'Appearances.Appearance.categoryname.spanish', 3, 'categoria fuzzy'),
-                            constantScore('match_phrase', searchTerm, 'Appearances.Appearance.categoryname.keyword', 4, 'categoria exacta'),
-                            constantScore('match_phrase', searchTerm, 'bn.keyword', 5, 'nombre exacto'),
-                            constantScore('match_phrase', searchTerm, 'bn.spanish', 3, 'nombre parcial'),
-                            constantScore('match_phrase', searchTerm, 'productservices.prdserv.keyword', 2, 'servicios'),
+                            constantScore('match', searchTerm, 'Appearances.Appearance.categoryname.spanish', 3, 'categoria fuzzy(3)'),
+                            constantScore('match_phrase', searchTerm, 'Appearances.Appearance.categoryname.keyword', 4, 'categoria exacta(4)'),
+                            constantScore('match_phrase', searchTerm, 'bn.keyword', 5, 'nombre exacto(5)'),
+                            constantScore('match_phrase', searchTerm, 'bn.spanish', 3, 'nombre parcial(3)'),
+                            constantScore('match_phrase', searchTerm, 'productservices.prdserv.keyword', 2, 'servicios(2)'),
                         ]
                     }
                 },
