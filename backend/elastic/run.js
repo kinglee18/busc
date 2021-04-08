@@ -76,7 +76,7 @@ function sendRequest(page, request, sort, randomSorting) {
                         "boost_mode": "sum",
                         "script_score": {
                             "script": {
-                                "source": "(doc['points'].size() !==0  && doc['points'].value <= 20) ? 0: 10"
+                                "source": "(doc['points'].size() != 0  && doc['points'].value >= 20) ? 10: 0"
                             }
                         }
                     }
