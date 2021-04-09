@@ -61,7 +61,7 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
                                         }
                                     },
                                     "boost": 3,
-                                    "_name": 'match con cruce(5)',
+                                    "_name": 'match con cruce(3)',
                                 }
                             }
                                 
