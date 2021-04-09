@@ -60,8 +60,8 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
                                             "operator": "and"
                                         }
                                     },
-                                    "boost": 3,
-                                    "_name": 'match con cruce(3)',
+                                    "boost": 1,
+                                    "_name": 'match con cruce(1)',
                                 }
                             }
                                 
@@ -90,7 +90,7 @@ function sendRequest(page, request, sort, randomSorting) {
                     {},
                     request,
                     randomSorting ? { "random_score": {} } : {},
-                    {
+                    randomSorting ? {} :{
                         "boost_mode": "sum",
                         "script_score": {
                             "script": {

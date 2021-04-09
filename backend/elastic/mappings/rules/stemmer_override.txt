@@ -8,3 +8,7 @@ gas => gas
 gasas => gasa
 gasa => gasa
 taxis => taxi
+refrigeradores => refrigerador
+refrigeraciones => refrigeracion
+refrigerador => refrigerador
+refrigeracion => refrigeracion
