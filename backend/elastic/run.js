@@ -114,8 +114,8 @@ function searchBusiness2(page = 0, searchTerm, organicCodes, category, hrs, paym
                                             "operator": "and"
                                         }
                                     },
-                                    "boost": 1,
-                                    "_name": 'match con cruce(1)',
+                                    "boost": 101,
+                                    "_name": 'match con cruce(101)',
                                 }
                             }
                                 
