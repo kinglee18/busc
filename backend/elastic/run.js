@@ -43,7 +43,7 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
                     "bool": {
                         should: [
                             constantScore('match', searchTerm, 'Appearances.Appearance.categoryname.spanish', 6, 'categoria fuzzy(6)'),
-                            constantScore('match_phrase', searchTerm, 'Appearances.Appearance.categoryname.keyword', 16, 'categoria exacta(16)'),
+                            constantScore('match_phrase', searchTerm, 'Appearances.Appearance.categoryname.keyword', 100, 'categoria exacta(100)'),
                             constantScore('match_phrase', searchTerm, 'bn.keyword', 20, 'nombre exacto(20)'),
                             constantScore('match_phrase', searchTerm, 'bn.spanish', 5, 'nombre parcial(5)'),
                             constantScore('match_phrase', searchTerm, 'productservices.prdserv.spanish', 2, 'servicios(2)'),
@@ -77,6 +77,59 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
     
 }
 
+function searchBusiness2(page = 0, searchTerm, organicCodes, category, hrs, paymentTypes, address, coordinates) {
+    const SCORE_AND_POINTS_SORTING = [ "_score",{ "points": { "order": "desc" } },].concat(alphabeticalOrder());
+    let filter = [];
+    filter = filter.concat(
+        getAddressFilter(address, coordinates),
+        organicCodes ? [{ match: { listingtype: organicCodes.join(' ') } }] : [],
+        category ? [{ match: { "Appearances.Appearance.categoryid": category } }] : [],
+    );
+
+    if (!searchTerm.length) {
+        return sendRequest(page, { "query": { "bool": { filter } } }, [{ "points": { "order": "desc" } }].concat(alphabeticalOrder()), organicCodes);
+    }
+    searchTerm = stopPhrases(searchTerm);
+    var requestBody = {
+        "query": {
+            "bool": {
+                "must": {
+                    "bool": {
+                        should: [
+                            constantScore('match', searchTerm, 'Appearances.Appearance.categoryname.spanish', 100, `categoria fuzzy(${100})`),
+                            constantScore('match_phrase', searchTerm, 'Appearances.Appearance.categoryname.keyword', 140, `categoria exacta(${140})`),
+                            constantScore('match_phrase', searchTerm, 'bn.keyword', 3, `nombre exacto(${3})`),
+                            constantScore('match_phrase', searchTerm, 'bn.spanish', 5, `nombre parcial(${2})`),
+                            constantScore('match_phrase', searchTerm, 'productservices.prdserv.spanish', 1, `servicios(${1})`),
+                            {
+                                "constant_score": {
+                                    "filter": {
+                                        "multi_match": {
+                                            "query": searchTerm,
+                                            "type": "cross_fields",
+                                            "fields": [
+                                                "Appearances.Appearance.categoryname.spanish",
+                                                "bn.spanish",
+                                            ],
+                                            "operator": "and"
+                                        }
+                                    },
+                                    "boost": 1,
+                                    "_name": 'match con cruce(1)',
+                                }
+                            }
+                                
+                        ]
+                    }
+                },
+                filter
+            }
+        }
+    }
+    return sendRequest(page, requestBody, SCORE_AND_POINTS_SORTING, organicCodes);
+
+    
+}
 function sendRequest(page, request, sort, randomSorting) {
     sort = randomSorting ? {} : sort;
     const pagination = {
@@ -369,4 +422,4 @@ function getSuggestion(term) {
     return client.getClient().search(request);
 }
 
-module.exports = { getAddressFilter, searchBusiness, businessByBrand, businessByID, getSuggestion, getAutocompleteSuggestion, getMeaningfulTerm }
+module.exports = { getAddressFilter, searchBusiness, searchBusiness2, businessByBrand, businessByID, getSuggestion, getAutocompleteSuggestion, getMeaningfulTerm }

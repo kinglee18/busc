@@ -59,6 +59,43 @@ routes.get('/node', (req, res) => {
     }
 });
 
+routes.get('/node2', (req, res) => {
+    const showBusiness = req.query.show_business == 'false' ? false : true;
+    const validation = validParams(req.query);
+    const address = req.query.physicalstate || req.query.physicalcity || req.query.colony ? {
+        physicalstate: req.query.physicalstate,
+        physicalcity: req.query.physicalcity,
+        colony: req.query.colony
+    } : undefined;
+    const coordinates = req.query.lat && req.query.lng ? { lat: parseFloat(req.query.lat), lng: parseFloat(req.query.lng) } : undefined;
+    const organicCodes = ['BRO', 'BRP', 'DIA', 'ORO', 'PIP', 'PLA', 'SPN'];
+    if (validation.valid) {
+        proceso.analisys(req.query.searchTerm).then((json) => {
+            Promise.all([
+                showBusiness ? elastic.searchBusiness2(
+                    req.query.page,
+                    json.newSearchTerm,
+                    req.query.organic ? organicCodes : undefined,
+                    req.query.category_id,
+                    json.schedule,
+                    json.payments,
+                    address || json.location,
+                    coordinates
+                ) : null,
+                elastic.getSuggestion(json.newSearchTerm)]
+            ).then((response) => {
+                const businessInfo = response[0];
+                const textSuggest = response[1];
+                res.status(200).send(createResponseBody(businessInfo, textSuggest, showBusiness, json));
+            }).catch(error => {
+                console.error(error);
+                res.status(500).send(error);
+            });
+        });
+    } else {
+        res.status(400).send(validation);
+    }
+});
 
 /**
  * 
