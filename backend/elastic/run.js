@@ -99,7 +99,7 @@ function searchBusiness2(page = 0, searchTerm, organicCodes, category, hrs, paym
                             constantScore('match', searchTerm, 'Appearances.Appearance.categoryname.spanish', 100, `categoria fuzzy(${100})`),
                             constantScore('match_phrase', searchTerm, 'Appearances.Appearance.categoryname.keyword', 140, `categoria exacta(${140})`),
                             constantScore('match_phrase', searchTerm, 'bn.keyword', 3, `nombre exacto(${3})`),
-                            constantScore('match_phrase', searchTerm, 'bn.spanish', 5, `nombre parcial(${2})`),
+                            constantScore('match_phrase', searchTerm, 'bn.spanish', 2, `nombre parcial(${2})`),
                             constantScore('match_phrase', searchTerm, 'productservices.prdserv.spanish', 1, `servicios(${1})`),
                             {
                                 "constant_score": {
