@@ -45,7 +45,7 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
                             constantScore('match', searchTerm, 'Appearances.Appearance.categoryname.spanish', 6, 'categoria fuzzy(6)'),
                             constantScore('match_phrase', searchTerm, 'Appearances.Appearance.categoryname.keyword', 100, 'categoria exacta(100)'),
                             constantScore('match_phrase', searchTerm, 'bn.keyword', 20, 'nombre exacto(20)'),
-                            constantScore('match_phrase', searchTerm, 'bn.spanish', 5, 'nombre parcial(5)'),
+                            constantScore('match', searchTerm, 'bn.spanish', 5, 'nombre parcial(5)', 1),
                             constantScore('match_phrase', searchTerm, 'productservices.prdserv.spanish', 2, 'servicios(2)'),
                             {
                                 "constant_score": {
@@ -99,7 +99,7 @@ function searchBusiness2(page = 0, searchTerm, organicCodes, category, hrs, paym
                             constantScore('match', searchTerm, 'Appearances.Appearance.categoryname.spanish', 100, `categoria fuzzy(${100})`),
                             constantScore('match_phrase', searchTerm, 'Appearances.Appearance.categoryname.keyword', 140, `categoria exacta(${140})`),
                             constantScore('match_phrase', searchTerm, 'bn.keyword', 3, `nombre exacto(${3})`),
-                            constantScore('match_phrase', searchTerm, 'bn.spanish', 2, `nombre parcial(${2})`),
+                            constantScore('match', searchTerm, 'bn.spanish', 2, `nombre parcial(${2})`, 1),
                             constantScore('match_phrase', searchTerm, 'productservices.prdserv.spanish', 1, `servicios(${1})`),
                             {
                                 "constant_score": {
@@ -209,7 +209,7 @@ function stopPhrases(searchTerm) {
  * @param {Array<object>} categories - categories name to put in query 
  * @return {Array<object>}
 */
-function constantScore(matchType, query, field, boost = 1, name) {
+function constantScore(matchType, query, field, boost = 1, name, fuzzy=0) {
     return JSON.parse(`{
         "constant_score":{
             "filter": {
@@ -217,6 +217,8 @@ function constantScore(matchType, query, field, boost = 1, name) {
                     "${field}": { 
                         "query": "${query}"
                         ${matchType === 'match' ?',"operator": "and"': ''}
+                        ${fuzzy > 0 ?',"fuzziness": "1"': ''}
+
                     }
                 }
             },
