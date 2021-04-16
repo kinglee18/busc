@@ -31,4 +31,4 @@ tlaxcala  => tlax
 veracruz  => ver
 yucatan  => yuc
 zacatecas  => zac
-distrito federal,ciudad de mexico,mexico city, cdmx  => df 
+distrito federal,ciudad de mexico,mexico city, cdmx , zocalo , MEXICO DF, d.f, valle de mexico=> df 

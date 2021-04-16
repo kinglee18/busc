@@ -132,3 +132,4 @@ umbrela, paraguas, parasol, quitasol, sombrilla
 universidad intercontinental, uic 
 x box, videojuego, xbox 
 xbox, videojuego 
+taqueria , taco , tacos , taquerias

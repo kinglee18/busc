@@ -93,6 +93,7 @@ describe('--------------', () => {
         {
             input: "telefonos en mty", output: {
                 "physicalstate": "NUEVO LEON",
+                "city": 'physicalcity',
                 "search_term": "telefonos"
             }
         }
