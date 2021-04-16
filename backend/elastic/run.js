@@ -42,11 +42,11 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
                 "must": {
                     "bool": {
                         should: [
-                            constantScore('match', searchTerm, 'Appearances.Appearance.categoryname.spanish', 6, 'categoria fuzzy(6)'),
-                            constantScore('match_phrase', searchTerm, 'Appearances.Appearance.categoryname.keyword', 100, 'categoria exacta(100)'),
-                            constantScore('match_phrase', searchTerm, 'bn.keyword', 20, 'nombre exacto(20)'),
-                            constantScore('match', searchTerm, 'bn.spanish', 5, 'nombre parcial(5)', 1),
-                            constantScore('match_phrase', searchTerm, 'productservices.prdserv.spanish', 2, 'servicios(2)'),
+                            constantScore('match', 'or', searchTerm, 'Appearances.Appearance.categoryname.spanish', 25, 'categoria parcial(25)'),
+                            constantScore('match_phrase', 'and', searchTerm, 'Appearances.Appearance.categoryname.keyword', 100, 'categoria exacta(100)'),
+                            constantScore('match_phrase', 'and', searchTerm, 'bn.keyword', 18, 'nombre exacto(18)'),
+                            constantScore('match', 'and', searchTerm, 'bn.spanish', 5, 'nombre parcial(5)', 1),
+                            constantScore('match_phrase', 'and', searchTerm, 'productservices.prdserv.spanish', 2, 'servicios(2)'),
                             {
                                 "constant_score": {
                                     "filter": {
@@ -96,11 +96,11 @@ function searchBusiness2(page = 0, searchTerm, organicCodes, category, hrs, paym
                 "must": {
                     "bool": {
                         should: [
-                            constantScore('match', searchTerm, 'Appearances.Appearance.categoryname.spanish', 100, `categoria fuzzy(${100})`),
-                            constantScore('match_phrase', searchTerm, 'Appearances.Appearance.categoryname.keyword', 140, `categoria exacta(${140})`),
-                            constantScore('match_phrase', searchTerm, 'bn.keyword', 3, `nombre exacto(${3})`),
-                            constantScore('match', searchTerm, 'bn.spanish', 2, `nombre parcial(${2})`, 1),
-                            constantScore('match_phrase', searchTerm, 'productservices.prdserv.spanish', 1, `servicios(${1})`),
+                            constantScore('match', 'or', searchTerm, 'Appearances.Appearance.categoryname.spanish', 100, `categoria parcial(${100})`),
+                            constantScore('match_phrase', 'and', searchTerm, 'Appearances.Appearance.categoryname.keyword', 140, `categoria exacta(${140})`),
+                            constantScore('match_phrase', 'and', searchTerm, 'bn.keyword', 3, `nombre exacto(${3})`),
+                            constantScore('match', 'and', searchTerm, 'bn.spanish', 2, `nombre parcial(${2})`, 1),
+                            constantScore('match_phrase', 'and', searchTerm, 'productservices.prdserv.spanish', 1, `servicios(${1})`),
                             {
                                 "constant_score": {
                                     "filter": {
@@ -147,7 +147,7 @@ function sendRequest(page, request, sort, randomSorting) {
                         "boost_mode": "sum",
                         "script_score": {
                             "script": {
-                                "source": "(doc['points'].size() != 0  && doc['points'].value >= 20) ? doc['points'].value + 10: 0"
+                                "source": "(doc['points'].size() != 0  && doc['points'].value > 10) ? doc['points'].value + 10: 0"
                             }
                         }
                     }
@@ -182,7 +182,7 @@ function sendRequest(page, request, sort, randomSorting) {
         searchType: 'dfs_query_then_fetch',
         "track_total_hits": true
     };
-    console.log(JSON.stringify(requestBody));
+    //console.log(JSON.stringify(requestBody));
     return client.getClient().search(requestBody);
 }
 
@@ -209,14 +209,14 @@ function stopPhrases(searchTerm) {
  * @param {Array<object>} categories - categories name to put in query 
  * @return {Array<object>}
 */
-function constantScore(matchType, query, field, boost = 1, name, fuzzy=0) {
+function constantScore(matchType, operator,query, field, boost = 1, name, fuzzy=0) {
     return JSON.parse(`{
         "constant_score":{
             "filter": {
                 "${matchType}": {
                     "${field}": { 
                         "query": "${query}"
-                        ${matchType === 'match' ?',"operator": "and"': ''}
+                        ${matchType === 'match' ?`,"operator": "${operator}"`: ''}
                         ${fuzzy > 0 ?',"fuzziness": "1"': ''}
 
                     }
