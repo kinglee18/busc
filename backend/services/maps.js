@@ -136,9 +136,10 @@ exports.search = async function (address, searchTerm) {
 			index: process.env.locations,
 			body
 		};
-		//console.log(JSON.stringify(requestBody));
 		const request = await client.getClient().search(requestBody);
 		if (request.hits.hits.length) {
+		console.log(JSON.stringify(request.hits.hits[0]._id));
+
 			return {
 				"physicalstate": request.hits.hits[0]._source.statename,
 				"physicalcity": request.hits.hits[0]._source.city,

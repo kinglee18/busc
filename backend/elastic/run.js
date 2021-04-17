@@ -25,6 +25,10 @@ const client = require('./client');
  */
 function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, paymentTypes, address, coordinates) {
     const SCORE_AND_POINTS_SORTING = [ "_score",{ "points": { "order": "desc" } },].concat(alphabeticalOrder());
+    if (!searchTerm.length) {
+        searchTerm = address.physicalstate;
+        address = null;
+        }
     let filter = [];
     filter = filter.concat(
         getAddressFilter(address, coordinates),
@@ -32,10 +36,7 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
         category ? [{ match: { "Appearances.Appearance.categoryid": category } }] : [],
     );
 
-    if (!searchTerm.length) {
-        return sendRequest(page, { "query": { "bool": { filter } } }, [{ "points": { "order": "desc" } }].concat(alphabeticalOrder()), organicCodes);
-    }
-    searchTerm = stopPhrases(searchTerm);
+
     var requestBody = {
         "query": {
             "bool": {
