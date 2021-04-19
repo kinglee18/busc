@@ -23,7 +23,6 @@ alimento, comida, fast food, restaurant, tacos, alemana, china, coreana, asiatic
 almorranas, hemmorroides 
 alojamiento , hospedaje  , hotel  , ospedaje  , otel 
 alpinista, montanero 
-alquiler, renta 
 altigrafo, barografo 
 alubia, faba , frijol , habichuela , judia 
 anafre, brasero 

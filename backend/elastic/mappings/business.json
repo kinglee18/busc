@@ -634,11 +634,11 @@
               "apostrophe",
               "asciifolding_filter",
               "lowercase",
+              "stop_words_filter",
               "custom_stems",
               "spanish_stemmer",
               "synonym",
-              "spanish_stop_filter",
-              "stop_words_filter"
+              "spanish_stop_filter"
             ],
             "tokenizer": "standard"
           }

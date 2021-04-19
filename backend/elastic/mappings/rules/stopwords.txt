@@ -228,3 +228,4 @@ ocupo
 legrados
 venta
 renta
+general

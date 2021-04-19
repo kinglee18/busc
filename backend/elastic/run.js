@@ -35,47 +35,88 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
         organicCodes ? [{ match: { listingtype: organicCodes.join(' ') } }] : [],
         category ? [{ match: { "Appearances.Appearance.categoryid": category } }] : [],
     );
+    return getRelatedCategories(searchTerm).then(categories => {
 
+        categories =  categories.hits.hits.map( c => ({
+            name: c._source.category,
+            score: c._source.score
+        }));
 
-    var requestBody = {
-        "query": {
-            "bool": {
-                "must": {
-                    "bool": {
-                        should: [
-                            constantScore('match', 'or', searchTerm, 'Appearances.Appearance.categoryname.spanish', 25, 'categoria parcial(25)'),
-                            constantScore('match_phrase', 'and', searchTerm, 'Appearances.Appearance.categoryname.keyword', 100, 'categoria exacta(100)'),
-                            constantScore('match_phrase', 'and', searchTerm, 'bn.keyword', 18, 'nombre exacto(18)'),
-                            constantScore('match', 'and', searchTerm, 'bn.spanish', 5, 'nombre parcial(5)', 1),
-                            constantScore('match_phrase', 'and', searchTerm, 'productservices.prdserv.spanish', 2, 'servicios(2)'),
-                            {
-                                "constant_score": {
-                                    "filter": {
-                                        "multi_match": {
-                                            "query": searchTerm,
-                                            "type": "cross_fields",
-                                            "fields": [
-                                                "Appearances.Appearance.categoryname.spanish",
-                                                "bn.spanish",
-                                            ],
-                                            "operator": "and"
-                                        }
-                                    },
-                                    "boost": 1,
-                                    "_name": 'match con cruce(1)',
+        var requestBody = {
+            "query": {
+                "bool": {
+                    "must": {
+                        "bool": {
+                            should: [
+                                constantScore('match', 'or', searchTerm, 'Appearances.Appearance.categoryname.spanish', 25, 'categoria parcial(25)'),
+                                constantScore('match_phrase', 'and', searchTerm, 'bn.keyword', 18, 'nombre exacto(18)'),
+                                constantScore('match_phrase', 'and', searchTerm, 'productservices.prdserv.spanish', 2, 'servicios(2)'),
+                                {
+                                    "constant_score": {
+                                        "filter": {
+                                            "multi_match": {
+                                                "query": searchTerm,
+                                                "type": "cross_fields",
+                                                "fields": [
+                                                    "Appearances.Appearance.categoryname.spanish",
+                                                    "bn.spanish",
+                                                ],
+                                                "operator": "and"
+                                            }
+                                        },
+                                        "boost": 1,
+                                        "_name": 'match con cruce(1)',
+                                    }
                                 }
-                            }
-                                
-                        ]
-                    }
-                },
-                filter
+                                    
+                            ].concat(categories.length ?
+                               [ ...categories.map(c => constantScore('match_phrase', 'and', c.name, 'Appearances.Appearance.categoryname.keyword', 100, `cat personalizada ${c.name} (100)`))] :                                
+                                constantScore('match_phrase', 'and', searchTerm, 'Appearances.Appearance.categoryname.keyword', 100, 'categoria exacta(100)'),
+                                )
+                                .concat(searchTerm.split(' ').length > 1 ? 
+                                [...searchTerm.split(' ').map(w =>  constantScore('match', 'or', w, 'bn.spanish', 20, `match palabra (${w})`, 1))] : 
+                                constantScore('match', 'or', searchTerm, 'bn.spanish', 5, `nombre parcial(${5})`, 1)),
+                        }
+                    },
+                    filter
+                }
             }
         }
-    }
-    return sendRequest(page, requestBody, SCORE_AND_POINTS_SORTING, organicCodes);
+        return sendRequest(page, requestBody, SCORE_AND_POINTS_SORTING, organicCodes);
+    })
+
 
     
+}
+
+function getRelatedCategories(searchTerm) {
+    const body = {
+        "index": 'mexobjectsdefinition',
+        "body": {
+            "query": {
+                bool: {
+                    must: [
+                        {
+
+                            "query_string": {
+                                "default_field": "text",
+                                "query": searchTerm
+                              }
+                        },
+                        {
+                            "range": {
+                                "score": {
+                                  "gte": 1
+                                }
+                              }
+                        }
+                    ]
+                }
+            },
+            size: 20
+        }
+    };
+    return client.getClient().search(body);
 }
 
 function searchBusiness2(page = 0, searchTerm, organicCodes, category, hrs, paymentTypes, address, coordinates) {
@@ -91,45 +132,55 @@ function searchBusiness2(page = 0, searchTerm, organicCodes, category, hrs, paym
         category ? [{ match: { "Appearances.Appearance.categoryid": category } }] : [],
     );
 
-    searchTerm = stopPhrases(searchTerm);
-    var requestBody = {
-        "query": {
-            "bool": {
-                "must": {
-                    "bool": {
-                        should: [
-                            constantScore('match', 'or', searchTerm, 'Appearances.Appearance.categoryname.spanish', 100, `categoria parcial(${100})`),
-                            constantScore('match_phrase', 'and', searchTerm, 'Appearances.Appearance.categoryname.keyword', 140, `categoria exacta(${140})`),
-                            constantScore('match_phrase', 'and', searchTerm, 'bn.keyword', 3, `nombre exacto(${3})`),
-                            constantScore('match', 'and', searchTerm, 'bn.spanish', 2, `nombre parcial(${2})`, 1),
-                            constantScore('match_phrase', 'and', searchTerm, 'productservices.prdserv.spanish', 1, `servicios(${1})`),
-                            {
-                                "constant_score": {
-                                    "filter": {
-                                        "multi_match": {
-                                            "query": searchTerm,
-                                            "type": "cross_fields",
-                                            "fields": [
-                                                "Appearances.Appearance.categoryname.spanish",
-                                                "bn.spanish",
-                                            ],
-                                            "operator": "and"
-                                        }
-                                    },
-                                    "boost": 101,
-                                    "_name": 'match con cruce(101)',
+    return getRelatedCategories(searchTerm).then(categories => {
+
+        categories =  categories.hits.hits.map( c => ({
+            name: c._source.category,
+            score: c._source.score
+        }));
+
+        var requestBody = {
+            "query": {
+                "bool": {
+                    "must": {
+                        "bool": {
+                            should: [
+                                constantScore('match', 'or', searchTerm, 'Appearances.Appearance.categoryname.spanish', 100, `categoria parcial(${100})`),
+                                constantScore('match_phrase', 'and', searchTerm, 'bn.keyword', 3, `nombre exacto(${3})`),
+                      
+                                constantScore('match_phrase', 'and', searchTerm, 'productservices.prdserv.spanish', 1, `servicios(${1})`),
+                                {
+                                    "constant_score": {
+                                        "filter": {
+                                            "multi_match": {
+                                                "query": searchTerm,
+                                                "type": "cross_fields",
+                                                "fields": [
+                                                    "Appearances.Appearance.categoryname.spanish",
+                                                    "bn.spanish",
+                                                ],
+                                                "operator": "and"
+                                            }
+                                        },
+                                        "boost": 101,
+                                        "_name": 'match con cruce(101)',
+                                    }
                                 }
-                            }
-                                
-                        ]
-                    }
-                },
-                filter
+                                    
+                            ].concat(categories.length ?
+                                [ ...categories.map(c => constantScore('match_phrase', 'and', c.name, 'Appearances.Appearance.categoryname.keyword', 140, `cat personalizada ${c.name} (140)`))] :                                
+                                constantScore('match_phrase', 'and', searchTerm, 'Appearances.Appearance.categoryname.keyword', 140, 'categoria exacta(140)'),
+                            ).concat(searchTerm.split(' ').length > 1 ? 
+                                [...searchTerm.split(' ').map(w =>  constantScore('match', 'or', w, 'bn.spanish', 20, `match palabra (${w})`, 1))] : 
+                                constantScore('match', 'or', searchTerm, 'bn.spanish', 2, `nombre parcial(${2})`, 1)),
+                        }
+                    },
+                    filter
+                }
             }
         }
-    }
-    return sendRequest(page, requestBody, SCORE_AND_POINTS_SORTING, organicCodes);
-
+        return sendRequest(page, requestBody, SCORE_AND_POINTS_SORTING, organicCodes);
+    })
     
 }
 function sendRequest(page, request, sort, randomSorting) {
