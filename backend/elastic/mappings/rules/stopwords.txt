@@ -229,3 +229,7 @@ legrados
 venta
 renta
 general
+Servicio
+fabrica
+reparacion
+elaboracion
