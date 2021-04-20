@@ -34,7 +34,7 @@ aprovisionamiento, abasto , avituallamiento , provision , suministro
 archivador, archivero 
 aroma, fragancia  perfume 
 arveja, chicharo , guisante 
-auto, automovil , carro , coche , vehiculo 
+auto , carro , coche , vehiculo 
 balompie, futbol 
 balon, bola , esferico , pelota 
 baloncesto, basketball ,basquet 
@@ -64,7 +64,7 @@ cabello, pelo
 cacahuate, mani 
 calabozo, carcel, celda, gayola, prision, reclusorio 
 calamar, chipiron 
-camion, camioneta, combi, guagua, pecero, troca, truck, van 
+camion, camioneta, combi, guagua, pecero, troca, truck 
 camisa, camiseria 
 camper, casa movil, casas moviles 
 cancerigeno, canceroso 
