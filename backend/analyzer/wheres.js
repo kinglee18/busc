@@ -1,5 +1,4 @@
 const maps = require('../services/maps');
-const cls = require('./clear');
 const gram = require('../info/gramatica');
 const businessApi = require('../elastic/run.js')
 
@@ -52,8 +51,8 @@ function findPrepLug(tx) {
         let groups = reg.exec(tx);
         if (groups) {
             return {
-                texto: cls.clearStopWord(groups.groups.what),
-                place: cls.clearStopWord(groups.groups.where)
+                texto: groups.groups.what,
+                place: groups.groups.where
             };
         }
     }

@@ -7,7 +7,6 @@ const ub = require('./analyzer/wheres');
 exports.analisys = function (searchTerm) {
     return new Promise((resolve, reject) => {
         if (searchTerm && searchTerm.length > 0) {
-            searchTerm = searchTerm.replace(/-/g, " ").toLowerCase();
             ub.where(searchTerm).then((resp) => {
                 resolve(
                     {

@@ -42,7 +42,8 @@ routes.get('/node', (req, res) => {
                     json.schedule,
                     json.payments,
                     address || json.location,
-                    coordinates
+                    coordinates,
+                    req.query.size
                 ) : null,
                 elastic.getSuggestion(json.newSearchTerm)]
             ).then((response) => {
@@ -80,7 +81,8 @@ routes.get('/node2', (req, res) => {
                     json.schedule,
                     json.payments,
                     address || json.location,
-                    coordinates
+                    coordinates,
+                    req.query.size
                 ) : null,
                 elastic.getSuggestion(json.newSearchTerm)]
             ).then((response) => {

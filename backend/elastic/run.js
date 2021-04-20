@@ -23,7 +23,7 @@ const client = require('./client');
  * 
  * @return {Promise<>}.
  */
-function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, paymentTypes, address, coordinates) {
+function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, paymentTypes, address, coordinates, pageSize = 10) {
     const SCORE_AND_POINTS_SORTING = [ "_score",{ "points": { "order": "desc" } },].concat(alphabeticalOrder());
     if (!searchTerm.length) {
         searchTerm = address.physicalstate;
@@ -36,7 +36,6 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
         category ? [{ match: { "Appearances.Appearance.categoryid": category } }] : [],
     );
     return getRelatedCategories(searchTerm).then(categories => {
-
         categories =  categories.hits.hits.map( c => ({
             name: c._source.category,
             score: c._source.score
@@ -71,7 +70,7 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
                                     
                             ].concat(categories.length ?
                                [ ...categories.map(c => constantScore('match_phrase', 'and', c.name, 'Appearances.Appearance.categoryname.keyword', 100, `cat personalizada ${c.name} (100)`))] :                                
-                                constantScore('match_phrase', 'and', searchTerm, 'Appearances.Appearance.categoryname.keyword', 100, 'categoria exacta(100)'),
+                                constantScore('match_phrase', 'and', searchTerm, 'Appearances.Appearance.categoryname', 100, 'categoria exacta(100)'),
                                 )
                                 .concat(searchTerm.split(' ').length > 1 ? 
                                 [...searchTerm.split(' ').map(w =>  constantScore('match', 'or', w, 'bn.spanish', 20, `match palabra (${w})`, 1))] : 
@@ -82,7 +81,7 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
                 }
             }
         }
-        return sendRequest(page, requestBody, SCORE_AND_POINTS_SORTING, organicCodes);
+        return sendRequest(page, requestBody, SCORE_AND_POINTS_SORTING, organicCodes, pageSize);
     })
 
 
@@ -169,7 +168,7 @@ function searchBusiness2(page = 0, searchTerm, organicCodes, category, hrs, paym
                                     
                             ].concat(categories.length ?
                                 [ ...categories.map(c => constantScore('match_phrase', 'and', c.name, 'Appearances.Appearance.categoryname.keyword', 140, `cat personalizada ${c.name} (140)`))] :                                
-                                constantScore('match_phrase', 'and', searchTerm, 'Appearances.Appearance.categoryname.keyword', 140, 'categoria exacta(140)'),
+                                constantScore('match_phrase', 'and', searchTerm, 'Appearances.Appearance.categoryname', 140, 'categoria exacta(140)'),
                             ).concat(searchTerm.split(' ').length > 1 ? 
                                 [...searchTerm.split(' ').map(w =>  constantScore('match', 'or', w, 'bn.spanish', 20, `match palabra (${w})`, 1))] : 
                                 constantScore('match', 'or', searchTerm, 'bn.spanish', 2, `nombre parcial(${2})`, 1)),
@@ -179,15 +178,15 @@ function searchBusiness2(page = 0, searchTerm, organicCodes, category, hrs, paym
                 }
             }
         }
-        return sendRequest(page, requestBody, SCORE_AND_POINTS_SORTING, organicCodes);
+        return sendRequest(page, requestBody, SCORE_AND_POINTS_SORTING, organicCodes, pageSize);
     })
     
 }
-function sendRequest(page, request, sort, randomSorting) {
+function sendRequest(page, request, sort, randomSorting, pageSize) {
     sort = randomSorting ? {} : sort;
     const pagination = {
-        "from": page * 20,
-        "size": 20,
+        "from": page * pageSize,
+        "size": pageSize,
     };
     const requestBody = {
         body: Object.assign({
@@ -235,27 +234,10 @@ function sendRequest(page, request, sort, randomSorting) {
         searchType: 'dfs_query_then_fetch',
         "track_total_hits": true
     };
-    //console.log(JSON.stringify(requestBody));
+    console.log(JSON.stringify(requestBody));
     return client.getClient().search(requestBody);
 }
 
-/* función para omitir ciertas busquedas */
-function stopPhrases(searchTerm) {
-    let phrases = [
-        "interrupcion de embarazo",
-        "embarazo no deseado",
-        "clinica de aborto",
-        "clinica de abortos",
-        "clinicas de aborto",
-        "clinicas de abortos",
-        "clinica para aborto",
-        "clinica para abortos",
-        "clinicas para aborto",
-        "clinicas para abortos"
-    ];
-
-    return searchTerm = (phrases.indexOf(searchTerm.replace(/([\ \t]+(?=[\ \t])|^\s+|\s+$)/g, '')) == -1) ? searchTerm : '';
-}
 
 /**
  * 
@@ -270,7 +252,6 @@ function constantScore(matchType, operator,query, field, boost = 1, name, fuzzy=
                     "${field}": { 
                         "query": "${query}"
                         ${matchType === 'match' ?`,"operator": "${operator}"`: ''}
-                        ${fuzzy > 0 ?',"fuzziness": "1"': ''}
 
                     }
                 }
