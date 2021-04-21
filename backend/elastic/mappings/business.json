@@ -50,6 +50,7 @@
               },
               "categoryname": {
                 "type": "text",
+                "analyzer": "clean_text_analyzer",
                 "copy_to": [
                   "categoryname_full_text"
                 ],
@@ -639,6 +640,17 @@
               "spanish_stemmer",
               "synonym",
               "spanish_stop_filter"
+            ],
+            "tokenizer": "standard"
+          },
+          "clean_text_analyzer": {
+            "char_filter": [
+              "my_char_filter"
+            ],
+            "filter": [
+              "apostrophe",
+              "asciifolding_filter",
+              "lowercase"
             ],
             "tokenizer": "standard"
           }

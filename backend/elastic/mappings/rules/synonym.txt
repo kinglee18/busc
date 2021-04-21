@@ -19,7 +19,7 @@ alberca, estanque , pileta , piscina
 cuarto, alcoba, apartamento, apartamiento, aposento, departamento, dormitorio, estancia, habitacion, vivienda 
 alcol, alcohol , alcoholismo ,alcoolismo 
 aldea, ciudad , lugar , poblacion , pueblo , villa 
-alimento, comida, fast food, restaurant, tacos, alemana, china, coreana, asiatica, rapida, japonesa, mexicana, brasilena, uruguaya, hamburguesas
+alimento, comida, fast food, restaurant, alemana, china, coreana, asiatica, rapida, japonesa, mexicana, brasilena, uruguaya, hamburguesas
 almorranas, hemmorroides 
 alojamiento , hospedaje  , hotel  , ospedaje  , otel 
 alpinista, montanero 

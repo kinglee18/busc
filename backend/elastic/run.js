@@ -70,7 +70,7 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
                                     
                             ].concat(categories.length ?
                                [ ...categories.map(c => constantScore('match_phrase', 'and', c.name, 'Appearances.Appearance.categoryname.keyword', 100, `cat personalizada ${c.name} (100)`))] :                                
-                                constantScore('match_phrase', 'and', searchTerm, 'Appearances.Appearance.categoryname.keyword', 100, 'categoria exacta(100)'),
+                                constantScore('match_phrase', 'and', searchTerm, 'Appearances.Appearance.categoryname', 100, 'categoria exacta(100)'),
                                 )
                                 .concat(searchTerm.split(' ').length > 1 ? 
                                 [...searchTerm.split(' ').map(w =>  constantScore('match', 'or', w, 'bn.spanish', 20, `match palabra (${w})`, 1))] : 
@@ -168,7 +168,7 @@ function searchBusiness2(page = 0, searchTerm, organicCodes, category, hrs, paym
                                     
                             ].concat(categories.length ?
                                 [ ...categories.map(c => constantScore('match_phrase', 'and', c.name, 'Appearances.Appearance.categoryname.keyword', 140, `cat personalizada ${c.name} (140)`))] :                                
-                                constantScore('match_phrase', 'and', searchTerm, 'Appearances.Appearance.categoryname.keyword', 140, 'categoria exacta(140)'),
+                                constantScore('match_phrase', 'and', searchTerm, 'Appearances.Appearance.categoryname', 140, 'categoria exacta(140)'),
                             ).concat(searchTerm.split(' ').length > 1 ? 
                                 [...searchTerm.split(' ').map(w =>  constantScore('match', 'or', w, 'bn.spanish', 20, `match palabra (${w})`, 1))] : 
                                 constantScore('match', 'or', searchTerm, 'bn.spanish', 2, `nombre parcial(${2})`, 1)),
