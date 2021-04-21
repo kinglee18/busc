@@ -650,7 +650,9 @@
             "filter": [
               "apostrophe",
               "asciifolding_filter",
-              "lowercase"
+              "lowercase",
+              "custom_stems",
+              "spanish_stemmer"
             ],
             "tokenizer": "standard"
           }
