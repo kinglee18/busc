@@ -47,9 +47,9 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
                     "must": {
                         "bool": {
                             should: [
-                                constantScore('match', 'or', searchTerm, 'Appearances.Appearance.categoryname.spanish', 25, 'categoria parcial(25)'),
-                                constantScore('match_phrase', 'and', searchTerm, 'bn.keyword', 18, 'nombre exacto(18)'),
-                                constantScore('match_phrase', 'and', searchTerm, 'productservices.prdserv.spanish', 2, 'servicios(2)'),
+                                constantScore('match', 'or', searchTerm, 'Appearances.Appearance.categoryname.spanish', 100, `categoria parcial(${100})`),
+                                constantScore('match_phrase', 'and', searchTerm, 'bn.keyword', 3, `nombre exacto(${3})`),
+                                constantScore('match_phrase', 'and', searchTerm, 'productservices.prdserv.spanish', 1, `servicios(${1})`),
                                 {
                                     "constant_score": {
                                         "filter": {
@@ -59,22 +59,22 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
                                                 "fields": [
                                                     "Appearances.Appearance.categoryname.spanish",
                                                     "bn.spanish",
+                                                    "productservices.prdserv.spanish"
                                                 ],
                                                 "operator": "and"
                                             }
                                         },
-                                        "boost": 1,
-                                        "_name": 'match con cruce(1)',
+                                        "boost": 101,
+                                        "_name": 'match con cruce(101)',
                                     }
                                 }
                                     
                             ].concat(categories.length ?
-                               [ ...categories.map(c => constantScore('match_phrase', 'and', c.name, 'Appearances.Appearance.categoryname.keyword', 100, `cat personalizada ${c.name} (100)`))] :                                
-                                constantScore('match_phrase', 'and', searchTerm, 'Appearances.Appearance.categoryname', 100, 'categoria exacta(100)'),
-                                )
-                                .concat(searchTerm.split(' ').length > 1 ? 
-                                [...searchTerm.split(' ').map(w =>  constantScore('match', 'or', w, 'bn.spanish', 20, `match palabra (${w})`, 1))] : 
-                                constantScore('match', 'or', searchTerm, 'bn.spanish', 5, `nombre parcial(${5})`, 1)),
+                                [ ...categories.map(c => constantScore('match_phrase', 'and', c.name, 'Appearances.Appearance.categoryname.keyword', 140, `cat personalizada ${c.name} (140)`))] :                                
+                                constantScore('match', 'and', searchTerm, 'Appearances.Appearance.categoryname', 140, 'categoria exacta(140)'),
+                            ).concat(searchTerm.split(' ').length > 1 ? 
+                                [...searchTerm.split(' ').map(w =>  constantScore('match', 'or', w, 'bn.spanish', 5, `match palabra 5(${w})`, 1))] : 
+                                constantScore('match', 'or', searchTerm, 'bn.spanish', 2, `nombre parcial(${2})`, 1)),
                         }
                     },
                     filter
@@ -146,7 +146,6 @@ function searchBusiness2(page = 0, searchTerm, organicCodes, category, hrs, paym
                             should: [
                                 constantScore('match', 'or', searchTerm, 'Appearances.Appearance.categoryname.spanish', 100, `categoria parcial(${100})`),
                                 constantScore('match_phrase', 'and', searchTerm, 'bn.keyword', 3, `nombre exacto(${3})`),
-                      
                                 constantScore('match_phrase', 'and', searchTerm, 'productservices.prdserv.spanish', 1, `servicios(${1})`),
                                 {
                                     "constant_score": {
@@ -168,7 +167,7 @@ function searchBusiness2(page = 0, searchTerm, organicCodes, category, hrs, paym
                                     
                             ].concat(categories.length ?
                                 [ ...categories.map(c => constantScore('match_phrase', 'and', c.name, 'Appearances.Appearance.categoryname.keyword', 140, `cat personalizada ${c.name} (140)`))] :                                
-                                constantScore('match_phrase', 'and', searchTerm, 'Appearances.Appearance.categoryname', 140, 'categoria exacta(140)'),
+                                constantScore('match', 'and', searchTerm, 'Appearances.Appearance.categoryname', 140, 'categoria exacta(140)'),
                             ).concat(searchTerm.split(' ').length > 1 ? 
                                 [...searchTerm.split(' ').map(w =>  constantScore('match', 'or', w, 'bn.spanish', 20, `match palabra (${w})`, 1))] : 
                                 constantScore('match', 'or', searchTerm, 'bn.spanish', 2, `nombre parcial(${2})`, 1)),

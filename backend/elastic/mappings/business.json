@@ -654,7 +654,7 @@
               "custom_stems",
               "spanish_stemmer"
             ],
-            "tokenizer": "standard"
+            "tokenizer": "keyword"
           }
         },
         "char_filter": {
