@@ -23,7 +23,7 @@ const client = require('./client');
  * 
  * @return {Promise<>}.
  */
-function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, paymentTypes, address, coordinates, pageSize = 10) {
+function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, paymentTypes, address, coordinates, pageSize = 20) {
     const SCORE_AND_POINTS_SORTING = [ "_score",{ "points": { "order": "desc" } },].concat(alphabeticalOrder());
     if (!searchTerm.length) {
         searchTerm = address.physicalstate;
@@ -118,7 +118,7 @@ function getRelatedCategories(searchTerm) {
     return client.getClient().search(body);
 }
 
-function searchBusiness2(page = 0, searchTerm, organicCodes, category, hrs, paymentTypes, address, coordinates) {
+function searchBusiness2(page = 0, searchTerm, organicCodes, category, hrs, paymentTypes, address, coordinates, pageSize=20) {
     const SCORE_AND_POINTS_SORTING = [ "_score",{ "points": { "order": "desc" } },].concat(alphabeticalOrder());
     if (!searchTerm.length) {
         searchTerm = address.physicalstate;
