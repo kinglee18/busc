@@ -62,6 +62,10 @@
                   "keyword": {
                     "type": "text",
                     "analyzer": "keyword_analyzer"
+                  },
+                  "phrase": {
+                    "type": "text",
+                    "analyzer": "clean_phrase"
                   }
                 }
               },
@@ -645,16 +649,31 @@
           },
           "clean_text_analyzer": {
             "char_filter": [
-              "my_char_filter"
+              "underscore_replacement"
             ],
             "filter": [
               "apostrophe",
               "asciifolding_filter",
               "lowercase",
               "custom_stems",
-              "spanish_stemmer"
+              "spanish_stemmer",
+              "synonym"
             ],
             "tokenizer": "keyword"
+          },
+          "clean_phrase": {
+            "char_filter": [
+              "underscore_replacement"
+            ],
+            "filter": [
+              "apostrophe",
+              "asciifolding_filter",
+              "lowercase",
+              "custom_stems",
+              "spanish_stemmer",
+              "synonym"
+            ],
+            "tokenizer": "standard"
           }
         },
         "char_filter": {
@@ -677,6 +696,11 @@
             "type": "pattern_replace",
             "pattern": "-",
             "replacement": " "
+          },
+          "underscore_replacement": {
+            "type": "pattern_replace",
+            "pattern": "-",
+            "replacement": ""
           }
         }
       }

@@ -1,6 +1,6 @@
 abarrotes,abarrotera 
 abastecimiento,abasto, aprovisionamiento ,avituallamiento ,provision ,suministro 
-academia, academias ,colegio ,escuela ,institucion ,instituto 
+escuela => academia, academias ,colegio ,escuela ,institucion, instituto , universidades
 camping, acampada, acampamiento, alpinismo, campamento, campismo, montana, montanismo 
 acarpia,aforia ,esterilidad ,infecundidad ,infertilidad 
 acidez, agruras ,gastro ,gastroenterologo 
@@ -19,7 +19,7 @@ alberca, estanque , pileta , piscina
 cuarto, alcoba, apartamento, apartamiento, aposento, departamento, dormitorio, estancia, habitacion, vivienda 
 alcol, alcohol , alcoholismo ,alcoolismo 
 aldea, ciudad , lugar , poblacion , pueblo , villa 
-alimento, comida, fast food, restaurant, alemana, china, coreana, asiatica, rapida, japonesa, mexicana, brasilena, uruguaya, hamburguesas
+restaurantes => alemana, americana, arabe, argentina, baguettes, brasilena, cafe , tes, cantinas, chilena, china, churros, colombiana, comida Rapida, coreana, cortes de carne, cubana, de autor, espanola, francesa, fusion, griega, hamburguesas, hindu, internacional, irlandesa, italiana, italo-argentina, japonesa-Sushi, kosher, libanesa, mediterranea, mexicana, naturista, peruana, pescados, mariscos, pizzas, polaca, regional, rosticerias, tacos, tailandesa, tortas, turca, uruguaya, vegetariana, venezolana 
 almorranas, hemmorroides 
 alojamiento , hospedaje  , hotel  , ospedaje  , otel 
 alpinista, montanero 
@@ -34,7 +34,7 @@ aprovisionamiento, abasto , avituallamiento , provision , suministro
 archivador, archivero 
 aroma, fragancia  perfume 
 arveja, chicharo , guisante 
-auto , carro , coche , vehiculo 
+auto , carro , coche 
 balompie, futbol 
 balon, bola , esferico , pelota 
 baloncesto, basketball ,basquet 
@@ -75,7 +75,6 @@ carnes frias, chorizo, chorizos, jamon, jamons
 carreola, carriola 
 caucho, goma elastica , hule 
 cedazo, coladera , criba 
-cenaduria, restaurant, restaurante, restoran 
 cerdo, chancho, cochino, cuino, gocho, gorrino, marrano, puerco, tocino
 cerillo, fosforo 
 cerradura, chapa 
