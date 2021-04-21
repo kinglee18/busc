@@ -203,6 +203,7 @@ exports.search = async function (address, searchTerm) {
 								'query': address,
 								'_name': 'city',
 								'operator': 'and',
+								'fuzziness': 1,
 								boost: 2
 							}
 						}
