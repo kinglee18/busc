@@ -50,7 +50,6 @@
               },
               "categoryname": {
                 "type": "text",
-                "analyzer": "clean_text_analyzer",
                 "copy_to": [
                   "categoryname_full_text"
                 ],
@@ -63,9 +62,9 @@
                     "type": "text",
                     "analyzer": "keyword_analyzer"
                   },
-                  "phrase": {
+                  "clean_keyword": {
                     "type": "text",
-                    "analyzer": "clean_phrase"
+                    "analyzer": "clean_text_analyzer"
                   }
                 }
               },
