@@ -74,8 +74,8 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
                                 [ ...categories.map(c => constantScore('match_phrase', 'and', c.name, 'Appearances.Appearance.categoryname.keyword', 140, `cat personalizada ${c.name} (140)`))] :                                
                                 constantScore('match', 'and', searchTerm, 'Appearances.Appearance.categoryname.clean_keyword', 140, 'categoria exacta(140)'),
                             ).concat(searchTerm.split(' ').length > 1 ? 
-                                [...searchTerm.split(' ').map(w =>  constantScore('match', 'or', w, 'bn.spanish', 5, `match palabra 5(${w})`, 1))] : 
-                                constantScore('match', 'or', searchTerm, 'bn.spanish', 2, `nombre parcial(${2})`, 1)),
+                                [...searchTerm.split(' ').map(w =>  constantScore('match', 'or', w, 'bn.spanish', 1, `match palabra 1(${w})`, 1))] : 
+                                constantScore('match', 'or', searchTerm, 'bn.spanish', 1, `nombre parcial(${1})`, 1)),
                         }
                     },
                     filter

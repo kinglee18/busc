@@ -648,7 +648,8 @@
           },
           "clean_text_analyzer": {
             "char_filter": [
-              "underscore_replacement"
+              "underscore_replacement",
+              "middle_underscore"
             ],
             "filter": [
               "apostrophe",
@@ -662,7 +663,8 @@
           },
           "clean_phrase": {
             "char_filter": [
-              "underscore_replacement"
+              "underscore_replacement",
+              "middle_underscore"
             ],
             "filter": [
               "apostrophe",
@@ -698,8 +700,13 @@
           },
           "underscore_replacement": {
             "type": "pattern_replace",
-            "pattern": "-",
+            "pattern": "-$",
             "replacement": ""
+          },
+          "middle_underscore": {
+            "type": "pattern_replace",
+            "pattern": "-(\\w)",
+            "replacement": " $1"
           }
         }
       }
