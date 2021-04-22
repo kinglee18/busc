@@ -19,7 +19,7 @@ alberca, estanque , pileta , piscina
 cuarto, alcoba, apartamento, apartamiento, aposento, departamento, dormitorio, estancia, habitacion, vivienda 
 alcol, alcohol , alcoholismo ,alcoolismo 
 aldea, ciudad , lugar , poblacion , pueblo , villa 
-restaurantes => alemana, americana, arabe, argentina, baguettes, brasilena, cafe , tes, cantinas, chilena, china, churros, colombiana, comida Rapida, coreana, cortes de carne, cubana, de autor, espanola, francesa, fusion, griega, hamburguesas, hindu, internacional, irlandesa, italiana, italo-argentina, japonesa-Sushi, kosher, libanesa, mediterranea, mexicana, naturista, peruana, pescados, mariscos, pizzas, polaca, regional, rosticerias, tacos, tailandesa, tortas, turca, uruguaya, vegetariana, venezolana 
+restaurantes => restaurantes en general, alemana, americana, arabe, argentina, baguettes, brasilena, cafe , tes, cantinas, chilena, china, churros, colombiana, comida Rapida, coreana, cortes de carne, cubana, de autor, espanola, francesa, fusion, griega, hamburguesas, hindu, internacional, irlandesa, italiana, italo-argentina, japonesa-Sushi, kosher, libanesa, mediterranea, mexicana, naturista, peruana, pescados, mariscos, pizzas, polaca, regional, rosticerias, tacos, tailandesa, tortas, turca, uruguaya, vegetariana, venezolana 
 almorranas, hemmorroides 
 alojamiento , hospedaje  , hotel  , ospedaje  , otel 
 alpinista, montanero 
@@ -54,7 +54,7 @@ block, blockera , bloque , bloquera
 boda, casamiento, enlace, matrimonio, nupcias 
 boiler, termotanque
 bolera, boliche , bowling 
-botica, drogueria , Farmacia 
+farmacia => botica, drogueria , farmacia
 brújula, compas 
 bragas, calzoncillos, calzones, pantaletas, panti, ropa interior, tangas, trusas 
 bucal, oral 
