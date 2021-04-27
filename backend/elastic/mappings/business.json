@@ -545,6 +545,7 @@
           },
           "synonym": {
             "type": "synonym",
+            "lenient": true,
             "synonyms_path": "synonym.txt"
           },
           "unique_filter": {
