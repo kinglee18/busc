@@ -60,45 +60,44 @@ routes.get('/node', (req, res) => {
     }
 });
 
-routes.get('/node2', (req, res) => {
-    const showBusiness = req.query.show_business == 'false' ? false : true;
-    const validation = validParams(req.query);
-    const address = req.query.physicalstate || req.query.physicalcity || req.query.colony ? {
-        physicalstate: req.query.physicalstate,
-        physicalcity: req.query.physicalcity,
-        colony: req.query.colony
-    } : undefined;
-    const coordinates = req.query.lat && req.query.lng ? { lat: parseFloat(req.query.lat), lng: parseFloat(req.query.lng) } : undefined;
-    const organicCodes = ['BRO', 'BRP', 'DIA', 'ORO', 'PIP', 'PLA', 'SPN'];
-    if (validation.valid) {
-        proceso.analisys(req.query.searchTerm).then((json) => {
-            Promise.all([
-                showBusiness ? elastic.searchBusiness2(
-                    req.query.page,
-                    json.newSearchTerm,
-                    req.query.organic ? organicCodes : undefined,
-                    req.query.category_id,
-                    json.schedule,
-                    json.payments,
-                    address || json.location,
-                    coordinates,
-                    req.query.size
-                ) : null,
-                elastic.getSuggestion(json.newSearchTerm)]
-            ).then((response) => {
-                const businessInfo = response[0];
-                const textSuggest = response[1];
-                res.status(200).send(createResponseBody(businessInfo, textSuggest, showBusiness, json));
-            }).catch(error => {
-                console.error(error);
-                res.status(500).send(error);
-            });
-        });
-    } else {
-        res.status(400).send(validation);
-    }
-});
 
+const getCompleteState = (initials) => {
+    const states = [
+        { name: "AGUASCALIENTES", initials: "AGS" } ,
+        { name: "BAJA CALIFORNIA", initials: "BC" } ,
+        { name: "BAJA CALIFORNIA SUR", initials: "BCS" } ,
+        { name: "CAMPECHE", initials: "CAMP" } ,
+        { name: "CHIHUAHUA", initials: "CHIH" } ,
+        { name: "CHIAPAS", initials: "CHIS" } ,
+        { name: "COAHUILA", initials: "COAH" } ,
+        { name: "COLIMA", initials: "COL" } ,
+        { name: "DISTRITO FEDERAL", initials: "DF" } ,
+        { name: "DURANGO", initials: "DGO" } ,
+        { name: "GUERRERO", initials: "GRO" } ,
+        { name: "GUANAJUATO", initials: "GTO" } ,
+        { name: "HIDALGO", initials: "HGO" } ,
+        { name: "JALISCO", initials: "JAL" } ,
+        { name: "MEXICO", initials: "MEX" } ,
+        { name: "MICHOACAN", initials: "MICH" } ,
+        { name: "MORELOS", initials: "MOR" } ,
+        { name: "NAYARIT", initials: "NAY" } ,
+        { name: "NUEVO LEON", initials: "NL" } ,
+        { name: "OAXACA", initials: "OAX" } ,
+        { name: "PUEBLA", initials: "PUE" } ,
+        { name: "QUINTANA ROO", initials: "QR" } ,
+        { name: "QUERETARO", initials: "QRO" } ,
+        { name: "SINALOA", initials: "SIN" } ,
+        { name: "SAN LUIS POTOSI", initials: "SLP" } ,
+        { name: "SONORA", initials: "SON" } ,
+        { name: "TABASCO", initials: "TAB" } ,
+        { name: "TAMAULIPAS", initials: "TAMS" } ,
+        { name: "TLAXCALA", initials: "TLAX" } ,
+        { name: "VERACRUZ", initials: "VER" } ,
+        { name: "YUCATAN", initials: "YUC" } ,
+        { name: "ZACATECAS", initials: "ZAC" }
+    ];
+    return states.filter(x => x === initials)[0]
+};
 /**
  * 
  * @param {object} businessInfo - elasticsearch response that contains query results and aggregations
@@ -121,7 +120,7 @@ function createResponseBody(businessInfo, textSuggest, showBusiness, analysis) {
                         "name": e.categoryNames.buckets[0].key
                     }
                 }),
-                state: businessInfo.aggregations.state.buckets.map(e => e.key)
+                state: businessInfo.aggregations.state.buckets.map(e => getCompleteState(e.key))
             }
         };
     }
