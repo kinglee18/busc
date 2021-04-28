@@ -46,6 +46,7 @@ function extractPlace(place, searchTerm) {
 }
 
 function findPrepLug(tx) {
+    tx = tx.toLowerCase();
     for (let op of gram.prep_lug) {
         let reg = new RegExp(`(?<what>.+)\\s${op}\\s(?<where>.+)`);
         let groups = reg.exec(tx);

@@ -48,7 +48,6 @@ exports.search = async function (address, searchTerm) {
 												],
 												"analyzer": "spanish_analyzer",
 												"type": "cross_fields",
-												"operator": "and",
 												"_name": 'multi'
 											}
 										}

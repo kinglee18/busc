@@ -93,7 +93,6 @@ describe('--------------', () => {
         {
             input: "telefonos en mty", output: {
                 "physicalstate": "NUEVO LEON",
-                "city": 'physicalcity',
                 "search_term": "telefonos"
             }
         }
@@ -102,7 +101,7 @@ describe('--------------', () => {
         makeTest(i);
     }
 
-    function makeTest(opc) {
+    async function makeTest(opc) {
         it("It shoud fragment the input " + opc.input, function () {
             const agent = request.agent(app);
 
