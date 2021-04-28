@@ -214,7 +214,7 @@ function sendRequest(page, request, sort, randomSorting, pageSize) {
                     randomSorting ? { "random_score": {} } : {},
                     randomSorting ? {} :{
                         "boost_mode": "sum",
-                        "script_score": {
+                        "script_score": { 
                             "script": {
                                 "source": "(doc['points'].size() != 0  && doc['points'].value > 10) ? doc['points'].value + 10: 0"
                             }
