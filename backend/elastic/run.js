@@ -228,10 +228,10 @@ function sendRequest(page, request, sort, randomSorting, pageSize) {
             {
                 "aggs": {
                     "physicalcity": {
-                        "terms": { "field": "Appearances.Appearance.city.keyword", "size": 10000, "order": { "_key": "asc" } }
+                        "terms": { "field": "Appearances.Appearance.city", "size": 10000, "order": { "_key": "asc" } }
                     },
                     "colony": {
-                        "terms": { "field": "colony.keyword", "size": 10000, "order": { "_key": "asc" } }
+                        "terms": { "field": "colony", "size": 10000, "order": { "_key": "asc" } }
                     },
                     "categoryIds": {
                         "terms": { "field": "Appearances.Appearance.categoryid", "size": 10000, "order": { "_key": "asc" } },
