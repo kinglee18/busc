@@ -70,6 +70,8 @@
               },
               "city": {
                 "type": "text",
+                "fielddata": true,
+                "analyzer": "keyword",
                 "fields": {
                   "keyword": {
                     "type": "text",
@@ -84,11 +86,11 @@
                     "type": "text",
                     "analyzer": "cities_analyzer"
                   }
-                },
-                "analyzer": "spanish_analyzer"
+                }
               },
               "colony": {
                 "type": "text",
+                "fielddata": true,
                 "fields": {
                   "keyword": {
                     "type": "text",
@@ -99,10 +101,11 @@
                     "analyzer": "colonies_analyzer"
                   }
                 },
-                "analyzer": "spanish_analyzer"
+                "analyzer": "keyword"
               },
               "state": {
                 "type": "text",
+                "fielddata": true,
                 "fields": {
                   "keyword": {
                     "type": "text",
@@ -118,7 +121,7 @@
                     "analyzer": "states_analyzer"
                   }
                 },
-                "analyzer": "states_analyzer"
+                "analyzer": "keyword"
               },
               "zip": {
                 "type": "keyword",
@@ -193,11 +196,13 @@
             "analyzer": "spanish_analyzer"
           }
         },
-        "analyzer": "spanish_analyzer",
+        "analyzer": "keyword",
         "fielddata": true
       },
       "colony": {
         "type": "text",
+        "analyzer": "keyword",
+        "fielddata": true,
         "fields": {
           "keyword": {
             "type": "text",
@@ -208,8 +213,7 @@
             "type": "text",
             "analyzer": "colonies_analyzer"
           }
-        },
-        "analyzer": "spanish_analyzer"
+        }
       },
       "comentarios": {
         "type": "text"
@@ -446,13 +450,8 @@
       },
       "statename": {
         "type": "text",
-        "fields": {
-          "keyword": {
-            "type": "text",
-            "analyzer": "keyword_analyzer",
-            "fielddata": true
-          }
-        }
+        "analyzer": "keyword",
+        "fielddata": true
       },
       "summary": {
         "type": "text"
