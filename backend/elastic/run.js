@@ -47,7 +47,7 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
                     "must": {
                         "bool": {
                             should: [
-                                constantScore('match', 'or', searchTerm, 'Appearances.Appearance.categoryname.spanish', 100, `categoria parcial(${100})`),
+                                constantScore('match', 'or', searchTerm, 'Appearances.Appearance.categoryname.spanish', 100, `categoria parcial(${100})`, 2),
                                 constantScore('match_phrase', 'and', searchTerm, 'bn.keyword', 3, `nombre exacto(${3})`),
                                 constantScore('match_phrase', 'and', searchTerm, 'productservices.prdserv.spanish', 1, `servicios(${1})`),
                                 constantScore('match_phrase', 'and', searchTerm, 'Appearances.Appearance.categoryname', 20, 'frase(20)'),
@@ -75,7 +75,7 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
                                 constantScore('match', 'and', searchTerm, 'Appearances.Appearance.categoryname.clean_keyword', 140, 'categoria exacta(140)'),
                             ).concat(searchTerm.split(' ').length > 1 ? 
                                 [...searchTerm.split(' ').map(w =>  constantScore('match', 'or', w, 'bn.spanish', 1, `match palabra 1(${w})`, 1))] : 
-                                constantScore('match', 'or', searchTerm, 'bn.spanish', 1, `nombre parcial(${1})`, 1)),
+                                constantScore('match', 'or', searchTerm, 'bn.spanish', 1, `nombre parcial(${1})`, 0)),
                         }
                     },
                     filter
@@ -145,7 +145,7 @@ function searchBusiness2(page = 0, searchTerm, organicCodes, category, hrs, paym
                     "must": {
                         "bool": {
                             should: [
-                                constantScore('match', 'or', searchTerm, 'Appearances.Appearance.categoryname.spanish', 100, `categoria parcial(${100})`),
+                                constantScore('match', 'or', searchTerm, 'Appearances.Appearance.categoryname.spanish', 100, `categoria parcial(${100})`, 2),
                                 constantScore('match_phrase', 'and', searchTerm, 'productservices.prdserv.spanish', 1, `servicios(${1})`),
                                 constantScore('match_phrase', 'and', searchTerm, 'Appearances.Appearance.categoryname', 20, 'frase(20)'),
                                 {
@@ -183,7 +183,7 @@ function searchBusiness2(page = 0, searchTerm, organicCodes, category, hrs, paym
                                             constantScore('match', 'and', searchTerm, 'Appearances.Appearance.categoryname.clean_keyword', 140, 'categoria exacta(140)'),
                                         ],
                                         must_not: [
-                                            constantScore('match', 'or', searchTerm, 'bn.spanish', 2, `nombre parcial(${2})`, 1),
+                                            constantScore('match', 'or', searchTerm, 'bn.spanish', 2, `nombre parcial(${2})`),
                                             constantScore('match_phrase', 'and', searchTerm, 'bn.keyword', 3, `nombre exacto(${3})`)
                                         ]
                                     }
@@ -261,21 +261,22 @@ function sendRequest(page, request, sort, randomSorting, pageSize) {
  * @param {Array<object>} categories - categories name to put in query 
  * @return {Array<object>}
 */
-function constantScore(matchType, operator,query, field, boost = 1, name, fuzzy=0) {
-    return JSON.parse(`{
+function constantScore(matchType, operator,query, field, boost = 1, name, fuzziness=0) {
+    return {
         "constant_score":{
             "filter": {
-                "${matchType}": {
-                    "${field}": { 
-                        "query": "${query}"
-                        ${matchType === 'match' ?`,"operator": "${operator}"`: ''}
-
+                [matchType]: {
+                    [field]: { 
+                        query,
+                        operator: matchType === 'match' ? operator : undefined,
+                        fuzziness: matchType === 'match' ? fuzziness : undefined
                     }
                 }
             },
-            "boost": "${boost}",
-            "_name": "${name}"
-    }}`);
+            boost,
+            "_name": name
+        }
+    };
 }
 
 function alphabeticalOrder() {
