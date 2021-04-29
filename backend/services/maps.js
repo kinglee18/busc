@@ -78,7 +78,7 @@ exports.search = async function (address, searchTerm) {
 											],
 										}
 									}],
-									"should": [
+									"must": [
 										{
 											"match": {
 												"colony.spanish": searchTerm
