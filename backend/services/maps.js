@@ -70,7 +70,7 @@ exports.search = async function (address, searchTerm) {
 									"query": searchTerm,
 									"fields": [
 										"zc",
-										"state.spanish^8",
+										"state.spanish^3",
 										"statename^3",
 										"city.spanish",
 										"statename.keyword"

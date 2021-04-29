@@ -56,14 +56,14 @@ describe('--------------', () => {
                 "postal_code": "04400"
             }
         },
+        { input: "hotel magdalena contreras", output: { search_term: "hotel magdalena contreras", physicalstate: 'DISTRITO FEDERAL', physicalcity: "LA MAGDALENA CONTRERAS" } },
+        { input: "hotel magdalena contreras cdmx", output: { search_term: "hotel magdalena contreras", physicalstate: 'DISTRITO FEDERAL', physicalcity: "LA MAGDALENA CONTRERAS" } },
         { input: "hotel DF", output: { search_term: "hotel", physicalstate: 'DISTRITO FEDERAL' } },
         { input: "hotel morelos", output: { search_term: "hotel", physicalstate: 'MORELOS' } },
         { input: "hotel oaxaca", output: { search_term: "hotel", physicalstate: 'OAXACA' } },
         { input: "hotel mexico", output: { search_term: "hotel", physicalstate: 'MEXICO' } },
         { input: "hotel san luis potosi", output: { search_term: "hotel", physicalstate: 'SAN LUIS POTOSI' } },
         { input: "hotel jalisco", output: { search_term: "hotel", physicalstate: 'GUADALAJARA', physicalstate: "JALISCO" } },
-        { input: "hotel magdalena contreras", output: { search_term: "hotel magdalena contreras", physicalstate: 'DISTRITO FEDERAL', physicalcity: "LA MAGDALENA CONTRERAS" } },
-        { input: "hotel magdalena contreras cdmx", output: { search_term: "hotel magdalena contreras cdmx", physicalstate: 'DISTRITO FEDERAL', physicalcity: "LA MAGDALENA CONTRERAS" } },
         { input: "hotel en cuautla morelos", output: { "physicalstate": "MORELOS", "physicalcity": "CUAUTLA", "search_term": "hotel" } },
         { input: "hotel cuautla morelos", output: { "physicalstate": "MORELOS", "physicalcity": "CUAUTLA", "search_term": "hotel" } },
         { input: "universidad simon bolivar", output: { "search_term": "universidad simon bolivar" } },
