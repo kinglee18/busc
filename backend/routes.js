@@ -62,6 +62,7 @@ routes.get('/node', (req, res) => {
 
 
 const getCompleteState = (initials) => {
+    console.log(initials);
     const states = [
         { name: "AGUASCALIENTES", initials: "AGS" } ,
         { name: "BAJA CALIFORNIA", initials: "BC" } ,
@@ -96,7 +97,9 @@ const getCompleteState = (initials) => {
         { name: "YUCATAN", initials: "YUC" } ,
         { name: "ZACATECAS", initials: "ZAC" }
     ];
-    return states.filter(x => x.initials === initials).map(x=> x.name)
+    if(states.filter(x => x.initials === initials).map(x=> x.name).length){
+       return states.filter(x => x.initials === initials)[0].name
+    }
 };
 /**
  * 
@@ -120,7 +123,7 @@ function createResponseBody(businessInfo, textSuggest, showBusiness, analysis) {
                         "name": e.categoryNames.buckets[0].key
                     }
                 }),
-                state: businessInfo.aggregations.state.buckets.map(e => getCompleteState(e.key))
+                state: businessInfo.aggregations.state.buckets.map(e => getCompleteState(e.key)).filter(e => e != null)
             }
         };
     }
