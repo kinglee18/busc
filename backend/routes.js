@@ -96,7 +96,7 @@ const getCompleteState = (initials) => {
         { name: "YUCATAN", initials: "YUC" } ,
         { name: "ZACATECAS", initials: "ZAC" }
     ];
-    return states.filter(x => x.initials === initials)[0].name
+    return states.filter(x => x.initials === initials).map(x=> x.name)
 };
 /**
  * 
