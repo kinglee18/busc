@@ -48,7 +48,7 @@ function searchBusiness(page = 0, searchTerm, organicCodes, category, hrs, payme
                         "bool": {
                             should: [
                                 constantScore('match', 'or', searchTerm, 'Appearances.Appearance.categoryname.spanish', 100, `categoria parcial(${100})`, 1),
-                                constantScore('match_phrase', 'and', searchTerm, 'bn.keyword', 3, `nombre exacto(${3})`),
+                                constantScore('match', 'and', searchTerm, 'bn.spanish', 3, `nombre exacto(${3})`),
                                 constantScore('match_phrase', 'and', searchTerm, 'productservices.prdserv.spanish', 1, `servicios(${1})`),
                                 constantScore('match_phrase', 'and', searchTerm, 'Appearances.Appearance.categoryname', 20, 'frase(20)'),
                                 {
