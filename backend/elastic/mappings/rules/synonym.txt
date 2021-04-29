@@ -132,3 +132,4 @@ x box, videojuego, xbox
 xbox, videojuego 
 taqueria , taco , tacos , taquerias
 comida => restaurantes cocina internacional, restaurantes cocina alemana, restaurantes cocina arabe, restaurantes cocina argentina, restaurantes cocina brasilena, restaurantes cocina coreana, restaurantes cocina chilena, restaurantes cocina cubana, restaurantes comida naturista, restaurantes cocina china, restaurantes cocina espanola, restaurantes cocina francesa, restaurantes cocina griega, restaurantes cocina hindu, restaurantes cocina italiana, restaurantes cocina japonesa, restaurantes cocina libanesa, restaurantes cocina mexicana, restaurantes cocina polaca, restaurantes cocina uruguaya, restaurantes cocina vegetariana, restaurantes cocina tailandesa, restaurantes comida rapida, restaurantes cocina regional, restaurantes especialidades del mar, restaurantes en general
+comida mexicana => mexicana
