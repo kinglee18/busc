@@ -66,6 +66,28 @@ exports.search = async function (address, searchTerm) {
 					"bool": {
 						"should": [
 							{
+								"bool": {
+									"must_not": [
+										{
+											"multi_match": {
+												"query": searchTerm,
+												"fields": [
+													"statename",
+													"state",
+													"city"
+												],
+											}
+										}],
+									"must": [
+										{
+											"match": {
+												"colony.spanish": searchTerm
+											}	
+										}
+									]
+								}
+							},
+							{
 								"multi_match": {
 									"query": searchTerm,
 									"fields": [

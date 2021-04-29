@@ -10,6 +10,7 @@ describe('--------------', () => {
     });
 
     const tests = [
+        { input: "hotel JARDIN BALBUENA", output: { search_term: "hotel", physicalstate: 'DISTRITO FEDERAL', colony: "JARDIN BALBUENA" , physicalcity: "VENUSTIANO CARRANZA", "postal_code": "15900"} },
         { input: "hotel EN DF", output: { search_term: "hotel", physicalstate: 'DISTRITO FEDERAL' } },
         { input: "hotel en morelos", output: { search_term: "hotel", physicalstate: 'MORELOS' } },
         { input: "hotel en oaxaca", output: { search_term: "hotel", physicalstate: 'OAXACA' } },
