@@ -111,6 +111,18 @@
             "type": "stop",
             "stopwords": "_spanish_"
           },
+          "stop_words_general" : {
+            "type" : "stop",
+            "stopwords" : [
+              "el",
+              "la",
+              "los",
+              "las",
+              "de",
+              "en",
+              "general"
+            ]
+          },
           "stop_words_filter" : {
             "type" : "stop",
             "stopwords_path" : "colonies_stopwords.txt"
@@ -166,7 +178,7 @@
               "asciifolding_filter",
               "lowercase",
               "states_synonym",
-              "stop_words_filter",
+              "stop_words_general",
               "spanish_stop_filter"
             ],
             "tokenizer" : "standard"
