@@ -347,7 +347,7 @@ function getAddressFilter(location, coordinates) {
         if (location.physicalstate) {
             address.push({
                 "match": {
-                    "Appearances.Appearance.state": {
+                    "Appearances.Appearance.state.synonyms": {
                         "query": location.initials || location.physicalstate,
                         analyzer: "states_analyzer"
                     }
