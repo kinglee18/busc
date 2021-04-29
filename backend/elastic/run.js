@@ -269,7 +269,6 @@ function constantScore(matchType, operator,query, field, boost = 1, name, fuzzin
                     [field]: { 
                         query,
                         operator: matchType === 'match' ? operator : undefined,
-                        fuzziness: matchType === 'match' ? fuzziness : undefined
                     }
                 }
             },
