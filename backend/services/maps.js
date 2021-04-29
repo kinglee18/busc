@@ -84,7 +84,29 @@ exports.search = async function (address, searchTerm) {
 												"colony.spanish": searchTerm
 											}	
 										}
-									]
+									],
+									filter: [
+										{
+											"bool": {
+												"should": [
+													{
+														"match": {
+															"statename": "DISTRITO FEDERAL"
+														}
+													},
+													{
+														"match": {
+															"city": "MONTERREY"
+														}
+													},
+													{
+														"match": {
+															"city": "GUADALAJARA"
+														}
+													}
+												]
+											}}
+										]
 								}
 							},
 							{

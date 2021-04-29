@@ -79,14 +79,14 @@ describe('--------------', () => {
                 colony: "PORTALES SUR", "postal_code": "03300"
             }
         },
-        /*{
+        {
             input: "hotel napoles", output: {
-                search_term: "hotel napoles",
+                search_term: "hotel",
                 physicalstate: 'DISTRITO FEDERAL',
                 "physicalcity": "BENITO JUAREZ",
-                colony: "NAPOLES", "postal_code": "03300"
+                colony: "NAPOLES", "postal_code": "03810"
             }
-        },*/
+        },
          {
             input: "plomeros guadalajara", output: {
                 "physicalcity": "GUADALAJARA",
