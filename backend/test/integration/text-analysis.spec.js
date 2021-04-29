@@ -62,11 +62,13 @@ describe('--------------', () => {
         { input: "hotel mexico", output: { search_term: "hotel", physicalstate: 'MEXICO' } },
         { input: "hotel san luis potosi", output: { search_term: "hotel", physicalstate: 'SAN LUIS POTOSI' } },
         { input: "hotel jalisco", output: { search_term: "hotel", physicalstate: 'GUADALAJARA', physicalstate: "JALISCO" } },
+        { input: "hotel magdalena contreras", output: { search_term: "hotel magdalena contreras", physicalstate: 'DISTRITO FEDERAL', physicalcity: "LA MAGDALENA CONTRERAS" } },
+        { input: "hotel magdalena contreras cdmx", output: { search_term: "hotel magdalena contreras cdmx", physicalstate: 'DISTRITO FEDERAL', physicalcity: "LA MAGDALENA CONTRERAS" } },
         { input: "hotel en cuautla morelos", output: { "physicalstate": "MORELOS", "physicalcity": "CUAUTLA", "search_term": "hotel" } },
         { input: "hotel cuautla morelos", output: { "physicalstate": "MORELOS", "physicalcity": "CUAUTLA", "search_term": "hotel" } },
         { input: "universidad simon bolivar", output: { "search_term": "universidad simon bolivar" } },
         { input: "farmacias guadalajara", output: { "search_term": "farmacias guadalajara" } },
-        { input: "casas de campaña", output: { "search_term": "casas de campaña" } },
+        /*{ input: "casas de campaña", output: { "search_term": "casas de campaña" } },*/
         { input: "construcciones en general", output: { "search_term": "construcciones en general" } },
         {
             input: "hotel en portales", output: {
@@ -76,13 +78,21 @@ describe('--------------', () => {
                 colony: "PORTALES SUR", "postal_code": "03300"
             }
         },
-     /*    {
+        /*{
+            input: "hotel napoles", output: {
+                search_term: "hotel napoles",
+                physicalstate: 'DISTRITO FEDERAL',
+                "physicalcity": "BENITO JUAREZ",
+                colony: "NAPOLES", "postal_code": "03300"
+            }
+        },*/
+         {
             input: "plomeros guadalajara", output: {
                 "physicalcity": "GUADALAJARA",
                 "physicalstate": "JALISCO",
                 "search_term": "plomeros"
             }
-        }, */
+        }, 
         {
             input: "telefonos en metepec", output: {
                 "physicalcity": "METEPEC",
@@ -102,7 +112,7 @@ describe('--------------', () => {
     }
 
     async function makeTest(opc) {
-        it("It shoud fragment the input " + opc.input, function () {
+        it("It shoud fragment the input " + opc.input, async function () {
             const agent = request.agent(app);
 
             return agent.get('/node')

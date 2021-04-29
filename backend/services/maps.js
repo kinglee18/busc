@@ -61,14 +61,6 @@ exports.search = async function (address, searchTerm) {
 			}
 		} else {
 			body = {
-				"sort": [
-					"_score",
-					{
-						"relevance": {
-							"order": "desc"
-						}
-					}
-				],
 				"size": 1,
 				"query": {
 					"bool": {
@@ -80,9 +72,9 @@ exports.search = async function (address, searchTerm) {
 										"zc",
 										"state.spanish^8",
 										"statename^3",
+										"city.spanish",
 										"statename.keyword"
 									],
-									"minimum_should_match": "90%"
 								}
 							},
 							{
