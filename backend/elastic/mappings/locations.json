@@ -107,6 +107,10 @@
     "index" : {
       "analysis" : {
         "filter" : {
+          "spanish_stop_filter": {
+            "type": "stop",
+            "stopwords": "_spanish_"
+          },
           "stop_words_filter" : {
             "type" : "stop",
             "stopwords" : [
@@ -150,7 +154,8 @@
               "asciifolding_filter",
               "lowercase",
               "states_synonym",
-              "stop_words_filter"
+              "stop_words_filter",
+              "spanish_stop_filter"
             ],
             "tokenizer" : "standard"
           },
@@ -159,7 +164,8 @@
               "asciifolding_filter",
               "lowercase",
               "cities_synonym",
-              "stop_words_filter"
+              "stop_words_filter",
+              "spanish_stop_filter"
             ],
             "tokenizer" : "standard"
           },
@@ -169,7 +175,8 @@
               "lowercase",
               "states_synonym",
               "colonies_synonym",
-              "stop_words_filter"
+              "stop_words_filter",
+              "spanish_stop_filter"
             ],
             "tokenizer" : "standard"
           }
