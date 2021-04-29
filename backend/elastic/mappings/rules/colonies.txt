@@ -1,1 +1,3 @@
 PORTALES ORIENTE, PORTALES SUR, PORTALES NORTE, PORTALES => PORTALES ORIENTE, PORTALES SUR, PORTALES NORTE, PORTALES
+la roma, roma => roma norte
+la del valle => del valle centro
