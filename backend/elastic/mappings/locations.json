@@ -141,22 +141,11 @@
             ],
             "tokenizer" : "standard"
           },
-          "spanish_analyzer" : {
-            "filter" : [
-              "asciifolding_filter",
-              "lowercase",
-              "states_synonym",
-              "stop_words_filter",
-              "spanish_stop_filter"
-            ],
-            "tokenizer" : "standard"
-          },
           "cities_analyzer" : {
             "filter" : [
               "asciifolding_filter",
               "lowercase",
               "cities_synonym",
-              "stop_words_filter",
               "spanish_stop_filter"
             ],
             "tokenizer" : "standard"
