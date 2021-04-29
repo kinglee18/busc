@@ -29,6 +29,13 @@ exports.search = async function (address, searchTerm) {
 						colonyQuery(address),
 						{
 							bool: {
+								"should": [
+									{
+										"match": {
+											"statename": "DISTRITO FEDERAL"
+										}
+									}
+								],
 								must_not:[{
 									exists: {
 										field: 'colony'
@@ -77,96 +84,118 @@ exports.search = async function (address, searchTerm) {
 												"city"
 											],
 										}
-									}],
-									"must": [
-										{
-											"match": {
-												"colony.spanish": searchTerm
+									}
+								],
+								"must": [
+									{
+										"match": {
+											"colony.spanish": searchTerm
+										}
+									}
+								],
+								filter: [
+									{
+										"bool": {
+											"should": [
+												{
+													"match": {
+														"statename": "DISTRITO FEDERAL"
+													}
+												},
+												{
+													"match": {
+														"city": "MONTERREY"
+													}
+												},
+												{
+													"match": {
+														"city": "GUADALAJARA"
+													}
+												}
+											]
+										}}
+									]
+							}
+						},
+						{
+							bool: {
+								must: [
+									{
+										"multi_match": {
+											"query": searchTerm,
+											"fields": [
+												"zc",
+												"state.spanish^3",
+												"statename^3",
+												"city.spanish",
+												"statename.keyword"
+											],
+										}
+									}
+								],
+								should: [
+									{
+										"match": {
+											"statename": "DISTRITO FEDERAL"
+										}
+									}
+								]
+							}
+		
+						},
+						{
+							"bool": {
+								"should": [
+									{
+										"match": {
+											"statename": "DISTRITO FEDERAL"
+										}
+									}
+								],
+								"must": [
+									{
+										"match": {
+											"statename": searchTerm
+										}
+									},
+									{
+										"match": {
+											"city": searchTerm
+										}
+									}
+								],
+								"filter": [
+									{
+										"script": {
+											"script": {
+												"source": "if (doc['city.keyword'].size() > 0 ){doc['city.keyword'].value !=  doc['statename.keyword'].value}"
 											}
 										}
-									],
-									filter: [
-										{
-											"bool": {
-												"should": [
-													{
-														"match": {
-															"statename": "DISTRITO FEDERAL"
-														}
-													},
-													{
-														"match": {
-															"city": "MONTERREY"
-														}
-													},
-													{
-														"match": {
-															"city": "GUADALAJARA"
-														}
+									},
+									{
+										bool: {
+											"must_not": [
+												{
+													"exists": {
+														"field": "postal_code"
 													}
-												]
-											}}
-										]
-									}
-								},
-								{
-									"multi_match": {
-										"query": searchTerm,
-										"fields": [
-											"zc",
-											"state.spanish^3",
-											"statename^3",
-											"city.spanish",
-											"statename.keyword"
-										],
-									}
-								},
-								{
-									"bool": {
-										"must": [
-											{
-												"match": {
-													"statename": searchTerm
-												}
-											},
-											{
-												"match": {
-													"city": searchTerm
-												}
-											}
-										],
-										"filter": [
-											{
-												"script": {
-													"script": {
-														"source": "if (doc['city.keyword'].size() > 0 ){doc['city.keyword'].value !=  doc['statename.keyword'].value}"
+												},
+												{
+													"exists": {
+														"field": "zc"
 													}
 												}
-											},
-											{
-												bool: {
-													"must_not": [
-														{
-															"exists": {
-																"field": "postal_code"
-															}
-														},
-														{
-															"exists": {
-																"field": "zc"
-															}
-														}
-													]
-												}
-											}
-										]
+											]
+										}
 									}
-								}
-							]
+								]
+							}
 						}
-					}
+					]
 				}
 			}
+		}
+	}
 			const requestBody = {
 				index: process.env.locations,
 				body
@@ -260,6 +289,13 @@ exports.search = async function (address, searchTerm) {
 								}
 							}
 						},
+					],
+					"should": [
+						{
+							"match": {
+								"statename": "DISTRITO FEDERAL"
+							}
+						}
 					],
 					must: [
 						{

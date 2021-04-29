@@ -160,6 +160,16 @@
               "spanish_stop_filter"
             ],
             "tokenizer" : "standard"
+          },
+          "spanish_analyzer" : {
+            "filter" : [
+              "asciifolding_filter",
+              "lowercase",
+              "states_synonym",
+              "stop_words_filter",
+              "spanish_stop_filter"
+            ],
+            "tokenizer" : "standard"
           }
         }
       }

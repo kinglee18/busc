@@ -10,11 +10,34 @@ describe('--------------', () => {
     });
 
     const tests = [
+        { input: "hotel en mexico", output: { search_term: "hotel", physicalstate: 'MEXICO' } },
+
+        {
+            input: "hotel en portales", output: {
+                search_term: "hotel",
+                physicalstate: 'DISTRITO FEDERAL',
+                "physicalcity": "BENITO JUAREZ",
+                colony: "PORTALES SUR", "postal_code": "03300"
+            }
+        },
+        {
+            input: "hotel en benito juarez", output: {
+                search_term: "hotel",
+                physicalstate: 'DISTRITO FEDERAL',
+                "physicalcity": "BENITO JUAREZ"
+            }
+        },
+        {
+            input: "hotel benito juarez", output: {
+                search_term: "hotel",
+                physicalstate: 'DISTRITO FEDERAL',
+                "physicalcity": "BENITO JUAREZ"
+            }
+        },
         { input: "hotel JARDIN BALBUENA", output: { search_term: "hotel", physicalstate: 'DISTRITO FEDERAL', colony: "JARDIN BALBUENA" , physicalcity: "VENUSTIANO CARRANZA", "postal_code": "15900"} },
         { input: "hotel EN DF", output: { search_term: "hotel", physicalstate: 'DISTRITO FEDERAL' } },
         { input: "hotel en morelos", output: { search_term: "hotel", physicalstate: 'MORELOS' } },
         { input: "hotel en oaxaca", output: { search_term: "hotel", physicalstate: 'OAXACA' } },
-        { input: "hotel en mexico", output: { search_term: "hotel", physicalstate: 'MEXICO' } },
         { input: "hotel en  estado de mexico", output: { search_term: "hotel", physicalstate: 'MEXICO' } },
         { input: "hotel en san luis", output: { search_term: "hotel", physicalstate: 'SAN LUIS POTOSI' } },
 
@@ -57,6 +80,7 @@ describe('--------------', () => {
                 "postal_code": "04400"
             }
         },
+        { input: "hotel en magdalena contreras", output: { search_term: "hotel", physicalstate: 'DISTRITO FEDERAL', physicalcity: "LA MAGDALENA CONTRERAS" } },
         { input: "hotel magdalena contreras", output: { search_term: "hotel magdalena contreras", physicalstate: 'DISTRITO FEDERAL', physicalcity: "LA MAGDALENA CONTRERAS" } },
         { input: "hotel magdalena contreras cdmx", output: { search_term: "hotel magdalena contreras", physicalstate: 'DISTRITO FEDERAL', physicalcity: "LA MAGDALENA CONTRERAS" } },
         { input: "hotel DF", output: { search_term: "hotel", physicalstate: 'DISTRITO FEDERAL' } },
@@ -71,14 +95,7 @@ describe('--------------', () => {
         { input: "farmacias guadalajara", output: { "search_term": "farmacias guadalajara" } },
         /*{ input: "casas de campaña", output: { "search_term": "casas de campaña" } },*/
         { input: "construcciones en general", output: { "search_term": "construcciones en general" } },
-        {
-            input: "hotel en portales", output: {
-                search_term: "hotel",
-                physicalstate: 'DISTRITO FEDERAL',
-                "physicalcity": "BENITO JUAREZ",
-                colony: "PORTALES SUR", "postal_code": "03300"
-            }
-        },
+
         {
             input: "hotel napoles", output: {
                 search_term: "hotel",
