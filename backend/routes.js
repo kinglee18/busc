@@ -62,7 +62,6 @@ routes.get('/node', (req, res) => {
 
 
 const getCompleteState = (initials) => {
-    console.log(initials);
     const states = [
         { name: "AGUASCALIENTES", initials: "AGS" } ,
         { name: "BAJA CALIFORNIA", initials: "BC" } ,
